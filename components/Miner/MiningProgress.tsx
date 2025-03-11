@@ -7,7 +7,7 @@ const MiningProgress = ({ miningPower }) => (
     <View style={stylesMiner.progressBarWrapper}>
       <View style={[stylesMiner.progressBarFill, { width: `${miningPower}%` }]} />
     </View>
-    <Text style={stylesMiner.progressPercentage}>{Math.round(miningPower)}%</Text>
+    {/*<Text style={stylesMiner.progressPercentage}>{Math.round(miningPower)}%</Text>*/}
   </View>
 );
 
