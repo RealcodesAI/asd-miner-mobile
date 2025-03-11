@@ -6,6 +6,7 @@ import MiningControls from "@/components/Miner/MiningControls";
 import MiningProgress from "@/components/Miner/MiningProgress";
 import MiningLog from "@/components/Miner/MiningLog";
 import RewardDisplay from "@/components/Miner/RewardDisplay";
+import useMqtt, { publishMqttMessage } from "@/Hook/useMqtt";
 
 const Miner = () => {
   const [miningPower, setMiningPower] = useState(0);
@@ -14,8 +15,12 @@ const Miner = () => {
   const [showReward, setShowReward] = useState(false);
   const animationRef = useRef<number | null>(null);
   const logIntervalRef = useRef<number | null>(null);
+  const mqttIntervalRef = useRef<number | null>(null); // New ref for MQTT interval
   const isPaused = useRef(false);
   const logIndexRef = useRef(0);
+
+  // Initialize MQTT
+  useMqtt();
 
   const miningLogs = [
     "Header-hash:0fea9218cc8ff8775d1b3f9608bcfb0885f809df2f8b97af14fe2acfa488",
@@ -29,6 +34,9 @@ const Miner = () => {
     "Hash difficulty: 9218cc8ff8"
   ];
 
+  // MQTT topic
+  const mqttTopic = "ping/ae454d585491c6641ddbadb5e1cc61463fd4e8b98534e8b9853a33dcce2c8a1f";
+
   useEffect(() => {
     return () => {
       if (animationRef.current) {
@@ -37,8 +45,12 @@ const Miner = () => {
       if (logIntervalRef.current) {
         clearInterval(logIntervalRef.current);
       }
+      if (mqttIntervalRef.current) {
+        clearInterval(mqttIntervalRef.current);
+      }
     };
   }, []);
+
   useEffect(() => {
     if (isMining) {
       setMiningLog(miningLogs[0]);
@@ -53,10 +65,23 @@ const Miner = () => {
         }
       }, 2000);
 
+      // Set up MQTT publishing every 20 seconds when mining
+      mqttIntervalRef.current = setInterval(() => {
+        if (!isPaused.current) {
+          // Publish current mining status
+          const message = "Mining";
+          publishMqttMessage(mqttTopic, message);
+        }
+      }, 20000); // 20 seconds interval
+
       return () => {
         if (logIntervalRef.current) {
           clearInterval(logIntervalRef.current);
           logIntervalRef.current = null;
+        }
+        if (mqttIntervalRef.current) {
+          clearInterval(mqttIntervalRef.current);
+          mqttIntervalRef.current = null;
         }
       };
     }
@@ -105,6 +130,10 @@ const Miner = () => {
         clearInterval(logIntervalRef.current);
         logIntervalRef.current = null;
       }
+      if (mqttIntervalRef.current) {
+        clearInterval(mqttIntervalRef.current);
+        mqttIntervalRef.current = null;
+      }
       setMiningLog('');
       setShowReward(false);
     }
@@ -121,7 +150,7 @@ const Miner = () => {
       <Text style={stylesMiner.balance}>100.123 ASD</Text>
       <Image source={require('@/assets/images/Frame.png')} style={stylesMiner.image} />
 
-      <MiningControls isMining={isMining} toggleMining={() => setIsMining(!isMining)} />
+      <MiningControls isMining={isMining} toggleMining={toggleMining} />
 
       <View style={stylesMiner.Container}>
         <View style={stylesMiner.sliderContainer}>
