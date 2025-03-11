@@ -5,6 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  Image,
 } from "react-native";
 import Icon from "react-native-vector-icons/Feather";
 import Button from "@/components/ButtonAuth/Button";
@@ -30,6 +31,7 @@ const Login = () => {
       contentContainerStyle={stylesAuth.container}
       keyboardShouldPersistTaps="handled"
     >
+      <Image source={require("../../assets/images/logoAsd.png")} />
       <Text style={stylesAuth.title}>Welcome to ASD miner {"\n"}</Text>
       <Text style={stylesAuth.title}>Login to continue</Text>
 
@@ -82,6 +84,9 @@ const Login = () => {
             <Text style={{ color: "red" }}>{passwordError}</Text>
           )}
         </View>
+        <TouchableOpacity onPress={() => router.push("/auth/ResetPassword")}>
+          <Text style={{ color: "white", fontSize: 10 , marginLeft: '65%'}}>Forgot Password?</Text>
+        </TouchableOpacity>
         <Button title={"Login"} onPress={fetchLogin} />
       </View>
 

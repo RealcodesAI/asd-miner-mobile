@@ -1,9 +1,8 @@
-import { View, Text, TouchableOpacity, TextInput } from "react-native";
+import { View, Text, TouchableOpacity, TextInput, Image } from "react-native";
 import React, { useState } from "react";
 import Button from "@/components/ButtonAuth/Button";
 import { stylesAuth } from "./styles/stylesAuth";
 import { ScrollView } from "react-native";
-import { Icon } from "react-native-vector-icons/Feather";
 import { useRouter } from "expo-router";
 
 const ResetPassword = () => {
@@ -19,8 +18,9 @@ const ResetPassword = () => {
       contentContainerStyle={stylesAuth.container}
       keyboardShouldPersistTaps="handled"
     >
-      <Text style={stylesAuth.title}>Welcome to ASD miner {"\n"}</Text>
-      <Text style={stylesAuth.title}>Login to continue</Text>
+      <Image source={require("../../assets/images/logoAsd.png")} />
+      <Text style={stylesAuth.title}>Reset password {"\n"}</Text>
+      <Text style={stylesAuth.title}>We've send OTP to your email</Text>
 
       <View style={stylesAuth.form}>
         {/* User Name */}
@@ -29,14 +29,8 @@ const ResetPassword = () => {
           <View style={stylesAuth.inputContainer}>
             <TextInput
               style={stylesAuth.input}
-              placeholder="Enter your user id"
+              placeholder="OTP email"
               placeholderTextColor="#676767"
-            />
-            <Icon
-              name="user"
-              size={15}
-              color="#AEA8B2"
-              style={stylesAuth.icon}
             />
           </View>
         </View>
@@ -51,14 +45,6 @@ const ResetPassword = () => {
               secureTextEntry={!showPassword}
               placeholderTextColor="#676767"
             />
-            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-              <Icon
-                name={showPassword ? "eye" : "eye-off"}
-                size={15}
-                color="#AEA8B2"
-                style={stylesAuth.icon}
-              />
-            </TouchableOpacity>
           </View>
         </View>
 
@@ -72,16 +58,6 @@ const ResetPassword = () => {
               secureTextEntry={!showConfirmPassword}
               placeholderTextColor="#676767"
             />
-            <TouchableOpacity
-              onPress={() => setShowConfirmPassword(!showConfirmPassword)}
-            >
-              <Icon
-                name={showConfirmPassword ? "eye" : "eye-off"}
-                size={15}
-                color="#AEA8B2"
-                style={stylesAuth.icon}
-              />
-            </TouchableOpacity>
           </View>
         </View>
 

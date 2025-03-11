@@ -6,7 +6,7 @@ export const stylesAuth = StyleSheet.create({
     backgroundColor: "#000",
     alignItems: "center",
     paddingHorizontal: 25,
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   title: {
     color: "#fff",
@@ -14,18 +14,18 @@ export const stylesAuth = StyleSheet.create({
     fontWeight: "500",
     fontFamily: "Roboto",
     textAlign: "center",
-    marginTop: 20,
+    marginTop: 15,
   },
 
   form: {
-    marginTop: 30,
+    marginTop: 25,
     width: "100%",
-    gap: 16,
+    gap: 10
   },
   textInput: {
     color: "#AEA8B2",
     fontWeight: "400",
-    marginBottom: 8,
+    marginBottom: 5,
   },
   inputContainer: {
     flexDirection: "row",

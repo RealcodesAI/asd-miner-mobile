@@ -13,6 +13,9 @@ export const AsdApi = {
             password
         })
     },
+    getMe: async () => {
+        return await axiosClient.get('auth/me')
+    },
     connetWallte: async (message: string, signature: string): Promise<any> => {
         return await axiosClient.post('auth/connect-wallet', {
             message,

@@ -5,6 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  Image,
 } from "react-native";
 import Icon from "react-native-vector-icons/Feather";
 import Button from "@/components/ButtonAuth/Button";
@@ -34,6 +35,7 @@ const Register = () => {
       contentContainerStyle={stylesAuth.container}
       keyboardShouldPersistTaps="handled"
     >
+      <Image source={require("../../assets/images/logoAsd.png")} />
       <Text style={stylesAuth.title}>Start your mining journey now</Text>
 
       <View style={stylesAuth.form}>
