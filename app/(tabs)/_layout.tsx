@@ -1,5 +1,5 @@
-import { Image, Text } from "react-native";
-import React from "react";
+import { Image, Keyboard, Text } from "react-native";
+import React, { useEffect, useState } from "react";
 import { Tabs } from "expo-router";
 import { tabStyles } from "./styles/StylesTab";
 
@@ -12,8 +12,28 @@ const tabs = [
 ];
 
 export default function TabLayout() {
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+useEffect(() => {
+  const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
+    setKeyboardVisible(true);
+  });
+  const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
+    setKeyboardVisible(false);
+  });
+
+  return () => {
+    showSubscription.remove();
+    hideSubscription.remove();
+  };
+}, []);
   return (
-    <Tabs screenOptions={{ headerShown: false, tabBarStyle: tabStyles.tabBar }}>
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        tabBarStyle: isKeyboardVisible ? { display: "none" } : tabStyles.tabBar,
+      }}
+    >
       {tabs.map(({ name, icon }) => (
         <Tabs.Screen
           key={name}
@@ -27,7 +47,9 @@ export default function TabLayout() {
             tabBarIcon: ({ focused }) => (
               <Image
                 source={icon}
-                style={focused ? tabStyles.iconFocused : tabStyles.iconUnfocused}
+                style={
+                  focused ? tabStyles.iconFocused : tabStyles.iconUnfocused
+                }
               />
             ),
           }}

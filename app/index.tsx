@@ -1,9 +1,7 @@
-import { Link } from "expo-router";
-import { Text, View } from "react-native";
-import Register from "./auth/Register";
+import Login from "./auth/Login";
 
 export default function Index() {
   return (
-      <Register/>
+      <Login/>
   );
 }

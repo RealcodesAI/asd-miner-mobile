@@ -30,7 +30,7 @@ export const stylesSetting = StyleSheet.create({
       },
       appTitle: {
         fontSize: 20,
-        fontWeight: "700",
+        fontWeight: "600",
         fontFamily: "Roboto",
         color: "#000",
         marginTop: 10,
