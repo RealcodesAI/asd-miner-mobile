@@ -71,6 +71,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       const response = await AsdApi.login(username, password);
       await AsyncStorage.setItem("jwt", response.jwt);
+      ToastAndroid.show("Login successfully", ToastAndroid.SHORT);
+      set({ username: "", password: "" });
       router.push("/(tabs)/Miner");
     } catch (err: any) {
       ToastAndroid.show(err.message, ToastAndroid.SHORT);

@@ -1,93 +1,95 @@
-import React from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
+import { stylesConfig } from "@/app/(tabs)/styles/StylesConfig";
+import { useMinerStore } from "@/lib/zustand/miner";
+import { Link } from "expo-router";
+import React, { useEffect } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ToastAndroid,
+} from "react-native";
 
 const MinerConfig = () => {
+  const {
+    walletAddress,
+    minerLicense,
+    minerName,
+    isConfigured,
+    setWalletAddress,
+    setMinerLicense,
+    setMinerName,
+    saveMinerConfig,
+    loadMinerConfig,
+  } = useMinerStore();
+
+  const shortenText = (text: string, startLength = 15, endLength = 15) => {
+    if (text.length > startLength + endLength) {
+      return `${text.slice(0, startLength)}...${text.slice(-endLength)}`;
+    }
+    return text;
+  };
+  useEffect(() => {
+    loadMinerConfig();
+  }, []);
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Configure your miner</Text>
-      <Text style={styles.note}>Note: you can only configure your miner once!</Text>
+    <View style={stylesConfig.containerConfig}>
+      <Text style={stylesConfig.title}>Configure your miner</Text>
+      <Text style={stylesConfig.note}>
+        Note: you can only configure your miner once!
+      </Text>
 
       {/* Wallet Address */}
-      <Text style={styles.label}>Wallet Address</Text>
-      <TextInput style={styles.input} />
-      <Text style={styles.hintText}>Your reward wallet address. Accept EVM wallet address</Text>
+      <Text style={stylesConfig.label}>Wallet Address</Text>
+      <TextInput
+        style={[stylesConfig.input, isConfigured && stylesConfig.disabledInput]}
+        value={isConfigured ? shortenText(walletAddress) : walletAddress}
+        onChangeText={setWalletAddress}
+        editable={!isConfigured}
+      />
+      <Text style={stylesConfig.hintText}>
+        Your reward wallet address. Accept EVM wallet address
+      </Text>
 
       {/* Miner Name */}
-      <Text style={styles.label}>Miner name</Text>
-      <TextInput style={styles.input} />
+      <Text style={stylesConfig.label}>Miner name</Text>
+      <TextInput
+        style={stylesConfig.input}
+        value={minerName}
+        onChangeText={setMinerName}
+      />
 
       {/* Miner License */}
-      <Text style={styles.label}>Miner license</Text>
-      <TextInput style={styles.input} />
-      <Text style={styles.hintText}>
-        Do not have a license yet? <Text style={styles.linkText}>Get you one here.</Text>
+      <Text style={stylesConfig.label}>Miner license</Text>
+      <TextInput
+        style={[stylesConfig.input, isConfigured && stylesConfig.disabledInput]}
+        value={isConfigured ? shortenText(minerLicense) : minerLicense}
+        onChangeText={setMinerLicense}
+        editable={!isConfigured}
+      />
+      <Text style={stylesConfig.hintText}>
+        Do not have a license yet?{" "}
+        <Link
+          href="https://asd-landing-page.pages.dev/#"
+          style={stylesConfig.linkText}
+        >
+          Get you one here.
+        </Link>
       </Text>
 
       {/* Button */}
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Save</Text>
+      <TouchableOpacity
+        style={[
+          stylesConfig.button,
+          isConfigured && stylesConfig.disabledButton,
+        ]}
+        onPress={saveMinerConfig}
+        disabled={isConfigured}
+      >
+        <Text style={stylesConfig.buttonText}>Save</Text>
       </TouchableOpacity>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    justifyContent: "center",
-  },
-  title: {
-    color: "#FFF",
-    fontSize: 16,
-    fontWeight: 700,
-    marginBottom: 5,
-    fontFamily: "Roboto",
-  },
-  note: {
-    color: "#AAA",
-    fontSize: 12,
-    fontWeight: "400",
-    marginBottom: 20,
-  },
-  label: {
-    color: "#FFF",
-    fontSize: 14,
-    fontWeight: "500",
-    marginBottom: 5,
-    marginTop:5
-  },
-  input: {
-    backgroundColor: "#3D3C3C",
-    color: "#FFF",
-    borderRadius: 14,
-    height: 56,
-    paddingHorizontal: 15,
-    marginBottom: 10,
-  },
-  hintText: {
-    color: "green",
-    fontSize: 12,
-    marginBottom: 5,
-    fontWeight: "400",
-    fontFamily: 'Source Sans Pro'
-  },
-  linkText: {
-    textDecorationLine: "underline",
-  },
-  button: {
-    backgroundColor: "#FFD335",
-    height: 56,
-    borderRadius: 12,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 70,
-  },
-  buttonText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#000",
-    fontFamily: "Roboto",
-  },
-});
 
 export default MinerConfig;

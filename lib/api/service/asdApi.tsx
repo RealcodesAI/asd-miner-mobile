@@ -29,5 +29,11 @@ export const AsdApi = {
         return await axiosClient.post('licenses/buy', {
             hash
         })
+    },
+    minerConfig: async (license: string, name: string) => {
+        return await axiosClient.post('miners', {
+            license,
+            name
+        })
     }
 }
