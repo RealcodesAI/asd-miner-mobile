@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, Text, ScrollView, Image } from "react-native";
+import {View, Text, ScrollView, Image, TextStyle} from "react-native";
 import Header from "@/components/Header/Header";
 import { stylesMiner } from "@/app/(tabs)/styles/StylesMiner";
 import MiningControls from "@/components/Miner/MiningControls";
@@ -161,7 +161,7 @@ const Miner = () => {
     <ScrollView style={stylesMiner.container}>
       <Header title="Miner" />
 
-      <Text style={stylesMiner.balance}>100.123 ASD</Text>
+      <Text style={stylesMiner.balance as TextStyle}>100.123 ASD</Text>
       <Image
         source={require("@/assets/images/Frame.png")}
         style={stylesMiner.image}
@@ -174,7 +174,7 @@ const Miner = () => {
       <View style={stylesMiner.Container}>
         <View style={stylesMiner.sliderContainer}>
           <MiningProgress miningPower={miningPower} />
-          <Text style={stylesMiner.hashRate}>
+          <Text style={stylesMiner.hashRate as TextStyle}>
             Mining block... hash rate: 110000 H/S
           </Text>
           <MiningLog miningLog={miningLog} />

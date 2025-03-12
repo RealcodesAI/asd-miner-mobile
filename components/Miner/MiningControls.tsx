@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { TouchableOpacity, Text, ToastAndroid } from "react-native";
+import {TouchableOpacity, Text, ToastAndroid, TextStyle} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { stylesMiner } from "@/app/(tabs)/styles/StylesMiner";
 
@@ -38,7 +38,7 @@ const MiningControls = ({ isMining, toggleMining }) => {
       ]}
       onPress={handlePress}
     >
-      <Text style={stylesMiner.startButtonText}>
+      <Text style={stylesMiner.startButtonText as TextStyle}>
         {isMining ? "Stop mining" : "Start mining"}
       </Text>
     </TouchableOpacity>
