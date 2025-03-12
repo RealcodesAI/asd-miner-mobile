@@ -13,6 +13,8 @@ const Miner = () => {
   const [isMining, setIsMining] = useState(false);
   const [miningLog, setMiningLog] = useState("");
   const [showReward, setShowReward] = useState(false);
+  const [isCompleted, setIsCompleted] = useState(false); // Thêm biến này
+
   const animationRef = useRef<number | null>(null);
   const logIntervalRef = useRef<number | null>(null);
   const isPaused = useRef(false);
@@ -60,24 +62,24 @@ const Miner = () => {
     }
   };
 
-  // Xử lý gọi API khi bắt đầu hoặc dừng mining
+  // Gọi API mỗi 20s khi mining
   useEffect(() => {
     if (isMining) {
       pingMinerAPI();
       apiIntervalRef.current = setInterval(() => {
         pingMinerAPI();
       }, 20000);
-
-      return () => {
-        if (apiIntervalRef.current) {
-          clearInterval(apiIntervalRef.current);
-          apiIntervalRef.current = null;
-        }
-      };
     }
+
+    return () => {
+      if (apiIntervalRef.current) {
+        clearInterval(apiIntervalRef.current);
+        apiIntervalRef.current = null;
+      }
+    };
   }, [isMining]);
 
-  // Dọn dẹp interval khi component unmount
+  // Cleanup khi unmount
   useEffect(() => {
     return () => {
       if (animationRef.current) clearInterval(animationRef.current);
@@ -86,9 +88,9 @@ const Miner = () => {
     };
   }, []);
 
-  // Xử lý log mining trong quá trình mining
+  // Xử lý log mining
   useEffect(() => {
-    if (isMining) {
+    if (isMining && !isCompleted) { // Chỉ random khi chưa đạt 100%
       setMiningLog(miningLogs[0]);
 
       logIntervalRef.current = setInterval(() => {
@@ -96,25 +98,24 @@ const Miner = () => {
           const randomLog =
             miningLogs[Math.floor(Math.random() * miningLogs.length)];
           setMiningLog(randomLog);
-        } else {
-          setMiningLog("");
         }
       }, 2000);
-
-      return () => {
-        if (logIntervalRef.current) {
-          clearInterval(logIntervalRef.current);
-          logIntervalRef.current = null;
-        }
-      };
     }
-  }, [isMining]);
+
+    return () => {
+      if (logIntervalRef.current) {
+        clearInterval(logIntervalRef.current);
+        logIntervalRef.current = null;
+      }
+    };
+  }, [isMining, isCompleted]);
 
   // Xử lý hiệu ứng thanh mining progress
   useEffect(() => {
     if (isMining) {
       setMiningPower(0);
       setShowReward(false);
+      setIsCompleted(false); // Reset trạng thái khi bắt đầu mining
       isPaused.current = false;
       logIndexRef.current = 0;
       setMiningLog(miningLogs[0]);
@@ -127,14 +128,17 @@ const Miner = () => {
             if (newValue >= 100) {
               isPaused.current = true;
               setShowReward(true);
-              setMiningLog("");
+              setIsCompleted(true); // Đánh dấu đã đạt 100%
+
+              // Không setMiningLog("") để giữ nguyên log cuối cùng
 
               setTimeout(() => {
                 isPaused.current = false;
                 setShowReward(false);
                 setMiningPower(0);
                 logIndexRef.current = 0;
-                setMiningLog(miningLogs[0]);
+                setIsCompleted(false); // Reset khi bắt đầu lại
+                setMiningLog(miningLogs[0]); // Reset log về log đầu tiên
               }, 3000);
 
               return 100;
@@ -147,10 +151,11 @@ const Miner = () => {
       if (animationRef.current) clearInterval(animationRef.current);
       if (logIntervalRef.current) clearInterval(logIntervalRef.current);
       if (apiIntervalRef.current) clearInterval(apiIntervalRef.current);
-      setMiningLog("");
       setShowReward(false);
+      setIsCompleted(false); // Reset nếu mining bị dừng
     }
   }, [isMining]);
+
 
   return (
     <ScrollView style={stylesMiner.container}>
