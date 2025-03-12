@@ -58,7 +58,7 @@ export const stylesConfig = StyleSheet.create({
         borderRadius: 12,
         justifyContent: "center",
         alignItems: "center",
-        marginTop: 70,
+        marginTop: 20,
       },
       disabledButton: {
         backgroundColor: "#FFE680",

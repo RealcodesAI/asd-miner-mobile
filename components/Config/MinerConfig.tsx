@@ -7,7 +7,6 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  ToastAndroid,
 } from "react-native";
 
 const MinerConfig = () => {
@@ -15,10 +14,12 @@ const MinerConfig = () => {
     walletAddress,
     minerLicense,
     minerName,
+    nameLicense,
     isConfigured,
     setWalletAddress,
     setMinerLicense,
     setMinerName,
+    setNameLicense,
     saveMinerConfig,
     loadMinerConfig,
   } = useMinerStore();
@@ -57,6 +58,13 @@ const MinerConfig = () => {
         style={stylesConfig.input}
         value={minerName}
         onChangeText={setMinerName}
+      />
+
+      <Text style={stylesConfig.label}>Name license</Text>
+      <TextInput
+        style={stylesConfig.input}
+        value={nameLicense}
+        onChangeText={setNameLicense}
       />
 
       {/* Miner License */}

@@ -1,34 +1,22 @@
 import { axiosClient } from "../config/axiosClient"
 
 export const AsdApi = {
-    register: async (username: string, password: string): Promise<any> => {
-        return await axiosClient.post('auth/register', {
-            username,
-            password
-        })
-    },
     login: async (username: string, password: string): Promise<any> => {
-        return await axiosClient.post('auth/login', {
+        return await axiosClient.post('user/login', {
             username,
             password
         })
     },
-    getMe: async () => {
-        return await axiosClient.get('auth/me')
+    getMe: async (): Promise<any> => {
+        return await axiosClient.get('user/me')
     },
-    connetWallte: async (message: string, signature: string): Promise<any> => {
-        return await axiosClient.post('auth/connect-wallet', {
-            message,
-            signature
+    updateWallte: async (walletAddress: string): Promise<any> => {
+        return await axiosClient.post('user/update-wallet', {
+            walletAddress
         })
     },
     getLicenses: async () => {
-        return await axiosClient.get('licenses/me')
-    },
-    licensesBuy: async (hash: string): Promise<any> => {
-        return await axiosClient.post('licenses/buy', {
-            hash
-        })
+        return await axiosClient.get('miners')
     },
     minerConfig: async (license: string, name: string) => {
         return await axiosClient.post('miners', {

@@ -1,11 +1,14 @@
-import { View, Text, StatusBar, Image, ScrollView } from "react-native";
-import React from "react";
-import { useAuthStore } from "@/lib/zustand/auth";
-import MenuItem from "@/components/Setting/MenuItem";
+import { View, Text, StatusBar, Image } from "react-native";
+import React, { useEffect } from "react";
 import { stylesSetting } from "./styles/StylesSetting";
+import { getUserStore } from "@/lib/zustand/getUser";
+import SettingOverlay from "@/components/Setting/SettingOverlay";
 
 const Settings = () => {
-  const { fetchLogout } = useAuthStore();
+  const {user,getMe } = getUserStore()
+  useEffect(() => {
+    getMe()
+  },[])
 
   return (
     <View style={stylesSetting.container}>
@@ -19,50 +22,12 @@ const Settings = () => {
             source={require("../../assets/images/avatar/image 173.png")}
             style={stylesSetting.avatar}
           />
-          <Text style={stylesSetting.appTitle}>Dogecoin Miner</Text>
+          <Text style={stylesSetting.appTitle}>{user?.ct360UserName}</Text>
         </View>
       </View>
 
       {/* ScrollView nổi lên trên nền vàng */}
-      <ScrollView style={stylesSetting.overlay}>
-        {/* Information Section */}
-        <View style={stylesSetting.section}>
-          <MenuItem
-            title="Version"
-            description="1.0.0"
-            image={require("../../assets/icon/exclamation-circle.png")}
-          />
-          <MenuItem
-            title="Rate the app 5 stars"
-            image={require("../../assets/icon/star.png")}
-          />
-          <MenuItem
-            title="Terms and conditions"
-            image={require("../../assets/icon/shield-check.png")}
-          />
-          <MenuItem
-            title="Contact Us"
-            image={require("../../assets/icon/mail.png")}
-          />
-        </View>
-
-        {/* Studio Section */}
-        <View style={stylesSetting.section}>
-          <Text style={stylesSetting.textSection}>Studio</Text>
-          <View style={stylesSetting.menuItem}>
-            <Image
-              source={require("../../assets/icon/newspaper.png")}
-              style={stylesSetting.icon}
-            />
-            <View style={stylesSetting.menuTextContainer}>
-              <Text style={stylesSetting.menuTitle}>Your developer name</Text>
-              <Text style={stylesSetting.menuDescription}>
-                Android App Specialist
-              </Text>
-            </View>
-          </View>
-        </View>
-      </ScrollView>
+      <SettingOverlay/>
     </View>
   );
 };

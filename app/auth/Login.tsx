@@ -84,15 +84,12 @@ const Login = () => {
             <Text style={{ color: "red" }}>{passwordError}</Text>
           )}
         </View>
-        <TouchableOpacity onPress={() => router.push("/auth/ResetPassword")}>
-          <Text style={{ color: "white", fontSize: 10 , marginLeft: '65%'}}>Forgot Password?</Text>
-        </TouchableOpacity>
         <Button title={"Login"} onPress={fetchLogin} />
       </View>
 
-      <TouchableOpacity onPress={() => router.push("/auth/Register")}>
+      <TouchableOpacity onPress={() => router.push("https://ct360.io/Members/Register?ref=undefined")}>
         <Text style={stylesAuth.registerText}>
-          Don't have an account? Register
+        Login with ct360 account
         </Text>
       </TouchableOpacity>
     </ScrollView>
