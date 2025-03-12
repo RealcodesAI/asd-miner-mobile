@@ -1,16 +1,48 @@
-import React from 'react';
-import { TouchableOpacity, Text } from 'react-native';
-import { stylesMiner } from '@/app/(tabs)/styles/StylesMiner';
+import React, { useState, useEffect } from "react";
+import { TouchableOpacity, Text, ToastAndroid } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { stylesMiner } from "@/app/(tabs)/styles/StylesMiner";
 
-const MiningControls = ({ isMining, toggleMining }) => (
-  <TouchableOpacity
-    style={[stylesMiner.startButton, isMining && stylesMiner.stopButton]}
-    onPress={toggleMining}
-  >
-    <Text style={stylesMiner.startButtonText}>
-      {isMining ? "Stop mining" : "Start mining"}
-    </Text>
-  </TouchableOpacity>
-);
+const MiningControls = ({ isMining, toggleMining }) => {
+  const [minerLicense, setMinerLicense] = useState(null);
+
+  useEffect(() => {
+    const getMinerLicense = async () => {
+      try {
+        const storedData = await AsyncStorage.getItem("minerConfig");
+        if (storedData) {
+          const parsedData = JSON.parse(storedData);
+          setMinerLicense(parsedData.minerLicense);
+        }
+      } catch (error) {
+        console.error("Lỗi khi lấy minerLicense:", error);
+      }
+    };
+
+    getMinerLicense();
+  }, []);
+
+  const handlePress = () => {
+    if (minerLicense) {
+      toggleMining();
+    } else {
+      ToastAndroid.show("Please configure minerLicense first!", ToastAndroid.SHORT);
+    }
+  };
+
+  return (
+    <TouchableOpacity
+      style={[
+        stylesMiner.startButton,
+        isMining && stylesMiner.stopButton,
+      ]}
+      onPress={handlePress}
+    >
+      <Text style={stylesMiner.startButtonText}>
+        {isMining ? "Stop mining" : "Start mining"}
+      </Text>
+    </TouchableOpacity>
+  );
+};
 
 export default MiningControls;
