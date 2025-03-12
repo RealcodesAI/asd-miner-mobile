@@ -88,18 +88,23 @@ const Miner = () => {
     };
   }, []);
 
-  // Xử lý log mining
+// Xử lý log mining
   useEffect(() => {
-    if (isMining && !isCompleted) { // Chỉ random khi chưa đạt 100%
-      setMiningLog(miningLogs[0]);
+    if (isMining && !isCompleted) {
+      setMiningLog(miningLogs[0]); // Bắt đầu với log đầu tiên
+      let currentLogIndex = 0;
 
       logIntervalRef.current = setInterval(() => {
         if (!isPaused.current) {
-          const randomLog =
-            miningLogs[Math.floor(Math.random() * miningLogs.length)];
-          setMiningLog(randomLog);
+          if (currentLogIndex < miningLogs.length - 1) {
+            currentLogIndex++; // Tăng chỉ số lên để lấy log tiếp theo
+            setMiningLog(miningLogs[currentLogIndex]);
+          } else {
+            clearInterval(logIntervalRef.current || 0); // Nếu hết log thì dừng lại
+            logIntervalRef.current = null;
+          }
         }
-      }, 2000);
+      }, 2800);
     }
 
     return () => {
