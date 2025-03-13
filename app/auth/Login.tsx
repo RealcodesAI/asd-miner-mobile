@@ -33,7 +33,7 @@ const Login = () => {
     >
       <Image source={require("../../assets/images/logoAsd.png")} />
       <Text style={stylesAuth.title}>Welcome to ASD miner {"\n"}</Text>
-      <Text style={stylesAuth.title}>Login to continue</Text>
+      <Text style={stylesAuth.title}>Login with ct360 account</Text>
 
       <View style={stylesAuth.form}>
         {/* User Name */}
@@ -42,7 +42,7 @@ const Login = () => {
           <View style={stylesAuth.inputContainer}>
             <TextInput
               style={stylesAuth.input}
-              placeholder="Enter your user id"
+              placeholder="Enter Username"
               placeholderTextColor="#676767"
               value={username}
               onChangeText={setUsername}
@@ -89,7 +89,7 @@ const Login = () => {
 
       <TouchableOpacity onPress={() => router.push("https://ct360.io/Members/Register?ref=undefined")}>
         <Text style={stylesAuth.registerText}>
-        Login with ct360 account
+        Register for a ct360 account
         </Text>
       </TouchableOpacity>
     </ScrollView>

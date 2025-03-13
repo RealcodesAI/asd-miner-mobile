@@ -1,37 +1,75 @@
 import { stylesConfig } from "@/app/(tabs)/styles/StylesConfig";
+import { getLicenseStore } from "@/lib/zustand/getLicense";
 import { useMinerStore } from "@/lib/zustand/miner";
 import { Link } from "expo-router";
 import React, { useEffect } from "react";
+import { Picker } from "@react-native-picker/picker";
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
+  ToastAndroid,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const MinerConfig = () => {
   const {
     walletAddress,
     minerLicense,
     minerName,
-    nameLicense,
     isConfigured,
     setWalletAddress,
     setMinerLicense,
     setMinerName,
-    setNameLicense,
     saveMinerConfig,
     loadMinerConfig,
   } = useMinerStore();
 
-  const shortenText = (text: string, startLength = 15, endLength = 15) => {
+  const { getLicense, getMinerMine, licenses, minerMine } = getLicenseStore();
+
+  const shortenText = (text: string, startLength = 6, endLength = 6) => {
     if (text.length > startLength + endLength) {
       return `${text.slice(0, startLength)}...${text.slice(-endLength)}`;
     }
     return text;
   };
+
+  const handleLicense = (itemValue: string) => {
+    setMinerLicense(itemValue);
+    const nameLicense = minerMine.find((miner) => miner.license === itemValue);
+    if (nameLicense) {
+      setMinerName(nameLicense.name);
+    } else {
+      setMinerName("");
+    }
+  };
+
+  const handleSave = async () => {
+    const selectedMiner = minerMine.find(
+      (miner) => miner.license === minerLicense
+    );
+    const minerId = selectedMiner?.id
+    if (minerLicense && minerName && minerId) {
+      const data = {
+        walletAddress,
+        minerLicense,
+        minerName,
+        minerId,
+        isConfigured: false,
+      };
+      await AsyncStorage.setItem("minerConfig", JSON.stringify(data));
+      console.log(data, "data");
+      ToastAndroid.show("Miner data saved locally!", ToastAndroid.SHORT);
+    } else {
+      saveMinerConfig();
+    }
+  };
+
   useEffect(() => {
     loadMinerConfig();
+    getLicense();
+    getMinerMine();
   }, []);
   return (
     <View style={stylesConfig.containerConfig}>
@@ -43,10 +81,10 @@ const MinerConfig = () => {
       {/* Wallet Address */}
       <Text style={stylesConfig.label}>Wallet Address</Text>
       <TextInput
-        style={[stylesConfig.input, isConfigured && stylesConfig.disabledInput]}
+        style={[stylesConfig.input]}
         value={isConfigured ? shortenText(walletAddress) : walletAddress}
         onChangeText={setWalletAddress}
-        editable={!isConfigured}
+        // editable={!isConfigured}
       />
       <Text style={stylesConfig.hintText}>
         Your reward wallet address. Accept EVM wallet address
@@ -60,21 +98,26 @@ const MinerConfig = () => {
         onChangeText={setMinerName}
       />
 
-      <Text style={stylesConfig.label}>Name license</Text>
-      <TextInput
-        style={stylesConfig.input}
-        value={nameLicense}
-        onChangeText={setNameLicense}
-      />
-
       {/* Miner License */}
       <Text style={stylesConfig.label}>Miner license</Text>
-      <TextInput
-        style={[stylesConfig.input, isConfigured && stylesConfig.disabledInput]}
-        value={isConfigured ? shortenText(minerLicense) : minerLicense}
-        onChangeText={setMinerLicense}
-        editable={!isConfigured}
-      />
+      <View style={[stylesConfig.input, { overflow: "hidden" }]}>
+        <Picker
+          selectedValue={minerLicense}
+          onValueChange={handleLicense}
+          style={{ color: "#FFF", backgroundColor: "transparent" }}
+          //  mode="dropdown"
+        >
+          <Picker.Item label="Select a license" value="" />
+          {licenses?.map((license, index) => (
+            <Picker.Item
+              key={index}
+              label={license.licenseKey}
+              value={license.licenseKey}
+            />
+          ))}
+        </Picker>
+      </View>
+
       <Text style={stylesConfig.hintText}>
         Do not have a license yet?{" "}
         <Link
@@ -86,14 +129,7 @@ const MinerConfig = () => {
       </Text>
 
       {/* Button */}
-      <TouchableOpacity
-        style={[
-          stylesConfig.button,
-          isConfigured && stylesConfig.disabledButton,
-        ]}
-        onPress={saveMinerConfig}
-        disabled={isConfigured}
-      >
+      <TouchableOpacity style={[stylesConfig.button]} onPress={handleSave}>
         <Text style={stylesConfig.buttonText}>Save</Text>
       </TouchableOpacity>
     </View>
