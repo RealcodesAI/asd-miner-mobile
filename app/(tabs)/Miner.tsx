@@ -1,13 +1,15 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, {useState, useEffect, useRef} from "react";
 import {View, Text, ScrollView, Image, TextStyle} from "react-native";
 import Header from "@/components/Header/Header";
-import { stylesMiner } from "@/app/(tabs)/styles/StylesMiner";
+import {stylesMiner} from "@/app/(tabs)/styles/StylesMiner";
 import MiningControls from "@/components/Miner/MiningControls";
 import MiningProgress from "@/components/Miner/MiningProgress";
 import MiningLog from "@/components/Miner/MiningLog";
 import RewardDisplay from "@/components/Miner/RewardDisplay";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsdMiningRN from "asd-mining-rn";
 
+const miner = new AsdMiningRN('784f49cc5411df749e542ae938cb59e66bc0000019ce102474ee5fd82bc0dd30', 'https://be.asdscan.ai')
 const Miner = () => {
   const [miningPower, setMiningPower] = useState(0);
   const [isMining, setIsMining] = useState(false);
@@ -32,6 +34,16 @@ const Miner = () => {
     "Submitted block to network",
     "Block difficulty: 9218cc8ff8",
   ];
+
+  useEffect(() => {
+    miner.start(console.log)
+    setTimeout(() => {
+      miner.stop();
+      console.log('Mining stopped after 1 minute');
+    }, 10_000);
+  }, []);
+
+
 
   // Gọi API ping miner
   const pingMinerAPI = async () => {
@@ -164,7 +176,7 @@ const Miner = () => {
 
   return (
     <ScrollView style={stylesMiner.container}>
-      <Header title="Miner" />
+      <Header title="Miner"/>
 
       <Text style={stylesMiner.balance as TextStyle}>100.123 ASD</Text>
       <Image
@@ -178,12 +190,12 @@ const Miner = () => {
 
       <View style={stylesMiner.Container}>
         <View style={stylesMiner.sliderContainer}>
-          <MiningProgress miningPower={miningPower} />
+          <MiningProgress miningPower={miningPower}/>
           <Text style={stylesMiner.hashRate as TextStyle}>
             Mining block... hash rate: 110000 H/S
           </Text>
-          <MiningLog miningLog={miningLog} />
-          <RewardDisplay showReward={showReward} />
+          <MiningLog miningLog={miningLog}/>
+          <RewardDisplay showReward={showReward}/>
         </View>
       </View>
     </ScrollView>
