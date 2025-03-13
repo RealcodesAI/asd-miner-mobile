@@ -1,28 +1,16 @@
-import {View, Text, ToastAndroid} from "react-native";
-import React, {useEffect, useState} from "react";
+import {View, Text} from "react-native";
+import React, {useEffect} from "react";
 import { stylesHistory } from "@/app/(tabs)/styles/StylesHistory";
-import {AsdApi} from "@/lib/api/service/asdApi";
 import {getUserStore} from "@/lib/zustand/getUser";
+import {useMinerReward} from "@/hooks/useMinerReward";
 
 const MinerHistory = () => {
-  const [reward, setReward] = useState(0);
-  useEffect(() => {
-    const response = async () => {
-      try {
-        const response = await AsdApi.getMiner(5);
-        setReward(Number((response.reward).toFixed(4)));
-      } catch (error: any) {
-        ToastAndroid.show(`Failed to fetch rewards: ${error.message}`, ToastAndroid.SHORT);
-        console.error("Failed to fetch rewards:", error);
-      }
-    }
-    response();
-  }, []);
+  const reward = useMinerReward();
+  const { user, getMe } = getUserStore();
 
-  const {user,getMe } = getUserStore()
   useEffect(() => {
-    getMe()
-  },[])
+    getMe();
+  }, []);
   return (
     <View style={stylesHistory.minerHistory}>
       <Text style={stylesHistory.minerTitle}>Miner History</Text>
@@ -32,7 +20,7 @@ const MinerHistory = () => {
             Current Reward: {reward} ASD
           </Text>
           <Text style={stylesHistory.nextReward}>
-            {user?.rewardThreshold - reward > 0
+            {user?.rewardThreshold && user?.rewardThreshold - reward > 0
               ? `${(user?.rewardThreshold - reward).toFixed(4)} more to next withdraw`
               : "You can withdraw now"}
             </Text>

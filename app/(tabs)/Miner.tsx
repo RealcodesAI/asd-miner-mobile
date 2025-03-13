@@ -7,6 +7,7 @@ import MiningProgress from "@/components/Miner/MiningProgress";
 import MiningLog from "@/components/Miner/MiningLog";
 import RewardDisplay from "@/components/Miner/RewardDisplay";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {useMinerReward} from "@/hooks/useMinerReward";
 
 const Miner = () => {
   const [miningPower, setMiningPower] = useState(0);
@@ -20,6 +21,7 @@ const Miner = () => {
   const isPaused = useRef(false);
   const logIndexRef = useRef(0);
   const apiIntervalRef = useRef<any | null>(null);
+  const reward = useMinerReward();
 
   const miningLogs = [
     "Header-hash:0fea9218cc8ff8775d1b3f9608bcfb0885f809df2f8b97af14fe2acfa488",
@@ -166,7 +168,7 @@ const Miner = () => {
     <ScrollView style={stylesMiner.container}>
       <Header title="Miner" />
 
-      <Text style={stylesMiner.balance as TextStyle}>100.123 ASD</Text>
+      <Text style={stylesMiner.balance as TextStyle}>{(reward).toFixed(4)} ASD</Text>
       <Image
         source={require("@/assets/images/Frame.png")}
         style={stylesMiner.image}
