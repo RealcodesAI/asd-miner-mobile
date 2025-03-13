@@ -1,15 +1,17 @@
 import { stylesWithdraw } from "@/app/(tabs)/styles/StylesWithdraw";
 import React from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions } from "react-native";
+import {useMinerReward} from "@/hooks/useMinerReward";
 
 const WithdrawScreen = () => {
+  const reward = useMinerReward();
   return (
     <View style={{marginHorizontal: 20}}>
       <Text style={stylesWithdraw.withdrawText}>Withdraw your reward</Text>
       
       <View style={{justifyContent: 'center', alignItems: 'center'}}>
         <Text style={stylesWithdraw.withdrawLabel}>Current Reward</Text>
-        <Text style={stylesWithdraw.withdrawValue}>100.123 ASD</Text>
+        <Text style={stylesWithdraw.withdrawValue}>{(reward).toFixed(4)} ASD</Text>
       </View>
 
       <View style={stylesWithdraw.withdrawSection}>

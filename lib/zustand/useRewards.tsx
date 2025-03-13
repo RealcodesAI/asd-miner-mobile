@@ -11,7 +11,7 @@ interface RewardsState {
     limit: number;
   } | null;
   isLoading: boolean;
-  fetchRewards: (params?: any, id?: number) => Promise<void>;
+  fetchRewards: (params?: any, id?: any) => Promise<void>;
 }
 
 export const useRewards = create<RewardsState>((set) => ({

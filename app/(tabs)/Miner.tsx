@@ -7,7 +7,9 @@ import MiningProgress from "@/components/Miner/MiningProgress";
 import MiningLog from "@/components/Miner/MiningLog";
 import RewardDisplay from "@/components/Miner/RewardDisplay";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import AsdMiningRN from "asd-mining-rn";
+import AsdMiningRN from "asd-mining-rn"
+import {useMinerReward} from "@/hooks/useMinerReward";
+
 
 const miner = new AsdMiningRN('784f49cc5411df749e542ae938cb59e66bc0000019ce102474ee5fd82bc0dd30', 'https://be.asdscan.ai')
 const Miner = () => {
@@ -17,11 +19,12 @@ const Miner = () => {
   const [showReward, setShowReward] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false); // Thêm biến này
 
-  const animationRef = useRef<number | null>(null);
-  const logIntervalRef = useRef<number | null>(null);
+  const animationRef = useRef<any | null>(null);
+  const logIntervalRef = useRef<any | null>(null);
   const isPaused = useRef(false);
   const logIndexRef = useRef(0);
   const apiIntervalRef = useRef<any | null>(null);
+  const reward = useMinerReward();
 
   const miningLogs = [
     "Header-hash:0fea9218cc8ff8775d1b3f9608bcfb0885f809df2f8b97af14fe2acfa488",
@@ -178,7 +181,7 @@ const Miner = () => {
     <ScrollView style={stylesMiner.container}>
       <Header title="Miner"/>
 
-      <Text style={stylesMiner.balance as TextStyle}>100.123 ASD</Text>
+      <Text style={stylesMiner.balance as TextStyle}>{(reward).toFixed(4)} ASD</Text>
       <Image
         source={require("@/assets/images/Frame.png")}
         style={stylesMiner.image}
