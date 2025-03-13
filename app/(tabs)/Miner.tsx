@@ -11,7 +11,7 @@ import AsdMiningRN from "asd-mining-rn"
 import {useMinerReward} from "@/hooks/useMinerReward";
 
 
-const miner = new AsdMiningRN('784f49cc5411df749e542ae938cb59e66bc0000019ce102474ee5fd82bc0dd30', 'https://be.asdscan.ai')
+// const miner = new AsdMiningRN('784f49cc5411df749e542ae938cb59e66bc0000019ce102474ee5fd82bc0dd30', 'https://be.asdscan.ai')
 const Miner = () => {
   const [miningPower, setMiningPower] = useState(0);
   const [isMining, setIsMining] = useState(false);
@@ -23,8 +23,8 @@ const Miner = () => {
   const logIntervalRef = useRef<any | null>(null);
   const isPaused = useRef(false);
   const logIndexRef = useRef(0);
-  const apiIntervalRef = useRef<any | null>(null);
   const reward = useMinerReward();
+  const [minerInstance, setMinerInstance] = useState<AsdMiningRN | null>(null); // Thêm state để lưu miner instance
 
   const miningLogs = [
     "Header-hash:0fea9218cc8ff8775d1b3f9608bcfb0885f809df2f8b97af14fe2acfa488",
@@ -38,18 +38,18 @@ const Miner = () => {
     "Block difficulty: 9218cc8ff8",
   ];
 
-  useEffect(() => {
-    miner.start(console.log)
-    setTimeout(() => {
-      miner.stop();
-      console.log('Mining stopped after 1 minute');
-    }, 10_000);
-  }, []);
+  // useEffect(() => {
+  //   miner.calculateHashRate(5000).then(console.log)
+  //   miner.start(console.log)
+  //   setTimeout(() => {
+  //     miner.stop();
+  //     console.log('Mining stopped after 1 minute');
+  //   }, 60000);
+  // }, []);
+  // Hàm khởi tạo miner
+  const initializeMiner = async () => {
+    if (minerInstance) return; // Nếu đã có instance thì không tạo lại
 
-
-
-  // Gọi API ping miner
-  const pingMinerAPI = async () => {
     try {
       const storedData = await AsyncStorage.getItem("minerConfig");
       let minerLicense = null;
@@ -64,42 +64,42 @@ const Miner = () => {
         return;
       }
 
-      console.log("🔗 Miner License:", minerLicense);
-
-      const response = await fetch(
-        `https://miner.asdscan.ai/ping/${minerLicense}`
-      );
-      const data = await response.json();
-
-      console.log("🔄 Ping API thành công:", data);
+      const miner = new AsdMiningRN(minerLicense, "https://be.asdscan.ai");
+      setMinerInstance(miner);
     } catch (error) {
-      console.error("❌ Lỗi khi gọi API:", error);
+      console.error("Lỗi khi khởi tạo miner:", error);
     }
   };
 
-  // Gọi API mỗi 20s khi mining
+
+  // Gọi miner.start() khi bắt đầu mining, miner.stop() khi dừng
   useEffect(() => {
-    if (isMining) {
-      pingMinerAPI();
-      apiIntervalRef.current = setInterval(() => {
-        pingMinerAPI();
-      }, 20000);
+    if (minerInstance) {
+      if (isMining) {
+        minerInstance.start(console.log)
+
+      } else {
+        minerInstance.stop();
+      }
     }
+  }, [isMining, minerInstance]);
+  console.log(reward)
+  // Gọi initializeMiner khi component mount
+  useEffect(() => {
+    initializeMiner();
 
     return () => {
-      if (apiIntervalRef.current) {
-        clearInterval(apiIntervalRef.current);
-        apiIntervalRef.current = null;
+      if (minerInstance) {
+        minerInstance.stop(); // Dừng miner khi unmount
       }
     };
-  }, [isMining]);
+  }, []);
 
   // Cleanup khi unmount
   useEffect(() => {
     return () => {
       if (animationRef.current) clearInterval(animationRef.current);
       if (logIntervalRef.current) clearInterval(logIntervalRef.current);
-      if (apiIntervalRef.current) clearInterval(apiIntervalRef.current);
     };
   }, []);
 
@@ -170,7 +170,6 @@ const Miner = () => {
     } else {
       if (animationRef.current) clearInterval(animationRef.current);
       if (logIntervalRef.current) clearInterval(logIntervalRef.current);
-      if (apiIntervalRef.current) clearInterval(apiIntervalRef.current);
       setShowReward(false);
       setIsCompleted(false); // Reset nếu mining bị dừng
     }
