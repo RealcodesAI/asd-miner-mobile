@@ -15,8 +15,8 @@ const Miner = () => {
   const [showReward, setShowReward] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false); // Thêm biến này
 
-  const animationRef = useRef<number | null>(null);
-  const logIntervalRef = useRef<number | null>(null);
+  const animationRef = useRef<any | null>(null);
+  const logIntervalRef = useRef<any | null>(null);
   const isPaused = useRef(false);
   const logIndexRef = useRef(0);
   const apiIntervalRef = useRef<any | null>(null);
