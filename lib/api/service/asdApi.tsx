@@ -23,5 +23,23 @@ export const AsdApi = {
             license,
             name
         })
+    },
+    // API Service function
+    withdrawHistories: async (params = {}): Promise<{
+        contents: any[];
+        total: number;
+        page: number;
+        limit: number;
+    }> => {
+        return await axiosClient.get("rewards/withdraw-histories", { params });
+    },
+    rewards: async (params = {}, id: number): Promise<{
+        contents: any[];
+        total: number;
+        page: number;
+        limit: number;
+    }> => {
+        return await axiosClient.get(`rewards/${id}`, { params });
     }
+
 }
