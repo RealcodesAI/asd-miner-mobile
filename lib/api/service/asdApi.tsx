@@ -1,4 +1,5 @@
 import { axiosClient } from "../config/axiosClient"
+import {Miner} from "@/types";
 
 export const AsdApi = {
     login: async (username: string, password: string): Promise<any> => {
@@ -24,7 +25,6 @@ export const AsdApi = {
             name
         })
     },
-    // API Service function
     withdrawHistories: async (params = {}): Promise<{
         contents: any[];
         total: number;
@@ -40,6 +40,9 @@ export const AsdApi = {
         limit: number;
     }> => {
         return await axiosClient.get(`rewards/${id}`, { params });
+    },
+    getMiner: async (id: number): Promise<Miner> => {
+        return await axiosClient.get(`miners/${id}`);
     }
 
 }
