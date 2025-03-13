@@ -1,5 +1,5 @@
-import { View, Text, Dimensions } from "react-native";
-import React, { useState } from "react";
+import {View, Text, Dimensions, ToastAndroid} from "react-native";
+import React, {useEffect, useState} from "react";
 import { LineChart } from "react-native-chart-kit";
 import { stylesHistory } from "@/app/(tabs)/styles/StylesHistory";
 import Svg, {
@@ -9,10 +9,24 @@ import Svg, {
   LinearGradient,
   Stop,
 } from "react-native-svg";
+import {AsdApi} from "@/lib/api/service/asdApi";
 
 const screenWidth = Dimensions.get("window").width;
 const chartHeight = 250;
 const ChartHistory = () => {
+  const [reward, setReward] = useState(0);
+  useEffect(() => {
+    const response = async () => {
+      try {
+        const response = await AsdApi.getMiner(5);
+        setReward(Number((response.reward).toFixed(4)));
+      } catch (error: any) {
+        ToastAndroid.show(`Failed to fetch rewards: ${error.message}`, ToastAndroid.SHORT);
+        console.error("Failed to fetch rewards:", error);
+      }
+    }
+    response();
+  }, []);
   const [tooltip, setTooltip] = useState<{
     x: number;
     y: number;
@@ -23,7 +37,7 @@ const ChartHistory = () => {
     <View>
       <View>
         <Text style={stylesHistory.chartLabel}>Current Reward</Text>
-        <Text style={stylesHistory.chartValue}>100.123 ASD</Text>
+        <Text style={stylesHistory.chartValue}>{(reward).toFixed(4)} ASD</Text>
       </View>
 
       <View style={{ position: "relative" }}>

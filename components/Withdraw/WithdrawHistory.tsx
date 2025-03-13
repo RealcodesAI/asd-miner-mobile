@@ -13,7 +13,6 @@ const WithdrawHistory = () => {
     fetchWithdrawHistories(params);
   }, []);
   if (isLoading) return <ActivityIndicator size="large" color="#0000ff" />;
-  console.log("Withdraw histories:", histories);
   return (
     <>
       <Text style={stylesWithdraw.historyTitle}>Mining history</Text>

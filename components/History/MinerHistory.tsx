@@ -11,7 +11,6 @@ const MinerHistory = () => {
       try {
         const response = await AsdApi.getMiner(5);
         setReward(Number((response.reward).toFixed(4)));
-        console.log(response.reward);
       } catch (error: any) {
         ToastAndroid.show(`Failed to fetch rewards: ${error.message}`, ToastAndroid.SHORT);
         console.error("Failed to fetch rewards:", error);
@@ -24,7 +23,6 @@ const MinerHistory = () => {
   useEffect(() => {
     getMe()
   },[])
-  console.log("user", user?.rewardThreshold)
   return (
     <View style={stylesHistory.minerHistory}>
       <Text style={stylesHistory.minerTitle}>Miner History</Text>
