@@ -11,6 +11,7 @@ interface MinerMine {
     id: number
     name: string
     license: string
+    hashRate: number | string
 }
 
 interface LicenseStore {
@@ -35,7 +36,7 @@ export const getLicenseStore = create<LicenseStore>((set) => ({
     },
     getMinerMine: async () => {
         try {
-            const response = await AsdApi.getMinersMine()
+            const response = await AsdApi.getMinersMine(100)
             // console.log(response.contents, "response")
             set({ minerMine: response.contents });
         } catch (error) {

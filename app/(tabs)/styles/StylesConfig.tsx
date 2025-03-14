@@ -102,6 +102,34 @@ export const stylesConfig = StyleSheet.create({
         marginBottom: 10,
         borderWidth: 1,
         borderColor: "#555",
-      }
-      
+      },
+      modalContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(0, 0, 0, 0.5)", // Mờ nền
+      },
+    
+      // Nội dung modal
+      modalContents: {
+        width: 300,
+        padding: 20,
+        backgroundColor: "#fff",
+        borderRadius: 10,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+      },
+    
+      // Text hiển thị trong modal
+      modalText: {
+        marginTop: 10,
+        fontSize: 16,
+        fontWeight: "bold",
+        textAlign: "center",
+        color: "#333",
+      },
 })
