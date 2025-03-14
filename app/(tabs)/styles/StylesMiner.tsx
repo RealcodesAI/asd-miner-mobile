@@ -38,12 +38,10 @@ export const stylesMiner = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     backgroundColor: '#242328',
-    paddingVertical: 50,
+    paddingVertical: 20,
     paddingHorizontal: 30,
-    paddingBottom: 40,
     position: 'relative',
     borderRadius: 14,
-    marginBottom: 100,
     justifyContent: 'center',
   },
   hashRate: {
@@ -98,22 +96,9 @@ export const stylesMiner = StyleSheet.create({
     borderRadius: 5,
     minHeight: 80,
   },
-  miningLogOuterContainer: {
-    width: '100%',
-    marginTop: 20,
-    height: 200, // Fixed height for the container
-    borderRadius: 5,
-  },
-  miningLogScrollContainer: {
-    flex: 1,
-    backgroundColor: '#1A1A1D',
-  },
-  miningLogContentContainer: {
-    padding: 10,
-  },
   miningLog: {
-    color: '#4CAF50', // Green color like terminal
-    fontFamily: 'monospace',
+    color: '#4CAF50', // Màu xanh lá như trong terminal
+    fontFamily:'monospace',
     fontSize: 14,
   },
   progressBarFillBase: {

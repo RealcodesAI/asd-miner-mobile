@@ -15,7 +15,7 @@ import {useMinerLicense} from "@/hooks/useMinerLicense";
 const Miner = () => {
   const [miningPower, setMiningPower] = useState(0);
   const [isMining, setIsMining] = useState(false);
-  const [miningLog, setMiningLog] = useState<string[]>([]);
+  const [miningLog, setMiningLog] = useState("");
   const [showReward, setShowReward] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false); // Thêm biến này
 
@@ -26,6 +26,17 @@ const Miner = () => {
   const reward = useMinerReward();
   const minerLicense = useMinerLicense();
   const minerRef = useRef<AsdMiningRN | null>(null); // Giữ một instance duy nhất
+
+
+  // useEffect(() => {
+  //   miner.calculateHashRate(5000).then(console.log)
+  //   miner.start(console.log)
+  //   setTimeout(() => {
+  //     miner.stop();
+  //     console.log('Mining stopped after 1 minute');
+  //   }, 60000);
+  // }, []);
+  // Hàm khởi tạo miner
 
   // Chỉ khởi tạo miner một lần
   useEffect(() => {
@@ -43,14 +54,14 @@ const Miner = () => {
     if (minerRef.current) {
       if (isMining) {
         minerRef.current.start((log: string) => {
-          setMiningLog((prevLogs) => [...prevLogs, log]); // Thêm log mới vào danh sách
-          console.log(log);
+          setMiningLog(log); // Chỉ lưu log cuối cùng
         });
       } else {
         minerRef.current.stop();
       }
     }
   }, [isMining]);
+
 
   useEffect(() => {
     return () => {
@@ -59,12 +70,16 @@ const Miner = () => {
     };
   }, []);
 
+
   // Xử lý hiệu ứng thanh mining progress
   useEffect(() => {
     if (isMining) {
       setMiningPower(0);
       setShowReward(false);
+      setIsCompleted(false); // Reset trạng thái khi bắt đầu mining
       isPaused.current = false;
+      logIndexRef.current = 0;
+
       animationRef.current = setInterval(() => {
         if (!isPaused.current) {
           setMiningPower((prev) => {
@@ -73,10 +88,16 @@ const Miner = () => {
             if (newValue >= 100) {
               isPaused.current = true;
               setShowReward(true);
-               isPaused.current = false;
+              setIsCompleted(true); // Đánh dấu đã đạt 100%
+
+              // Không setMiningLog("") để giữ nguyên log cuối cùng
+
+                isPaused.current = false;
                 setShowReward(false);
                 setMiningPower(0);
                 logIndexRef.current = 0;
+                setIsCompleted(false); // Reset khi bắt đầu lại
+
               return 100;
             }
             return newValue;
@@ -87,6 +108,7 @@ const Miner = () => {
       if (animationRef.current) clearInterval(animationRef.current);
       if (logIntervalRef.current) clearInterval(logIntervalRef.current);
       setShowReward(false);
+      setIsCompleted(false); // Reset nếu mining bị dừng
     }
   }, [isMining]);
 
