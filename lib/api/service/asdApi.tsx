@@ -1,6 +1,5 @@
 import { axiosClient } from "../config/axiosClient"
 import {Miner} from "@/types";
-import { axiosClient } from "../config/axiosClient";
 
 export const AsdApi = {
     login: async (username: string, password: string): Promise<any> => {
@@ -17,15 +16,19 @@ export const AsdApi = {
             walletAddress
         })
     },
-    getLicenses: async () => {
-        return await axiosClient.get('miners')
-    },
-    minerConfig: async (license: string, name: string) => {
-        return await axiosClient.post('miners', {
-            license,
-            name
-        })
-    },
+    getLicenses: async (limit: number): Promise<any> => {
+        return await axiosClient.get(`miners/licenses/mine?limit=${limit}`);
+      },
+    minerConfig: async (minerData: {
+        license: string;
+        name: string;
+        cpu: number;
+        memory: number;
+        device: string;
+        hashRate: number;
+      }): Promise<any>  => {
+        return await axiosClient.post("miners", minerData);
+      },
     withdrawHistories: async (params = {}): Promise<{
         contents: any[];
         total: number;
@@ -44,38 +47,13 @@ export const AsdApi = {
     },
     getMiner: async (id: number): Promise<Miner> => {
         return await axiosClient.get(`miners/${id}`);
+    },
+    getMinersMine: async (): Promise<any> => {
+        return await axiosClient.get("miners/mine");
+    },
+    updateNameLicense: async (name: string, id: string) => {
+        return await axiosClient.patch(`miners/${id}`, {
+            name
+        })
     }
-
-}
-  login: async (username: string, password: string): Promise<any> => {
-    return await axiosClient.post("user/login", {
-      username,
-      password,
-    });
-  },
-  getMe: async (): Promise<any> => {
-    return await axiosClient.get("user/me");
-  },
-  updateWallte: async (walletAddress: string): Promise<any> => {
-    return await axiosClient.post("user/update-wallet", {
-      walletAddress,
-    });
-  },
-  getLicenses: async (): Promise<any> => {
-    return await axiosClient.get("miners/licenses/mine");
-  },
-  minerConfig: async (minerData: {
-    license: string;
-    name: string;
-    cpu: number;
-    memory: number;
-    device: string;
-    hashRate: number;
-  }): Promise<any>  => {
-    return await axiosClient.post("miners", minerData);
-  },
-
-  getMinersMine: async (): Promise<any> => {
-    return await axiosClient.get("miners/mine");
-  }
 };

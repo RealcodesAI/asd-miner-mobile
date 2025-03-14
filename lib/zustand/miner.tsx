@@ -38,6 +38,8 @@ export const useMinerStore = create<MinerState>((set, get) => ({
     }
   
     try {
+      const storedConfig = await AsyncStorage.getItem("minerConfig");
+      console.log(storedConfig, "storedConfig")
       if (!minerLicense || !minerName) {
         await AsdApi.updateWallte(walletAddress);
         await AsyncStorage.setItem("minerConfig", JSON.stringify({ walletAddress }));
@@ -46,7 +48,6 @@ export const useMinerStore = create<MinerState>((set, get) => ({
         return;
       }
   
-      // Nếu có đủ license & name => Cấu hình miner
       const memory = Device.totalMemory ? Math.ceil(Device.totalMemory / (1024 * 1024 * 1024)) : 4;
       const data = {
         name: minerName,
@@ -56,13 +57,12 @@ export const useMinerStore = create<MinerState>((set, get) => ({
         device: "mobile",
         hashRate: 100,
       };
-  
       const response = await AsdApi.minerConfig(data);
-      console.log(response?.id, "id")
+      // console.log(response?.id, "id")
       const minerData = { walletAddress, minerLicense, minerName, isConfigured: true, id: response?.id };
       await AsyncStorage.setItem("minerConfig", JSON.stringify(minerData));
+      // console.log(minerData, "minerData")
       set({ isConfigured: true });
-  
       ToastAndroid.show("Miner configuration saved successfully!", ToastAndroid.SHORT);
     } catch (err: any) {
       console.error("Error saving miner config:", err);
@@ -75,7 +75,7 @@ export const useMinerStore = create<MinerState>((set, get) => ({
       const savedConfig = await AsyncStorage.getItem("minerConfig");
       if (savedConfig) {
         const parsedConfig = JSON.parse(savedConfig);
-        console.log("Loaded miner config:", parsedConfig);
+        // console.log("Loaded miner config:", parsedConfig);
         set(parsedConfig);
       }
     } catch (err) {

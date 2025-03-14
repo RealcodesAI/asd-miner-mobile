@@ -7,20 +7,20 @@ export const stylesSetting = StyleSheet.create({
       },
       header: {
         backgroundColor: "#FFD700",
-        paddingBottom: 60, 
+        paddingBottom: 50, 
       },
       headerText: {
         fontSize: 18,
         fontFamily: "Lato",
         fontWeight: "500",
         color: "#000",
-        marginBottom: 10,
-        marginTop: 25,
+        // marginBottom: 10,
+        marginTop: 20,
         marginHorizontal: 20
       },
       groupImage: {
         alignItems: "center",
-        marginTop: 25
+        marginTop: 20
       },
       avatar: {
         width: 92,
@@ -37,7 +37,7 @@ export const stylesSetting = StyleSheet.create({
       },
       overlay: {
         position: "absolute",
-        top: "36%",
+        top: "32%",
         left: 0,
         right: 0,
         paddingHorizontal: 20,
@@ -45,8 +45,8 @@ export const stylesSetting = StyleSheet.create({
       section: {
         backgroundColor: "#222",
         borderRadius: 20,
-        paddingVertical: 5,
-        marginBottom: 15,
+        paddingVertical: 3,
+        marginBottom: 10,
         elevation: 5, 
         shadowColor: "#fff", 
         shadowOffset: { width: 0, height: 2 },

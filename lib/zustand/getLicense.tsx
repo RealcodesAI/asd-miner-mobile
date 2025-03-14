@@ -25,7 +25,7 @@ export const getLicenseStore = create<LicenseStore>((set) => ({
 
     getLicense: async () => {
         try {
-            const response = await AsdApi.getLicenses()
+            const response = await AsdApi.getLicenses(100)
             // console.log(response.contents)
             // console.log(response.totalElements, "totalElements")
             set({ licenses: response.contents });

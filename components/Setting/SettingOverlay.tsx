@@ -3,8 +3,11 @@ import React from 'react'
 import { stylesSetting } from '@/app/(tabs)/styles/StylesSetting'
 import { ScrollView } from 'react-native';
 import MenuItem from './MenuItem';
+import Button from '../ButtonAuth/Button';
+import { useAuthStore } from '@/lib/zustand/auth';
 
 const SettingOverlay = () => {
+  const {fetchLogout} = useAuthStore()
     
   return (
     <ScrollView style={stylesSetting.overlay}>
@@ -45,6 +48,7 @@ const SettingOverlay = () => {
             </View>
           </View>
         </View>
+        <Button title='Logout' onPress={fetchLogout}/>
       </ScrollView>
   )
 }
