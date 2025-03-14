@@ -4,6 +4,17 @@ export const stylesHistory = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#000" },
 
   minerHistory: { marginTop: 0 },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  refreshButton: {
+    paddingHorizontal: 20,
+    fontSize: 20,
+    color: "#FFF",
+    marginBottom:'auto'
+  },
   minerTitle: {
     color: "#FFF",
     fontSize: 16,

@@ -2,6 +2,8 @@ import {View, Text, Image, ActivityIndicator, TouchableOpacity, StyleSheet} from
 import React, {useEffect, useState} from "react";
 import { stylesHistory } from "@/app/(tabs)/styles/StylesHistory";
 import {useRewards} from "@/lib/zustand/useRewards";
+// Import the refresh icon
+import { Ionicons } from '@expo/vector-icons';
 
 const MiningHistory = () => {
   const { rewards, isLoading, fetchRewards } = useRewards();
@@ -21,6 +23,12 @@ const MiningHistory = () => {
     fetchRewards(params, 5);
   };
 
+  const handleRefresh = () => {
+    // Reset to first page and reload data
+    setCurrentPage(0);
+    loadRewards();
+  };
+
   const handleNextPage = () => {
     if (totalPages && currentPage < totalPages - 1) {
       setCurrentPage(currentPage + 1);
@@ -37,7 +45,13 @@ const MiningHistory = () => {
 
   return (
     <>
-      <Text style={stylesHistory.historyTitle}>Mining history</Text>
+      <View style={stylesHistory.headerContainer}>
+        <Text style={stylesHistory.historyTitle}>Mining history</Text>
+        <TouchableOpacity onPress={handleRefresh} style={stylesHistory.refreshButton}>
+          <Ionicons name="refresh" size={24} color="#333" />
+        </TouchableOpacity>
+      </View>
+
       {rewards?.contents.map((item, index) => (
         <View key={index} style={stylesHistory.historyItem}>
           {/* Avatar */}
@@ -86,6 +100,5 @@ const MiningHistory = () => {
     </>
   );
 };
-
 
 export default MiningHistory;

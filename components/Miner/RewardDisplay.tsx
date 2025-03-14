@@ -2,7 +2,7 @@ import React from 'react';
 import {Text, TextStyle} from 'react-native';
 import { stylesMiner } from '@/app/(tabs)/styles/StylesMiner';
 
-const RewardDisplay = ({ showReward }) => (
+const RewardDisplay = ({ showReward } : any) => (
   showReward ? (
     <Text style={stylesMiner.rewardText as TextStyle}>
       Block mined reward: 0.123 ASD

@@ -1,21 +1,43 @@
-import {View, Text, Image, ActivityIndicator} from "react-native";
-import React, {useEffect} from "react";
+import {View, Text, Image, ActivityIndicator, TouchableOpacity} from "react-native";
+import React, {useEffect, useState} from "react";
 import { stylesWithdraw } from "@/app/(tabs)/styles/StylesWithdraw";
 import {useWithdrawHistories} from "@/lib/zustand/useWithdrawHistories";
+// Import the refresh icon
+import { Ionicons } from '@expo/vector-icons';
 
 const WithdrawHistory = () => {
   const { histories, isLoading, fetchWithdrawHistories } = useWithdrawHistories();
-  const params = {
-    page: 0,
-    limit: 10,
-  }
-  useEffect(() => {
+  const [page, setPage] = useState(0);
+  const limit = 10;
+
+  const loadHistories = () => {
+    const params = {
+      page: page,
+      limit: limit,
+    };
     fetchWithdrawHistories(params);
-  }, []);
+  };
+
+  useEffect(() => {
+    loadHistories();
+  }, [page]);
+
+  const handleRefresh = () => {
+    setPage(0);
+    loadHistories();
+  };
+
   if (isLoading) return <ActivityIndicator size="large" color="#0000ff" />;
+
   return (
     <>
-      <Text style={stylesWithdraw.historyTitle}>Mining history</Text>
+      <View style={stylesWithdraw.headerContainer}>
+        <Text style={stylesWithdraw.historyTitle}>Withdraw history</Text>
+        <TouchableOpacity onPress={handleRefresh} style={stylesWithdraw.refreshButton}>
+          <Ionicons name="refresh" size={24} color="#333" />
+        </TouchableOpacity>
+      </View>
+
       {histories?.contents.map((item, index) => (
         <View key={index} style={stylesWithdraw.historyItem}>
           {/* Avatar */}
