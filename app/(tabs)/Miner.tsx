@@ -1,13 +1,17 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, {useState, useEffect, useRef} from "react";
 import {View, Text, ScrollView, Image, TextStyle} from "react-native";
 import Header from "@/components/Header/Header";
-import { stylesMiner } from "@/app/(tabs)/styles/StylesMiner";
+import {stylesMiner} from "@/app/(tabs)/styles/StylesMiner";
 import MiningControls from "@/components/Miner/MiningControls";
 import MiningProgress from "@/components/Miner/MiningProgress";
 import MiningLog from "@/components/Miner/MiningLog";
 import RewardDisplay from "@/components/Miner/RewardDisplay";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsdMiningRN from "asd-mining-rn"
+import {useMinerReward} from "@/hooks/useMinerReward";
 
+
+const miner = new AsdMiningRN('784f49cc5411df749e542ae938cb59e66bc0000019ce102474ee5fd82bc0dd30', 'https://be.asdscan.ai')
 const Miner = () => {
   const [miningPower, setMiningPower] = useState(0);
   const [isMining, setIsMining] = useState(false);
@@ -15,11 +19,12 @@ const Miner = () => {
   const [showReward, setShowReward] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false); // Thêm biến này
 
-  const animationRef = useRef<number | null>(null);
-  const logIntervalRef = useRef<number | null>(null);
+  const animationRef = useRef<any | null>(null);
+  const logIntervalRef = useRef<any | null>(null);
   const isPaused = useRef(false);
   const logIndexRef = useRef(0);
   const apiIntervalRef = useRef<any | null>(null);
+  const reward = useMinerReward();
 
   const miningLogs = [
     "Header-hash:0fea9218cc8ff8775d1b3f9608bcfb0885f809df2f8b97af14fe2acfa488",
@@ -32,6 +37,16 @@ const Miner = () => {
     "Submitted block to network",
     "Block difficulty: 9218cc8ff8",
   ];
+
+  useEffect(() => {
+    miner.start(console.log)
+    setTimeout(() => {
+      miner.stop();
+      console.log('Mining stopped after 1 minute');
+    }, 10_000);
+  }, []);
+
+
 
   // Gọi API ping miner
   const pingMinerAPI = async () => {
@@ -88,18 +103,23 @@ const Miner = () => {
     };
   }, []);
 
-  // Xử lý log mining
+// Xử lý log mining
   useEffect(() => {
-    if (isMining && !isCompleted) { // Chỉ random khi chưa đạt 100%
-      setMiningLog(miningLogs[0]);
+    if (isMining && !isCompleted) {
+      setMiningLog(miningLogs[0]); // Bắt đầu với log đầu tiên
+      let currentLogIndex = 0;
 
       logIntervalRef.current = setInterval(() => {
         if (!isPaused.current) {
-          const randomLog =
-            miningLogs[Math.floor(Math.random() * miningLogs.length)];
-          setMiningLog(randomLog);
+          if (currentLogIndex < miningLogs.length - 1) {
+            currentLogIndex++; // Tăng chỉ số lên để lấy log tiếp theo
+            setMiningLog(miningLogs[currentLogIndex]);
+          } else {
+            clearInterval(logIntervalRef.current || 0); // Nếu hết log thì dừng lại
+            logIntervalRef.current = null;
+          }
         }
-      }, 2000);
+      }, 2800);
     }
 
     return () => {
@@ -159,9 +179,9 @@ const Miner = () => {
 
   return (
     <ScrollView style={stylesMiner.container}>
-      <Header title="Miner" />
+      <Header title="Miner"/>
 
-      <Text style={stylesMiner.balance as TextStyle}>100.123 ASD</Text>
+      <Text style={stylesMiner.balance as TextStyle}>{(reward).toFixed(4)} ASD</Text>
       <Image
         source={require("@/assets/images/Frame.png")}
         style={stylesMiner.image}
@@ -173,12 +193,12 @@ const Miner = () => {
 
       <View style={stylesMiner.Container}>
         <View style={stylesMiner.sliderContainer}>
-          <MiningProgress miningPower={miningPower} />
+          <MiningProgress miningPower={miningPower}/>
           <Text style={stylesMiner.hashRate as TextStyle}>
             Mining block... hash rate: 110000 H/S
           </Text>
-          <MiningLog miningLog={miningLog} />
-          <RewardDisplay showReward={showReward} />
+          <MiningLog miningLog={miningLog}/>
+          <RewardDisplay showReward={showReward}/>
         </View>
       </View>
     </ScrollView>

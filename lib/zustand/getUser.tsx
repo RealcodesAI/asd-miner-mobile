@@ -20,7 +20,6 @@ export const getUserStore = create<AuthState>((set) => ({
   getMe: async () => {
     try {
       const response = await AsdApi.getMe();
-      console.log(response)
       set({ user: response });
     } catch (error) {
       console.error("Error fetching user:", error);

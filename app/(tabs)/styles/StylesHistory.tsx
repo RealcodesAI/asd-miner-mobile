@@ -89,4 +89,28 @@ export const stylesHistory = StyleSheet.create({
      fontFamily: "Roboto", 
      fontWeight: 400 
     },
+  paginationContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+
+  },
+  paginationButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    backgroundColor: '#FFD335',
+    borderRadius: 5,
+  },
+  disabledButton: {
+    backgroundColor: '#FFD335',
+  },
+  paginationButtonText: {
+    color: 'black',
+    fontWeight: '500',
+  },
+  pageIndicator: {
+    fontSize: 14,
+    fontWeight: '500',
+  }
 });

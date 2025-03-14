@@ -1,12 +1,22 @@
-import { View, Text, Image } from "react-native";
-import React from "react";
+import {View, Text, Image, ActivityIndicator} from "react-native";
+import React, {useEffect} from "react";
 import { stylesWithdraw } from "@/app/(tabs)/styles/StylesWithdraw";
+import {useWithdrawHistories} from "@/lib/zustand/useWithdrawHistories";
 
 const WithdrawHistory = () => {
+  const { histories, isLoading, fetchWithdrawHistories } = useWithdrawHistories();
+  const params = {
+    page: 0,
+    limit: 10,
+  }
+  useEffect(() => {
+    fetchWithdrawHistories(params);
+  }, []);
+  if (isLoading) return <ActivityIndicator size="large" color="#0000ff" />;
   return (
     <>
       <Text style={stylesWithdraw.historyTitle}>Mining history</Text>
-      {[1,2,3,].map((_, index) => (
+      {histories?.contents.map((item, index) => (
         <View key={index} style={stylesWithdraw.historyItem}>
           {/* Avatar */}
           <View style={stylesWithdraw.avatarContainer}>
@@ -19,11 +29,11 @@ const WithdrawHistory = () => {
           {/* Nội dung */}
           <View style={{ flex: 1, marginLeft: 15 }}>
             <View style={stylesWithdraw.rowBetween}>
-              <Text style={stylesWithdraw.amount}>0.123 ASD</Text>
-              <Text style={stylesWithdraw.time}>12/02/2024 15:30</Text>
+              <Text style={stylesWithdraw.amount}>{item.amount} ASD</Text>
+              <Text style={stylesWithdraw.time}>  {new Date(item.createdAt).toLocaleString("vi-VN")}  </Text>
             </View>
             <View style={{marginTop: 7}}>
-              <Text style={stylesWithdraw.detail}>Receipient: 0x1222.12212</Text>
+              <Text style={stylesWithdraw.detail}>Receipient: {item.recipient}</Text>
               <Text style={stylesWithdraw.detail}>Miner: Lilhuy01</Text>
             </View>
           </View>

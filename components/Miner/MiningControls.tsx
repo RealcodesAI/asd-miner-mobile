@@ -3,9 +3,8 @@ import {TouchableOpacity, Text, ToastAndroid, TextStyle} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { stylesMiner } from "@/app/(tabs)/styles/StylesMiner";
 
-const MiningControls = ({ isMining, toggleMining }) => {
+const MiningControls = ({ isMining, toggleMining } : any) => {
   const [minerLicense, setMinerLicense] = useState(null);
-
   useEffect(() => {
     const getMinerLicense = async () => {
       try {
@@ -19,10 +18,11 @@ const MiningControls = ({ isMining, toggleMining }) => {
       }
     };
 
+
     getMinerLicense();
   }, []);
 
-  const handlePress = () => {
+  const handlePress = async () => {
     if (minerLicense) {
       toggleMining();
     } else {
