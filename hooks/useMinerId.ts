@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export const useMinerLicense = () => {
-  const [minerLicense, setMinerLicense] = useState<string | null>(null);
+export const useMinerId = () => {
+  const [minerId, setMinerId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchMinerLicense = async () => {
@@ -11,7 +11,7 @@ export const useMinerLicense = () => {
         if (storedData) {
           const parsedData = JSON.parse(storedData);
           console.log(storedData)
-          setMinerLicense(parsedData.minerLicense || null);
+          setMinerId(parsedData.minerId || null);
         }
       } catch (error) {
         console.error("Lỗi khi lấy minerLicense:", error);
@@ -21,5 +21,5 @@ export const useMinerLicense = () => {
     fetchMinerLicense();
   }, []);
 
-  return minerLicense;
+  return minerId;
 };

@@ -4,23 +4,27 @@ import { stylesHistory } from "@/app/(tabs)/styles/StylesHistory";
 import {useRewards} from "@/lib/zustand/useRewards";
 // Import the refresh icon
 import { Ionicons } from '@expo/vector-icons';
+import {useMinerId} from "@/hooks/useMinerId";
 
 const MiningHistory = () => {
   const { rewards, isLoading, fetchRewards } = useRewards();
   const [currentPage, setCurrentPage] = useState(0);
   const limit = 10;
   const totalPages = Number(rewards?.total) / limit;
-
+  const minerId = useMinerId();
+  console.log(minerId)
   useEffect(() => {
     loadRewards();
   }, [currentPage]);
 
   const loadRewards = () => {
-    const params = {
-      page: currentPage,
-      limit: limit,
-    };
-    fetchRewards(params, 5);
+    if(minerId) {
+      const params = {
+        page: currentPage,
+        limit: limit,
+      };
+      fetchRewards(params, minerId);
+    }
   };
 
   const handleRefresh = () => {

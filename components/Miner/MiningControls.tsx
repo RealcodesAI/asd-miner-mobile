@@ -6,6 +6,7 @@ import { router } from "expo-router";
 
 const MiningControls = ({ isMining, toggleMining } : any) => {
   const minerLicense = useMinerLicense();
+  console.log(minerLicense)
   const handlePress = async () => {
     if (minerLicense) {
       toggleMining();
