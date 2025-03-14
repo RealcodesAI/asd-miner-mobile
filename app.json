@@ -15,7 +15,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/logoAsd.png",
         "backgroundColor": "#000000"
-      }
+      },
+      "package": "com.anonymous.appasd"
     },
     "web": {
       "bundler": "metro",

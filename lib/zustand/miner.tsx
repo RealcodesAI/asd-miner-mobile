@@ -2,16 +2,16 @@ import { create } from "zustand";
 import { AsdApi } from "../api/service/asdApi";
 import { ToastAndroid } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Device from 'expo-device';
+// console.log(Device)
 
 interface MinerState {
   walletAddress: string;
   minerName: string;
-  nameLicense: string
   minerLicense: string;
   isConfigured: boolean;
   setWalletAddress: (address: string) => void;
   setMinerName: (name: string) => void;
-  setNameLicense: (namelicense: string) => void;
   setMinerLicense: (license: string) => void;
   saveMinerConfig: () => Promise<void>;
   loadMinerConfig: () => Promise<void>;
@@ -27,36 +27,55 @@ export const useMinerStore = create<MinerState>((set, get) => ({
   setWalletAddress: (address) => set({ walletAddress: address }),
   setMinerName: (name) => set({ minerName: name }),
   setMinerLicense: (license) => set({ minerLicense: license }),
-  setNameLicense: (namelicense) => set({ nameLicense: namelicense }),
 
 
   saveMinerConfig: async () => {
-    const { minerLicense, minerName, walletAddress, nameLicense } = get();
-    if (!walletAddress || !minerLicense || !minerName || !nameLicense) {
-        ToastAndroid.show("Please fill in all fields!", ToastAndroid.SHORT);
+    const { walletAddress, minerLicense, minerName } = get();
+  
+    if (!walletAddress) {
+      ToastAndroid.show("Please enter your wallet address!", ToastAndroid.SHORT);
+      return;
+    }
+  
+    try {
+      const storedConfig = await AsyncStorage.getItem("minerConfig");
+      console.log(storedConfig, "storedConfig")
+      if (!minerLicense || !minerName) {
+        await AsdApi.updateWallte(walletAddress);
+        await AsyncStorage.setItem("minerConfig", JSON.stringify({ walletAddress }));
+        set({ isConfigured: false });
+        ToastAndroid.show("Wallet updated successfully!", ToastAndroid.SHORT);
         return;
       }
-    try {
-      await AsdApi.minerConfig(minerLicense, nameLicense);
-      const minerData = { walletAddress, minerLicense, minerName, nameLicense, isConfigured: true };
-      console.log("Saving miner config:", minerData);
-       await AsyncStorage.setItem("minerConfig", JSON.stringify(minerData));
+  
+      const memory = Device.totalMemory ? Math.ceil(Device.totalMemory / (1024 * 1024 * 1024)) : 4;
+      const data = {
+        name: minerName,
+        license: minerLicense,
+        cpu: 4,
+        memory,
+        device: "mobile",
+        hashRate: 100,
+      };
+      const response = await AsdApi.minerConfig(data);
+      // console.log(response?.id, "id")
+      const minerData = { walletAddress, minerLicense, minerName, isConfigured: true, id: response?.id };
+      await AsyncStorage.setItem("minerConfig", JSON.stringify(minerData));
+      // console.log(minerData, "minerData")
       set({ isConfigured: true });
-      ToastAndroid.show(
-        "Miner configuration saved successfully!",
-        ToastAndroid.SHORT
-      );
+      ToastAndroid.show("Miner configuration saved successfully!", ToastAndroid.SHORT);
     } catch (err: any) {
       console.error("Error saving miner config:", err);
-      ToastAndroid.show(err.message,ToastAndroid.SHORT);
+      ToastAndroid.show(err.message, ToastAndroid.SHORT);
     }
   },
+  
   loadMinerConfig: async () => {
     try {
       const savedConfig = await AsyncStorage.getItem("minerConfig");
       if (savedConfig) {
         const parsedConfig = JSON.parse(savedConfig);
-        console.log("Loaded miner config:", parsedConfig);
+        // console.log("Loaded miner config:", parsedConfig);
         set(parsedConfig);
       }
     } catch (err) {

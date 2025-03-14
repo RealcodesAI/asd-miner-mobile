@@ -70,4 +70,38 @@ export const stylesConfig = StyleSheet.create({
         color: "#000",
         fontFamily: "Roboto",
       },
+      modalOverlay: {
+        flex: 1,
+        backgroundColor: "rgba(0, 0, 0, 0.5)", // Màu nền mờ
+        justifyContent: "center",
+        alignItems: "center",
+      },
+      modalContent: {
+        width: "80%",
+        backgroundColor: "#1e1e1e",
+        borderRadius: 10,
+        padding: 15,
+        maxHeight: "60%", // Giới hạn chiều cao để tránh tràn màn hình
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5, // Hiệu ứng nổi trên Android
+      },
+      dropdownItem: {
+        padding: 12,
+        borderBottomWidth: 1,
+        borderBottomColor: "#444",
+      },
+      searchInput: {
+        height: 40,
+        backgroundColor: "#333",
+        color: "#FFF",
+        borderRadius: 8,
+        paddingHorizontal: 10,
+        marginBottom: 10,
+        borderWidth: 1,
+        borderColor: "#555",
+      }
+      
 })
