@@ -9,18 +9,19 @@ import {
   TextInput,
   TouchableOpacity,
   ToastAndroid,
-  FlatList,
-  TouchableWithoutFeedback,
-  Modal,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AsdApi } from "@/lib/api/service/asdApi";
+import LicenseModal from "./LicenseModal";
+import LoadingModal from "./LoadingModal";
+import HashRateModal from "./LoadingModal";
 
 const MinerConfig = () => {
   const {
     walletAddress,
     minerLicense,
     minerName,
+    hashRate,
     isConfigured,
     setWalletAddress,
     setMinerLicense,
@@ -28,38 +29,37 @@ const MinerConfig = () => {
     saveMinerConfig,
     loadMinerConfig,
   } = useMinerStore();
-
   const { getLicense, getMinerMine, licenses, minerMine } = getLicenseStore();
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showHashRateModal, setShowHashRateModal] = useState(false);
   const maskText = (text: string, startLength = 11, endLength = 11) => {
     if (!text || text.length <= startLength + endLength) return text;
     return `${text.slice(0, startLength)}...${text.slice(-endLength)}`;
   };
-
   const [searchText, setSearchText] = useState("");
-
   const filteredLicenses = licenses.filter((item) =>
     item.licenseKey.toLowerCase().includes(searchText.toLowerCase())
   );
-
   const handleLicense = (itemValue: string) => {
     setMinerLicense(itemValue);
     setShowDropdown(false);
     const nameLicense = minerMine.find((miner) => miner.license === itemValue);
     setMinerName(nameLicense ? nameLicense.name : "");
   };
-
   const handleSave = async () => {
     const selectedMiner = minerMine.find(
       (miner) => miner.license === minerLicense
     );
     const minerId = selectedMiner?.id;
-  
+    const hashRate = selectedMiner?.hashRate
     // Lấy thông tin miner đã lưu trước đó từ AsyncStorage
     const storedConfig = await AsyncStorage.getItem("minerConfig");
     const previousConfig = storedConfig ? JSON.parse(storedConfig) : {};
     // console.log(previousConfig, "previousConfig");
-  
+    if (selectedMiner && !hashRate) {
+      ToastAndroid.show("Calculating hash rate, please wait...", ToastAndroid.SHORT);
+      await saveMinerConfig();
+    }
     if (minerLicense && minerName && minerId) {
       // Nếu license và ID trùng với dữ liệu trước đó nhưng tên thay đổi => gọi updateNameLicense
       if (previousConfig?.minerId === minerId && previousConfig?.minerName !== minerName) {
@@ -79,6 +79,7 @@ const MinerConfig = () => {
           minerLicense,
           minerName,
           minerId,
+          hashRate,
           isConfigured: false,
         };
         await AsyncStorage.setItem("minerConfig", JSON.stringify(data));
@@ -88,7 +89,6 @@ const MinerConfig = () => {
       saveMinerConfig();
     }
   };
-  
 
   useEffect(() => {
     loadMinerConfig();
@@ -132,40 +132,15 @@ const MinerConfig = () => {
       </TouchableOpacity>
 
       {showDropdown && (
-        <Modal transparent={true} animationType="slide">
-          <TouchableWithoutFeedback onPress={() => setShowDropdown(false)}>
-            <View style={stylesConfig.modalOverlay}>
-              <TouchableWithoutFeedback>
-                <View style={stylesConfig.modalContent}>
-                  {/* Thanh tìm kiếm */}
-                  <TextInput
-                    style={stylesConfig.searchInput}
-                    placeholder="Search license..."
-                    placeholderTextColor="#999"
-                    value={searchText}
-                    onChangeText={setSearchText}
-                  />
-
-                  <FlatList
-                    data={filteredLicenses}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ item }) => (
-                      <TouchableOpacity
-                        onPress={() => handleLicense(item.licenseKey)}
-                      >
-                        <View style={stylesConfig.dropdownItem}>
-                          <Text style={{ color: "#FFF" }}>
-                            {maskText(item.licenseKey)}
-                          </Text>
-                        </View>
-                      </TouchableOpacity>
-                    )}
-                  />
-                </View>
-              </TouchableWithoutFeedback>
-            </View>
-          </TouchableWithoutFeedback>
-        </Modal>
+        <LicenseModal
+        visible={showDropdown}
+        onClose={() => setShowDropdown(false)}
+        searchText={searchText}
+        setSearchText={setSearchText}
+        filteredLicenses={filteredLicenses}
+        handleLicense={handleLicense}
+        maskText={maskText}
+      />
       )}
 
       <Text style={stylesConfig.hintText}>
@@ -177,10 +152,15 @@ const MinerConfig = () => {
           Get you one here.
         </Link>
       </Text>
-
       <TouchableOpacity style={stylesConfig.button} onPress={handleSave}>
         <Text style={stylesConfig.buttonText}>Save</Text>
       </TouchableOpacity>
+      {/* <HashRateModal
+  visible={showHashRateModal}
+  hashRate={hashRate}
+  onClose={() => setShowHashRateModal(false)}
+/> */}
+
     </View>
   );
 };
