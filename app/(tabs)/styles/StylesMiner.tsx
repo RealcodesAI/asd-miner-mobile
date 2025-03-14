@@ -98,14 +98,28 @@ export const stylesMiner = StyleSheet.create({
     borderRadius: 5,
     minHeight: 80,
   },
+  miningLogOuterContainer: {
+    width: '100%',
+    marginTop: 20,
+    height: 200, // Fixed height for the container
+    borderRadius: 5,
+  },
+  miningLogScrollContainer: {
+    flex: 1,
+    backgroundColor: '#1A1A1D',
+  },
+  miningLogContentContainer: {
+    padding: 10,
+  },
   miningLog: {
-    color: '#4CAF50', // Màu xanh lá như trong terminal
-    fontFamily:'monospace',
+    color: '#4CAF50', // Green color like terminal
+    fontFamily: 'monospace',
     fontSize: 14,
   },
   progressBarFillBase: {
     height: '100%',
     backgroundColor: '#FFD700',
   },
+
 
 });

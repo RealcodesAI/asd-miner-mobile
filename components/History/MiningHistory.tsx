@@ -7,7 +7,7 @@ const MiningHistory = () => {
   const { rewards, isLoading, fetchRewards } = useRewards();
   const [currentPage, setCurrentPage] = useState(0);
   const limit = 10;
-  const totalPages = rewards?.total / limit;
+  const totalPages = Number(rewards?.total) / limit;
 
   useEffect(() => {
     loadRewards();
