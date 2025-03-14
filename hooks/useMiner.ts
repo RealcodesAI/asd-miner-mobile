@@ -1,13 +1,12 @@
-import { useState, useEffect, useRef } from "react";
+import {useState, useEffect, useRef} from "react";
 import AsdMiningRN from "asd-mining-rn";
-import { useMinerReward } from "@/hooks/useMinerReward";
-import { useMinerLicense } from "@/hooks/useMinerLicense";
+import {useMinerReward} from "@/hooks/useMinerReward";
+import {useMinerLicense} from "@/hooks/useMinerLicense";
 
 export const useMiner = () => {
   const [miningPower, setMiningPower] = useState(0);
   const [isMining, setIsMining] = useState(false);
   const [miningLog, setMiningLog] = useState("");
-  const [showReward, setShowReward] = useState(false);
   const animationRef = useRef<any | null>(null);
   const isPaused = useRef(false);
   const logIndexRef = useRef(0);
@@ -42,7 +41,6 @@ export const useMiner = () => {
   useEffect(() => {
     if (isMining) {
       setMiningPower(0);
-      setShowReward(false);
       isPaused.current = false;
       logIndexRef.current = 0;
 
@@ -52,11 +50,8 @@ export const useMiner = () => {
             const newValue = prev + 0.5;
             if (newValue >= 100) {
               isPaused.current = true;
-              setShowReward(true);
-
               setTimeout(() => {
                 isPaused.current = false;
-                setShowReward(false);
                 setMiningPower(0);
                 logIndexRef.current = 0;
               }, 1000);
@@ -69,7 +64,6 @@ export const useMiner = () => {
       }, 100);
     } else {
       if (animationRef.current) clearInterval(animationRef.current);
-      setShowReward(false);
     }
   }, [isMining]);
 
@@ -77,7 +71,6 @@ export const useMiner = () => {
     miningPower,
     isMining,
     miningLog,
-    showReward,
     reward,
     toggleMining
   };

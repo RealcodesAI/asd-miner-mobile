@@ -57,7 +57,7 @@ const MiningHistory = () => {
           {/* Avatar */}
           <View style={stylesHistory.avatarContainer}>
             <Image
-              source={require("../../assets/images/avatar/avatar.png")}
+              source={require("../../assets/images/avatar/image 173.png")}
               style={stylesHistory.avatar}
             />
           </View>

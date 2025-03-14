@@ -62,19 +62,18 @@ export const stylesHistory = StyleSheet.create({
     height: 103,
     backgroundColor: "#1A1A1A",
     padding: 10,
-    borderRadius: 8,
     marginBottom: 15,
     marginHorizontal: 20,
   },
   avatarContainer: {
     width: 48,
-    height: 48,
+    height: 'auto',
     borderRadius: 14,
     backgroundColor: '#333333',
     justifyContent: 'center',
     alignItems: 'center'
   },
-  avatar: { width: 24, height: 24 , borderRadius: 20},
+  avatar: { width: '100%', height: '100%', borderRadius: 8},
   rowBetween: {
     flexDirection: "row",
     justifyContent: "space-between",

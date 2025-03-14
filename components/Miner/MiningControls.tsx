@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {TouchableOpacity, Text, ToastAndroid, TextStyle} from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { stylesMiner } from "@/app/(tabs)/styles/StylesMiner";
 import {useMinerLicense} from "@/hooks/useMinerLicense";
+import { router } from "expo-router";
 
 const MiningControls = ({ isMining, toggleMining } : any) => {
   const minerLicense = useMinerLicense();
@@ -11,6 +11,7 @@ const MiningControls = ({ isMining, toggleMining } : any) => {
       toggleMining();
     } else {
       ToastAndroid.show("Please configure minerLicense first!", ToastAndroid.SHORT);
+      router.push("/(tabs)/Config");
     }
   };
 
