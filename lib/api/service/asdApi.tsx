@@ -51,7 +51,7 @@ export const AsdApi = {
     getMinersMine: async (limit: number): Promise<any> => {
         return await axiosClient.get(`miners/mine?limit=${limit}`);
     },
-    updateNameLicense: async (name: string, id: string) => {
+    updateNameLicense: async (name: string, id: string| number) => {
         return await axiosClient.patch(`miners/${id}`, {
             name
         })

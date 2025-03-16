@@ -13,8 +13,8 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AsdApi } from "@/lib/api/service/asdApi";
 import LicenseModal from "./LicenseModal";
+import { getUserStore } from "@/lib/zustand/getUser";
 import LoadingModal from "./LoadingModal";
-import HashRateModal from "./LoadingModal";
 
 const MinerConfig = () => {
   const {
@@ -29,9 +29,10 @@ const MinerConfig = () => {
     saveMinerConfig,
     loadMinerConfig,
   } = useMinerStore();
+  const {user, getMe} =getUserStore()
   const { getLicense, getMinerMine, licenses, minerMine } = getLicenseStore();
+  const [isLoading, setIsLoading] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [showHashRateModal, setShowHashRateModal] = useState(false);
   const maskText = (text: string, startLength = 11, endLength = 11) => {
     if (!text || text.length <= startLength + endLength) return text;
     return `${text.slice(0, startLength)}...${text.slice(-endLength)}`;
@@ -47,53 +48,46 @@ const MinerConfig = () => {
     setMinerName(nameLicense ? nameLicense.name : "");
   };
   const handleSave = async () => {
-    const selectedMiner = minerMine.find(
-      (miner) => miner.license === minerLicense
-    );
-    const minerId = selectedMiner?.id;
-    const hashRate = selectedMiner?.hashRate
-    // Lấy thông tin miner đã lưu trước đó từ AsyncStorage
-    const storedConfig = await AsyncStorage.getItem("minerConfig");
-    const previousConfig = storedConfig ? JSON.parse(storedConfig) : {};
-    // console.log(previousConfig, "previousConfig");
-    if (selectedMiner && !hashRate) {
-      ToastAndroid.show("Calculating hash rate, please wait...", ToastAndroid.SHORT);
-      await saveMinerConfig();
-    }
-    if (minerLicense && minerName && minerId) {
-      // Nếu license và ID trùng với dữ liệu trước đó nhưng tên thay đổi => gọi updateNameLicense
-      if (previousConfig?.minerId === minerId && previousConfig?.minerName !== minerName) {
+    setIsLoading(true);
+    const miner = minerMine.find(miner => miner.license === minerLicense);
+    if (miner && miner.id) {
+      if (miner.name !== minerName) {
+        // Nếu chỉ thay đổi tên, gọi API updateNameLicense
         try {
-          await AsdApi.updateNameLicense(minerName, minerId.toString());
-          previousConfig.minerName = minerName;
-          await AsyncStorage.setItem("minerConfig", JSON.stringify(previousConfig));
-          ToastAndroid.show("Miner name updated successfully!", ToastAndroid.SHORT);
-        } catch (err: any) {
-          console.error("Error updating miner name:", err);
-          ToastAndroid.show(err.message, ToastAndroid.SHORT);
+          await AsdApi.updateNameLicense(minerName, miner.id);
+          ToastAndroid.show("Miner name updated successfully!", ToastAndroid.SHORT); 
+          // Cập nhật lại dữ liệu vào AsyncStorage
+          const minerData = { walletAddress, minerLicense, minerName, id: miner.id, isConfigured: true, hashRate };
+          await AsyncStorage.setItem("minerConfig", JSON.stringify(minerData));
+          console.log("Updated miner name locally:", minerData);
+        } catch (error) {
+          console.error("Error updating miner name:", error);
+          ToastAndroid.show("Failed to update miner name.", ToastAndroid.SHORT);
         }
       } else {
-        // Nếu chưa có thông tin miner hoặc có thay đổi về minerId => lưu lại config mới
-        const data = {
-          walletAddress,
-          minerLicense,
-          minerName,
-          minerId,
-          hashRate,
-          isConfigured: false,
-        };
-        await AsyncStorage.setItem("minerConfig", JSON.stringify(data));
-        ToastAndroid.show("Miner data saved locally!", ToastAndroid.SHORT);
+        // Nếu không đổi gì, chỉ lưu vào local storage
+        const minerData = { walletAddress, minerLicense, minerName, id: miner.id, isConfigured: true, hashRate };
+        await AsyncStorage.setItem("minerConfig", JSON.stringify(minerData));
+        console.log("Saved minerData locally:", minerData);
+        ToastAndroid.show("Miner configuration saved locally!", ToastAndroid.SHORT);
       }
     } else {
-      saveMinerConfig();
+      // Nếu thiếu thông tin, gọi saveMinerConfig
+      await saveMinerConfig();
     }
+    setIsLoading(false);
   };
+  useEffect(() => {
+    if(user?.walletAddress) {
+      setWalletAddress(user?.walletAddress)
+    }
+  }, [user])
 
   useEffect(() => {
     loadMinerConfig();
     getLicense();
     getMinerMine();
+    getMe()
   }, []);
 
   return (
@@ -106,7 +100,7 @@ const MinerConfig = () => {
       <Text style={stylesConfig.label}>Wallet Address</Text>
       <TextInput
         style={[stylesConfig.input, walletAddress && stylesConfig.disabledInput]}
-        value={isConfigured ? maskText(walletAddress) : maskText(walletAddress)}
+        value={maskText(walletAddress)}
         onChangeText={setWalletAddress}
         editable={!walletAddress}
       />
@@ -155,13 +149,9 @@ const MinerConfig = () => {
       <TouchableOpacity style={stylesConfig.button} onPress={handleSave}>
         <Text style={stylesConfig.buttonText}>Save</Text>
       </TouchableOpacity>
-      {/* <HashRateModal
-  visible={showHashRateModal}
-  hashRate={hashRate}
-  onClose={() => setShowHashRateModal(false)}
-/> */}
+      {isLoading && <LoadingModal visible={isLoading} hashRate={hashRate} setVisible={setIsLoading}/>}
 
-    </View>
+   </View>
   );
 };
 

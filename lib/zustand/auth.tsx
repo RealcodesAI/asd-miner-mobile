@@ -63,7 +63,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   fetchLogout: async () => {
     await AsyncStorage.removeItem("jwt");
-    await AsyncStorage.removeItem("minerConfig");
+    // await AsyncStorage.removeItem("minerConfig");
     set({
       username: "",
       password: "",

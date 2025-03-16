@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { Modal, View, Text, ActivityIndicator, TouchableOpacity } from "react-native";
-import { stylesConfig } from "@/app/(tabs)/styles/StylesConfig";
+import React, { useEffect, useState } from "react";
+import { Modal, View, ActivityIndicator, Text, StyleSheet } from "react-native";
 
-const HashRateModal = ({ visible, hashRate, onClose }) => {
+const LoadingModal = ({ visible, hashRate, setVisible }: { visible: boolean; hashRate: string | number; setVisible: (visible: boolean) => void }) => {
   const [showHashRate, setShowHashRate] = useState(false);
 
   useEffect(() => {
     if (visible) {
-      setShowHashRate(false);
-      const timer1 = setTimeout(() => setShowHashRate(true), 5000); // Hiển thị hashRate sau 5s
-      const timer2 = setTimeout(onClose, 7000); // Đóng modal sau 7s
+      setShowHashRate(false); // Reset khi mở modal
+      const timer1 = setTimeout(() => setShowHashRate(true), 4950);
+      const timer2 = setTimeout(() => setVisible(false), 9000); 
+      
       return () => {
         clearTimeout(timer1);
         clearTimeout(timer2);
@@ -18,29 +18,47 @@ const HashRateModal = ({ visible, hashRate, onClose }) => {
   }, [visible]);
 
   return (
-    <Modal
-      transparent
-      visible={visible}
-      animationType="fade"
-      onRequestClose={onClose}
-    >
-      <View style={stylesConfig.modalOverlay}>
-        <View style={stylesConfig.modalContainer}>
-          {showHashRate ? (
-            <Text style={stylesConfig.modalText}>Hash Rate: {hashRate}</Text>
-          ) : (
+    <Modal transparent={true} animationType="fade" visible={visible}>
+      <View style={styles.overlay}>
+        <View style={styles.modal}>
+          {!showHashRate ? (
             <>
-              <ActivityIndicator size="large" color="#FFF" />
-              <Text style={stylesConfig.modalText}>Calculating hash rate...</Text>
+              <ActivityIndicator size="large" color="#fff" />
+              <Text style={styles.text}>Calculating hash rate...</Text>
             </>
+          ) : (
+            <Text style={styles.hashRateText}>Your device can mine at approximately {hashRate} hashes per second</Text>
           )}
-          <TouchableOpacity style={stylesConfig.button} onPress={onClose}>
-            <Text style={stylesConfig.buttonText}>Close</Text>
-          </TouchableOpacity>
         </View>
       </View>
     </Modal>
   );
 };
 
-export default HashRateModal;
+const styles = StyleSheet.create({
+  overlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modal: {
+    backgroundColor: "#222",
+    padding: 20,
+    borderRadius: 10,
+    alignItems: "center",
+    width: "80%",
+  },
+  text: {
+    marginTop: 10,
+    color: "#fff",
+    fontSize: 16,
+  },
+  hashRateText: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "#4CAF50", // Màu xanh lá để nổi bật hash rate
+  },
+});
+
+export default LoadingModal;

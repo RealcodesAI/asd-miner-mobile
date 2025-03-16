@@ -46,7 +46,7 @@ export const useMinerStore = create<MinerState>((set, get) => ({
       // console.log(storedConfig, "storedConfig")
       if (!minerLicense || !minerName) {
         await AsdApi.updateWallte(walletAddress);
-        await AsyncStorage.setItem("minerConfig", JSON.stringify({ walletAddress }));
+        await AsyncStorage.setItem("walletAddress", JSON.stringify({ walletAddress }));
         set({ isConfigured: false });
         ToastAndroid.show("Wallet updated successfully!", ToastAndroid.SHORT);
         return;
@@ -54,8 +54,9 @@ export const useMinerStore = create<MinerState>((set, get) => ({
       set({ isCalculating: true });
       // Tính hashRate bằng AsdMiningRN
       const minerInstance = AsdMiningRN.getInstance(minerLicense, "https://be.asdscan.ai");
-      const hashRate = await minerInstance.calculateHashRate(5000);
-      // console.log(hashRate, "hashRate")
+      const hashRateMiner = await minerInstance.calculateHashRate(5000);
+      const hashRate = Math.round(hashRateMiner);
+      console.log(hashRate, "hashRate")
       // Cập nhật state khi tính xong
       set({ isCalculating: false, hashRate });
 
