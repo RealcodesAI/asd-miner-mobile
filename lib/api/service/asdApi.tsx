@@ -55,5 +55,8 @@ export const AsdApi = {
         return await axiosClient.patch(`miners/${id}`, {
             name
         })
+    },
+    getDataChart: async (id: number | string): Promise<any> => {
+        return await axiosClient.get(`miners/${id}/aggregate?interval=day`)
     }
 };

@@ -52,12 +52,12 @@ const MinerConfig = () => {
     const miner = minerMine.find(miner => miner.license === minerLicense);
     if (miner && miner.id) {
       if (miner.name !== minerName) {
-        // Nếu chỉ thay đổi tên, gọi API updateNameLicense
+        // Nếu đổi tên, gọi API updateNameLicense
         try {
           await AsdApi.updateNameLicense(minerName, miner.id);
           ToastAndroid.show("Miner name updated successfully!", ToastAndroid.SHORT); 
           // Cập nhật lại dữ liệu vào AsyncStorage
-          const minerData = { walletAddress, minerLicense, minerName, id: miner.id, isConfigured: true, hashRate };
+          const minerData = { walletAddress, minerLicense, minerName, id: miner.id, isConfigured: true, hashRate: miner.hashRate };
           await AsyncStorage.setItem("minerConfig", JSON.stringify(minerData));
           console.log("Updated miner name locally:", minerData);
         } catch (error) {
@@ -65,8 +65,8 @@ const MinerConfig = () => {
           ToastAndroid.show("Failed to update miner name.", ToastAndroid.SHORT);
         }
       } else {
-        // Nếu không đổi gì, chỉ lưu vào local storage
-        const minerData = { walletAddress, minerLicense, minerName, id: miner.id, isConfigured: true, hashRate };
+        // Nếu không đổi, chỉ lưu vào local storage
+        const minerData = { walletAddress, minerLicense, minerName, id: miner.id, isConfigured: true, hashRate: miner.hashRate };
         await AsyncStorage.setItem("minerConfig", JSON.stringify(minerData));
         console.log("Saved minerData locally:", minerData);
         ToastAndroid.show("Miner configuration saved locally!", ToastAndroid.SHORT);

@@ -1,10 +1,16 @@
 import { stylesWithdraw } from "@/app/(tabs)/styles/StylesWithdraw";
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Dimensions } from "react-native";
 import {useMinerReward} from "@/hooks/useMinerReward";
+import { getUserStore } from "@/lib/zustand/getUser";
 
 const WithdrawScreen = () => {
   const reward = useMinerReward();
+    const { user, getMe } = getUserStore();
+  
+    useEffect(() => {
+      getMe();
+    }, []);
   return (
     <View style={{marginHorizontal: 20}}>
       <Text style={stylesWithdraw.withdrawText}>Withdraw your reward</Text>
@@ -24,7 +30,11 @@ const WithdrawScreen = () => {
           </TouchableOpacity>
         </View>
 
-        <Text style={stylesWithdraw.infoText}>899.877 more to next withdraw</Text>
+        <Text style={stylesWithdraw.infoText}>
+        {user?.rewardThreshold && user?.rewardThreshold - reward > 0
+              ? `${(user?.rewardThreshold - reward).toFixed(4)} more to next withdraw`
+              : "You can withdraw now"}
+        </Text>
       </View>
     </View>
   );

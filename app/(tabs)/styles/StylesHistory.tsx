@@ -47,7 +47,7 @@ export const stylesHistory = StyleSheet.create({
     textAlign: "center",
     marginTop: 5,
   },
-  chart: { marginTop: 10, width: '100%' , paddingHorizontal: 15 },
+  chart: { marginTop: 10, width: '100%' },
 
   historyTitle: {
     color: "#FFF",
@@ -64,6 +64,7 @@ export const stylesHistory = StyleSheet.create({
     padding: 10,
     marginBottom: 15,
     marginHorizontal: 20,
+    borderRadius: 10
   },
   avatarContainer: {
     width: 48,

@@ -42,8 +42,6 @@ export const useMinerStore = create<MinerState>((set, get) => ({
       return;
     }
     try {
-      // const storedConfig = await AsyncStorage.getItem("minerConfig");
-      // console.log(storedConfig, "storedConfig")
       if (!minerLicense || !minerName) {
         await AsdApi.updateWallte(walletAddress);
         await AsyncStorage.setItem("walletAddress", JSON.stringify({ walletAddress }));
