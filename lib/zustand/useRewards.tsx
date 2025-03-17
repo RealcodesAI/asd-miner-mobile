@@ -21,11 +21,6 @@ export const useRewards = create<RewardsState>((set) => ({
     set({ isLoading: true });
 
     try {
-      const jwt = await AsyncStorage.getItem("jwt");
-      if (!jwt) {
-        throw new Error("Authentication required");
-      }
-
       const response = await AsdApi.rewards(params, id);
       set({ rewards: response, isLoading: false });
     } catch (error: any) {

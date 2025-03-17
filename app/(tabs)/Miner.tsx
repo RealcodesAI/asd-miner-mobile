@@ -1,41 +1,40 @@
 import React from "react";
-import {View, Text, ScrollView, Image, TextStyle} from "react-native";
+import { View, Text, ScrollView, Image, RefreshControl, TextStyle } from "react-native";
 import Header from "@/components/Header/Header";
-import {stylesMiner} from "@/app/(tabs)/styles/StylesMiner";
+import { stylesMiner } from "@/app/(tabs)/styles/StylesMiner";
 import MiningControls from "@/components/Miner/MiningControls";
 import MiningProgress from "@/components/Miner/MiningProgress";
 import MiningLog from "@/components/Miner/MiningLog";
-import {useMiner} from "@/hooks/useMiner";
+import { useMiner } from "@/hooks/useMiner";
+import { useRefresh } from "@/hooks/useRefresh";
+import MinerBalance from "@/components/Miner/MinerBalance";
+import MiningStats from "@/components/Miner/MiningStats";
 
 const Miner = () => {
-  const {
-    miningPower,
-    isMining,
-    miningLog,
-    reward,
-    toggleMining
-  } = useMiner();
+  const { refreshing, refreshKey, onRefresh } = useRefresh();
+  const { miningPower, isMining, miningLog, reward, toggleMining } = useMiner();
 
   return (
-    <ScrollView style={stylesMiner.container}>
-      <Header title="Miner"/>
+    <ScrollView
+      style={stylesMiner.container}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
+      <Header title="Miner" key={`header-${refreshKey}`} />
 
-      <Text style={stylesMiner.balance as TextStyle}>{reward.toFixed(4)} ASD</Text>
-      <Image source={require("@/assets/images/Frame.png")} style={stylesMiner.image}/>
+      <MinerBalance key={`balance-${refreshKey}`}/>
 
-      <MiningControls isMining={isMining} toggleMining={toggleMining}/>
 
-      <View style={stylesMiner.Container}>
-        <View style={stylesMiner.sliderContainer}>
-          <MiningProgress miningPower={miningPower}/>
-          <Text style={stylesMiner.hashRate as TextStyle}>
-            Mining block... hash rate: 110000 H/S
-          </Text>
-          <MiningLog miningLog={miningLog}/>
-        </View>
-      </View>
+      <MiningControls
+        isMining={isMining}
+        toggleMining={toggleMining}
+        key={`controls-${refreshKey}`}
+      />
+
+      <MiningStats miningPower={miningPower} miningLog={miningLog} key={`stats-${refreshKey}`} />
     </ScrollView>
-  );
+      );
 };
 
 export default Miner;

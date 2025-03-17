@@ -6,7 +6,6 @@ import {useMinerId} from "@/hooks/useMinerId";
 export const useMinerReward = () => {
   const [reward, setReward] = useState(0);
   const minerId = useMinerId();
-  console.log(minerId)
   useEffect(() => {
     const fetchReward = async () => {
       try {

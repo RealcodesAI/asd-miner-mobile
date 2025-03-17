@@ -12,7 +12,6 @@ const MiningHistory = () => {
   const limit = 10;
   const totalPages = Number(rewards?.total) / limit;
   const minerId = useMinerId();
-  console.log(minerId)
   useEffect(() => {
     loadRewards();
   }, [currentPage, minerId]);

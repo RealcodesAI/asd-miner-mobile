@@ -10,7 +10,6 @@ export const useMinerLicense = () => {
         const storedData = await AsyncStorage.getItem("minerConfig");
         if (storedData) {
           const parsedData = JSON.parse(storedData);
-          console.log(storedData)
           setMinerLicense(parsedData.minerLicense || null);
         }
       } catch (error) {

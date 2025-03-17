@@ -9,9 +9,7 @@ export const useMinerId = () => {
       try {
         const storedData = await AsyncStorage.getItem("minerConfig");
         if (storedData) {
-          console.log(storedData)
           const parsedData = JSON.parse(storedData);
-          console.log(storedData)
           setMinerId(parsedData.id || null);
         }
       } catch (error) {
