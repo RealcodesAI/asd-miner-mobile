@@ -17,7 +17,6 @@ interface RewardsState {
 export const useRewards = create<RewardsState>((set) => ({
   rewards: null,
   isLoading: false,
-
   fetchRewards: async (params = {}, id: number) => {
     set({ isLoading: true });
 

@@ -15,7 +15,7 @@ const MiningHistory = () => {
   console.log(minerId)
   useEffect(() => {
     loadRewards();
-  }, [currentPage]);
+  }, [currentPage, minerId]);
 
   const loadRewards = () => {
     if(minerId) {

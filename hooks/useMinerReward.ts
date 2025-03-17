@@ -6,11 +6,11 @@ import {useMinerId} from "@/hooks/useMinerId";
 export const useMinerReward = () => {
   const [reward, setReward] = useState(0);
   const minerId = useMinerId();
-
+  console.log(minerId)
   useEffect(() => {
     const fetchReward = async () => {
       try {
-        if(!minerId) return
+        if(!minerId) return;
         const response = await AsdApi.getMiner(Number(minerId));
         setReward(Number((response.reward).toFixed(4)));
       } catch (error: any) {
@@ -20,7 +20,7 @@ export const useMinerReward = () => {
     };
 
     fetchReward();
-  }, []);
+  }, [minerId]);
 
   return reward;
 };
