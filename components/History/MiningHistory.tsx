@@ -5,6 +5,7 @@ import {useRewards} from "@/lib/zustand/useRewards";
 // Import the refresh icon
 import { Ionicons } from '@expo/vector-icons';
 import {useMinerId} from "@/hooks/useMinerId";
+import {useMinerName} from "@/hooks/useMinerName";
 
 const MiningHistory = () => {
   const { rewards, isLoading, fetchRewards } = useRewards();
@@ -12,6 +13,7 @@ const MiningHistory = () => {
   const limit = 10;
   const totalPages = Number(rewards?.total) / limit;
   const minerId = useMinerId();
+  const minerName = useMinerName();
   useEffect(() => {
     loadRewards();
   }, [currentPage, minerId]);
@@ -71,9 +73,8 @@ const MiningHistory = () => {
               <Text style={stylesHistory.amount}>{parseFloat(item.reward).toFixed(4)} ASD</Text>
               <Text style={stylesHistory.time}>{new Date(item.createdAt).toLocaleString("vi-VN")}</Text>
             </View>
-            <Text style={stylesHistory.detail}>Block: 13,123</Text>
             <Text style={stylesHistory.detail}>Hashrate: {item.hashRate} H/S</Text>
-            <Text style={stylesHistory.detail}>Miner: Lilhuy01</Text>
+            <Text style={stylesHistory.detail}>Miner: {minerName}</Text>
           </View>
         </View>
       ))}
