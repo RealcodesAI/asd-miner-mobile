@@ -4,11 +4,13 @@ import { stylesWithdraw } from "@/app/(tabs)/styles/StylesWithdraw";
 import {useWithdrawHistories} from "@/lib/zustand/useWithdrawHistories";
 // Import the refresh icon
 import { Ionicons } from '@expo/vector-icons';
+import {useMinerName} from "@/hooks/useMinerName";
 
 const WithdrawHistory = () => {
   const { histories, isLoading, fetchWithdrawHistories } = useWithdrawHistories();
   const [page, setPage] = useState(0);
   const limit = 10;
+  const minerName = useMinerName()
 
   const loadHistories = () => {
     const params = {
@@ -56,7 +58,7 @@ const WithdrawHistory = () => {
             </View>
             <View style={{marginTop: 7}}>
               <Text style={stylesWithdraw.detail}>Receipient: {item.recipient}</Text>
-              <Text style={stylesWithdraw.detail}>Miner: Lilhuy01</Text>
+              <Text style={stylesWithdraw.detail}>Miner: {minerName}</Text>
             </View>
           </View>
         </View>

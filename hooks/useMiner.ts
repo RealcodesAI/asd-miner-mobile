@@ -11,7 +11,6 @@ export const useMiner = () => {
   const isPaused = useRef(false);
   const logIndexRef = useRef(0);
 
-  const reward = useMinerReward();
   const minerLicense = useMinerLicense();
   const minerRef = AsdMiningRN.getInstance(String(minerLicense), "https://be.asdscan.ai");
 
@@ -71,7 +70,6 @@ export const useMiner = () => {
     miningPower,
     isMining,
     miningLog,
-    reward,
     toggleMining
   };
 };

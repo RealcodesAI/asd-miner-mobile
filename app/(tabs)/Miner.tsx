@@ -12,7 +12,7 @@ import MiningStats from "@/components/Miner/MiningStats";
 
 const Miner = () => {
   const { refreshing, refreshKey, onRefresh } = useRefresh();
-  const { miningPower, isMining, miningLog, reward, toggleMining } = useMiner();
+  const { miningPower, isMining, miningLog, toggleMining } = useMiner();
 
   return (
     <ScrollView
