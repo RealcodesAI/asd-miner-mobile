@@ -5,12 +5,13 @@ import {useWithdrawHistories} from "@/lib/zustand/useWithdrawHistories";
 import { Ionicons } from '@expo/vector-icons';
 import {useMinerName} from "@/hooks/useMinerName";
 import { stylesWithdraw } from "@/app/css/styles/StylesWithdraw";
+import {useMinerStore} from "@/lib/zustand/miner";
 
 const WithdrawHistory = () => {
   const { histories, isLoading, fetchWithdrawHistories } = useWithdrawHistories();
   const [page, setPage] = useState(0);
   const limit = 10;
-  const minerName = useMinerName()
+  const {minerName} = useMinerStore()
 
   const loadHistories = () => {
     const params = {

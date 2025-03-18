@@ -12,6 +12,12 @@ export const stylesMiner = StyleSheet.create({
     marginTop: 10,
     textAlign: 'center',
   },
+  name: {
+    fontSize: 16,
+    color: '#fff',
+    marginTop: 10,
+    textAlign: 'center',
+  },
   image: {
     width: '100%',
     resizeMode: 'contain',

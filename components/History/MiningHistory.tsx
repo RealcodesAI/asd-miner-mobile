@@ -6,25 +6,28 @@ import { Ionicons } from '@expo/vector-icons';
 import {useMinerId} from "@/hooks/useMinerId";
 import {useMinerName} from "@/hooks/useMinerName";
 import { stylesHistory } from "@/app/css/styles/StylesHistory";
+import {useMinerStore} from "@/lib/zustand/miner";
 
 const MiningHistory = () => {
   const { rewards, isLoading, fetchRewards } = useRewards();
   const [currentPage, setCurrentPage] = useState(0);
   const limit = 10;
   const totalPages = Number(rewards?.total) / limit;
-  const minerId = useMinerId();
-  const minerName = useMinerName();
+  const {id,minerName} = useMinerStore();
   useEffect(() => {
     loadRewards();
-  }, [currentPage, minerId]);
+    const interval = setInterval(loadRewards, 30000);
+    // Cleanup interval khi component unmount
+    return () => clearInterval(interval);
+  }, [currentPage, id]);
 
   const loadRewards = () => {
-    if(minerId) {
+    if(id) {
       const params = {
         page: currentPage,
         limit: limit,
       };
-      fetchRewards(params, minerId);
+      fetchRewards(params, id);
     }
   };
 
