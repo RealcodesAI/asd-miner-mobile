@@ -58,5 +58,11 @@ export const AsdApi = {
     },
     getDataChart: async (id: number | string): Promise<any> => {
         return await axiosClient.get(`miners/${id}/aggregate?interval=day`)
+    },
+
+    updateRewardThreshold: async (threshold: number): Promise<any> => {
+        return await axiosClient.post( `user/update-reward-threshold`, {
+            threshold
+        })
     }
 };

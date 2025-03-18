@@ -128,7 +128,7 @@ const ChartHistory = () => {
           <View
             style={{
               position: "absolute",
-              left: tooltip.x - 35,
+              left: tooltip.x - 43,
               top: tooltip.y - 43,
               backgroundColor: "#FFF",
               paddingVertical: 5,
