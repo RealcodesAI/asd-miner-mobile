@@ -3,7 +3,7 @@ import { AsdApi } from "../api/service/asdApi";
 import { ToastAndroid } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Device from 'expo-device';
-import AsdMiningRN from "asd-mining-rn";
+import AsdMiningRN from "asd-mining";
 // console.log(Device)
 
 interface MinerState {

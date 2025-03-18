@@ -1,6 +1,5 @@
 import {useState, useEffect, useRef} from "react";
-import AsdMiningRN from "asd-mining-rn";
-import {useMinerReward} from "@/hooks/useMinerReward";
+import AsdMiningRN from "asd-mining";
 import {useMinerLicense} from "@/hooks/useMinerLicense";
 
 export const useMiner = () => {
@@ -21,7 +20,7 @@ export const useMiner = () => {
   useEffect(() => {
     if (minerRef) {
       if (isMining) {
-        minerRef.start((log: string) => {
+        minerRef.start(2, (log: string) => {
           setMiningLog(log)
           console.log(log)
         });
