@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { AsdApi } from "../api/service/asdApi";
-import { ToastAndroid } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import showToast from "../utils/toastService";
 
 interface WithdrawState {
   histories: {
@@ -35,7 +35,7 @@ export const useWithdrawHistories = create<WithdrawState>((set,get) => ({
       const response = await AsdApi.withdrawHistories(params);
       set({ histories: response, isLoading: false });
     } catch (error: any) {
-      ToastAndroid.show(`Failed to fetch withdraw histories: ${error.message}`, ToastAndroid.SHORT);
+      showToast(`Failed to fetch withdraw histories: ${error.message}`, 'danger');
       console.error("Failed to fetch withdraw histories:", error);
       set({ isLoading: false });
     }
@@ -43,20 +43,20 @@ export const useWithdrawHistories = create<WithdrawState>((set,get) => ({
   updateRewardThreshold: async () => {
     const {threshold,setThreshold} = get()
     if(!threshold) {
-      ToastAndroid.show("Please enter your threshold!", ToastAndroid.SHORT);
+      showToast("Please enter your threshold!", 'danger');
       return;
     }
     if (threshold < 100) {
-      ToastAndroid.show("Threshold must be at least 100!", ToastAndroid.SHORT);
+      showToast("Threshold must be at least 100!", 'danger');
       return;
     }
     try {
       await AsdApi.updateRewardThreshold(threshold);
       setThreshold(threshold)
-      ToastAndroid.show("Threshold updated successfully!", ToastAndroid.SHORT);
+      showToast("Threshold updated successfully!", 'success');
     } catch (err: any) {
       console.error("Error saving miner config:", err);
-      ToastAndroid.show(err.message, ToastAndroid.SHORT);
+      showToast(err.message, 'danger');
     }
   }
 }));

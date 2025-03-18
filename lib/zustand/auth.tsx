@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { AsdApi } from "../api/service/asdApi";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
-import { ToastAndroid } from "react-native";
+import showToast from "../utils/toastService";
 
 interface AuthState {
   username: string;
@@ -37,8 +37,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   fetchLogin: async () => {
-    const { username, password, usernameError, passwordError } = get();
-    if (usernameError || passwordError || !username || !password) {
+    const { username, password } = get();
+    if (!username || !password) {
       set({
         usernameError: "Please enter username",
         passwordError: "Please enter password",
@@ -51,11 +51,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const response = await AsdApi.login(username, password);
       await AsyncStorage.setItem("jwt", response.jwt);
       // console.log(response.jwt)
-      ToastAndroid.show("Login successfully", ToastAndroid.SHORT);
+      showToast("Login successfully", "success");
       set({ username: "", password: "" });
       router.push("/(tabs)/Miner");
     } catch (err: any) {
-      ToastAndroid.show(err.message, ToastAndroid.SHORT);
+      showToast(err.message, "danger");
     } finally {
       set({ isLoading: false });
     }
@@ -70,6 +70,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       usernameError: null,
       passwordError: null,
     });
+    showToast("Logout successfully", "success");
     router.push("/auth/Login");
   },
 }));

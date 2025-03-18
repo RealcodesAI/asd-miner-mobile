@@ -8,7 +8,6 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  ToastAndroid,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AsdApi } from "@/lib/api/service/asdApi";
@@ -16,6 +15,7 @@ import LicenseModal from "./LicenseModal";
 import { getUserStore } from "@/lib/zustand/getUser";
 import LoadingModal from "./LoadingModal";
 import { stylesConfig } from "@/app/css/styles/StylesConfig";
+import showToast from "@/lib/utils/toastService";
 
 const MinerConfig = () => {
   const {
@@ -57,14 +57,14 @@ const MinerConfig = () => {
         // Nếu đổi tên, gọi API updateNameLicense
         try {
           await AsdApi.updateNameLicense(minerName, miner.id);
-          ToastAndroid.show("Miner name updated successfully!", ToastAndroid.SHORT); 
+          showToast("Miner name updated successfully!", "success")
           // Cập nhật lại dữ liệu vào AsyncStorage
           const minerData = { walletAddress, minerLicense, minerName, id: miner.id, isConfigured: true, hashRate: miner.hashRate };
           await AsyncStorage.setItem("minerConfig", JSON.stringify(minerData));
           console.log("Updated miner name locally:", minerData);
-        } catch (error) {
-          console.error("Error updating miner name:", error);
-          ToastAndroid.show("Failed to update miner name.", ToastAndroid.SHORT);
+        } catch (err: any) {
+          console.error("Error updating miner name:", err);
+          showToast(err.message, "danger")
         }
       } else {
         // Nếu không đổi, chỉ lưu vào local storage
@@ -72,7 +72,7 @@ const MinerConfig = () => {
         const minerData = { walletAddress, minerLicense, minerName, id: miner.id, isConfigured: true, hashRate: miner.hashRate };
         await AsyncStorage.setItem("minerConfig", JSON.stringify(minerData));
         console.log("Saved minerData locally:", minerData);
-        ToastAndroid.show("Miner configuration saved locally!", ToastAndroid.SHORT);
+        showToast("Miner configuration saved successfully!", "success")
       }
     } else {
       // Nếu thiếu thông tin, gọi saveMinerConfig

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { ToastAndroid } from "react-native";
 import { AsdApi } from "@/lib/api/service/asdApi";
 import {useMinerId} from "@/hooks/useMinerId";
+import showToast from "@/lib/utils/toastService";
 
 export const useMinerReward = () => {
   const [reward, setReward] = useState(0);
@@ -13,7 +13,7 @@ export const useMinerReward = () => {
         const response = await AsdApi.getMiner(Number(minerId));
         setReward(Number((response.reward).toFixed(4)));
       } catch (error: any) {
-        ToastAndroid.show(`Failed to fetch rewards: ${error.message}`, ToastAndroid.SHORT);
+        showToast(`Failed to fetch rewards: ${error.message}`,"danger")
         console.error("Failed to fetch rewards:", error);
       }
     };

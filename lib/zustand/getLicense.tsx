@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { AsdApi } from "../api/service/asdApi";
+import showToast from "../utils/toastService";
 
 interface License {
     id: number
@@ -30,8 +31,9 @@ export const getLicenseStore = create<LicenseStore>((set) => ({
             // console.log(response.contents)
             // console.log(response.totalElements, "totalElements")
             set({ licenses: response.contents });
-        } catch (error) {
-            console.log(error)
+        } catch (err: any) {
+            console.log(err)
+            showToast(err.message, "danger")
         }
     },
     getMinerMine: async () => {
@@ -39,8 +41,9 @@ export const getLicenseStore = create<LicenseStore>((set) => ({
             const response = await AsdApi.getMinersMine(100)
             // console.log(response.contents, "response")
             set({ minerMine: response.contents });
-        } catch (error) {
-            console.log(error)
+        } catch (err: any) {
+            console.log(err)
+            showToast(err.message, "danger")
         }
     }
 }))

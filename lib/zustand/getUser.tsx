@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { AsdApi } from "../api/service/asdApi";
+import showToast from "../utils/toastService";
 
 interface User {
   id: number;
@@ -21,8 +22,9 @@ export const getUserStore = create<AuthState>((set) => ({
     try {
       const response = await AsdApi.getMe();
       set({ user: response });
-    } catch (error) {
-      console.error("Error fetching user:", error);
+    } catch (err: any) {
+      console.error("Error fetching user:", err);
+      showToast(err.message,"danger")
     }
   },
 }));

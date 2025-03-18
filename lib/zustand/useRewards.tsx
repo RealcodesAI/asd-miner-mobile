@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { AsdApi } from "../api/service/asdApi";
-import { ToastAndroid } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import showToast from "../utils/toastService";
 
 interface RewardsState {
   rewards: {
@@ -24,7 +23,7 @@ export const useRewards = create<RewardsState>((set) => ({
       const response = await AsdApi.rewards(params, id);
       set({ rewards: response, isLoading: false });
     } catch (error: any) {
-      ToastAndroid.show(`Failed to fetch rewards: ${error.message}`, ToastAndroid.SHORT);
+      showToast(error.message,"danger");
       console.error("Failed to fetch rewards:", error);
       set({ isLoading: false });
     }
