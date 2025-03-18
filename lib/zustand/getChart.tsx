@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { AsdApi } from "../api/service/asdApi";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ToastAndroid } from "react-native";
+import showToast from "../utils/toastService";
 
 interface Chart {
   minerId: number;
@@ -29,9 +29,9 @@ export const getChartStore = create<ChartState>((set) => ({
       const response = await AsdApi.getDataChart(parsedData?.id);
       set({ chart: response });
       //   console.log(response,'response')
-    } catch (error) {
-      console.log("Error fetching user:", error);
-      ToastAndroid.show("Error fetching user", ToastAndroid.SHORT);
+    } catch (err: any) {
+      console.log("Error fetching user:", err);
+      showToast("Error no license, please enter license", "danger");
     }
   },
 }));

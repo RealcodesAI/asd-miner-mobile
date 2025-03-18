@@ -1,25 +1,25 @@
 import { useState, useEffect } from "react";
-import { ToastAndroid } from "react-native";
 import { AsdApi } from "@/lib/api/service/asdApi";
 import {useMinerId} from "@/hooks/useMinerId";
+import showToast from "@/lib/utils/toastService";
+import {useMinerStore} from "@/lib/zustand/miner";
 
 export const useMinerReward = () => {
   const [reward, setReward] = useState(0);
-  const minerId = useMinerId();
+  const {id} = useMinerStore();
   useEffect(() => {
     const fetchReward = async () => {
-      try {
-        if(!minerId) return;
-        const response = await AsdApi.getMiner(Number(minerId));
+        if(!id) return;
+        const response = await AsdApi.getMiner(Number(id));
         setReward(Number((response.reward).toFixed(4)));
-      } catch (error: any) {
-        ToastAndroid.show(`Failed to fetch rewards: ${error.message}`, ToastAndroid.SHORT);
-        console.error("Failed to fetch rewards:", error);
-      }
     };
 
     fetchReward();
-  }, [minerId]);
+    const interval = setInterval(fetchReward, 30000); // 60 giây
+
+    // Cleanup interval khi component unmount
+    return () => clearInterval(interval);
+  }, [id]);
 
   return reward;
 };

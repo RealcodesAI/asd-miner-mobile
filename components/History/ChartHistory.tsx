@@ -1,4 +1,4 @@
-import { View, Text, Dimensions, ToastAndroid, Pressable } from "react-native";
+import { View, Text, Dimensions, Pressable } from "react-native";
 import React, { useEffect, useState } from "react";
 import { LineChart } from "react-native-chart-kit";
 import Svg, {

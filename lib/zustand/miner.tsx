@@ -1,9 +1,9 @@
 import { create } from "zustand";
 import { AsdApi } from "../api/service/asdApi";
-import { ToastAndroid } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Device from 'expo-device';
 import AsdMiningRN from "asd-mining";
+import showToast from "../utils/toastService";
 // console.log(Device)
 
 interface MinerState {
@@ -42,7 +42,7 @@ export const useMinerStore = create<MinerState>((set, get) => ({
   saveMinerConfig: async () => {
     const { walletAddress, minerLicense, minerName } = get();
     if (!walletAddress) {
-      ToastAndroid.show("Please enter your wallet address!", ToastAndroid.SHORT);
+      showToast("Please enter your wallet address!","danger")
       return;
     }
     try {
@@ -50,7 +50,7 @@ export const useMinerStore = create<MinerState>((set, get) => ({
         await AsdApi.updateWallte(walletAddress);
         await AsyncStorage.setItem("walletAddress", JSON.stringify({ walletAddress }));
         set({ isConfigured: false });
-        ToastAndroid.show("Wallet updated successfully!", ToastAndroid.SHORT);
+        showToast("Wallet updated successfully!","success")
         return;
       }
       set({ isCalculating: true });
@@ -78,10 +78,10 @@ export const useMinerStore = create<MinerState>((set, get) => ({
       await AsyncStorage.setItem("minerConfig", JSON.stringify(minerData));
       console.log(minerData, "minerData")
       set({ isConfigured: true ,id: minerId});
-      ToastAndroid.show("Miner configuration saved successfully!", ToastAndroid.SHORT);
+      showToast("Miner configuration saved successfully!","success")
     } catch (err: any) {
       console.error("Error saving miner config:", err);
-      ToastAndroid.show(err.message, ToastAndroid.SHORT);
+      showToast(err.message,"danger")
     }
   },
   
@@ -93,8 +93,9 @@ export const useMinerStore = create<MinerState>((set, get) => ({
         // console.log("Loaded miner config:", parsedConfig);
         set(parsedConfig);
       }
-    } catch (err) {
+    } catch (err:any) {
       console.error("Error loading miner config:", err);
+      showToast(err.message,"danger")
     }
   },
 }));
