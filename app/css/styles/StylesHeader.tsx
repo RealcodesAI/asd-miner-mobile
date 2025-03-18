@@ -7,7 +7,7 @@ export const stylesHeader = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 20,
     height: 60,
-    marginTop: 10,
+    // marginTop: 10,
   },
   imageGroup: {
     flexDirection: "row",

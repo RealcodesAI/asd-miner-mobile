@@ -9,7 +9,7 @@ export default function RootLayout() {
     if(!token) {
       router.replace("/auth/Login")
     } else {
-      router.replace("/(tabs)/Miner")
+      router.replace("/(tabs)/Config")
     }
   }
   useEffect(() => {
