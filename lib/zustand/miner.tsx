@@ -14,6 +14,7 @@ interface MinerState {
   hashRate:number | string ,
   isConfigured: boolean;
   isCalculating: boolean;
+  setId: (id: number | string) => void;
   setWalletAddress: (address: string) => void;
   setMinerName: (name: string) => void;
   setMinerLicense: (license: string) => void;
@@ -32,6 +33,7 @@ export const useMinerStore = create<MinerState>((set, get) => ({
   isCalculating: false,
   isConfigured: false,
 
+  setId: (id) => set({ id }),
   setWalletAddress: (address) => set({ walletAddress: address }),
   setMinerName: (name) => set({ minerName: name }),
   setMinerLicense: (license) => set({ minerLicense: license }),

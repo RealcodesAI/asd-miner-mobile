@@ -24,6 +24,7 @@ const MinerConfig = () => {
     minerName,
     hashRate,
     isConfigured,
+    setId,
     setWalletAddress,
     setMinerLicense,
     setMinerName,
@@ -67,6 +68,7 @@ const MinerConfig = () => {
         }
       } else {
         // Nếu không đổi, chỉ lưu vào local storage
+        setId(miner.id);
         const minerData = { walletAddress, minerLicense, minerName, id: miner.id, isConfigured: true, hashRate: miner.hashRate };
         await AsyncStorage.setItem("minerConfig", JSON.stringify(minerData));
         console.log("Saved minerData locally:", minerData);

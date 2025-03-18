@@ -12,12 +12,15 @@ import { useMinerReward } from "@/hooks/useMinerReward";
 import { getChartStore } from "@/lib/zustand/getChart";
 import { format, parseISO } from "date-fns";
 import { stylesHistory } from "@/app/css/styles/StylesHistory";
+import { useMinerStore } from "@/lib/zustand/miner";
 
 const screenWidth = Dimensions.get("window").width;
 const chartHeight = 250;
 const ChartHistory = () => {
   const reward = useMinerReward();
   const { getChart, chart } = getChartStore();
+  const {id} = useMinerStore()
+  console.log(id)
   const [tooltip, setTooltip] = useState<{
     x: number;
     y: number;
