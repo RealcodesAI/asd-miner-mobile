@@ -40,7 +40,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     const { username, password, usernameError, passwordError } = get();
     if (usernameError || passwordError || !username || !password) {
       set({
-        usernameError: "Please enter email",
+        usernameError: "Please enter username",
         passwordError: "Please enter password",
       });
       return;

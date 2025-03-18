@@ -7,6 +7,7 @@ import AsdMiningRN from "asd-mining";
 // console.log(Device)
 
 interface MinerState {
+  id: number | string
   walletAddress: string;
   minerName: string;
   minerLicense: string;
@@ -22,6 +23,7 @@ interface MinerState {
 }
 
 export const useMinerStore = create<MinerState>((set, get) => ({
+  id: '',
   walletAddress: "",
   minerName: "",
   minerLicense: "",
@@ -68,11 +70,12 @@ export const useMinerStore = create<MinerState>((set, get) => ({
         hashRate
       };
       const response = await AsdApi.minerConfig(data);
+      const minerId = response?.id
       // console.log(response?.id, "id")
       const minerData = { walletAddress, minerLicense, minerName, isConfigured: true, id: response?.id,hashRate };
       await AsyncStorage.setItem("minerConfig", JSON.stringify(minerData));
       console.log(minerData, "minerData")
-      set({ isConfigured: true });
+      set({ isConfigured: true ,id: minerId});
       ToastAndroid.show("Miner configuration saved successfully!", ToastAndroid.SHORT);
     } catch (err: any) {
       console.error("Error saving miner config:", err);
