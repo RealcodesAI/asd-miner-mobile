@@ -1,6 +1,5 @@
+import { stylesSetting } from '@/app/css/styles/StylesSetting';
 import { View, Text, TouchableOpacity, Image } from 'react-native'
-import React from 'react'
-import { stylesSetting } from '@/app/(tabs)/styles/StylesSetting';
 
 interface MenuItemProps {
     title: string;

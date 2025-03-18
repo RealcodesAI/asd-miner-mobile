@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React from "react";
-import { stylesHeader } from "@/app/(tabs)/styles/StylesHeader";
+import { stylesHeader } from "@/app/css/styles/StylesHeader";
 
 interface Props {
   title: string;

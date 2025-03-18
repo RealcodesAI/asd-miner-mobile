@@ -1,7 +1,6 @@
 import { View, Text, Dimensions, ToastAndroid, Pressable } from "react-native";
 import React, { useEffect, useState } from "react";
 import { LineChart } from "react-native-chart-kit";
-import { stylesHistory } from "@/app/(tabs)/styles/StylesHistory";
 import Svg, {
   Circle,
   Path,
@@ -12,6 +11,7 @@ import Svg, {
 import { useMinerReward } from "@/hooks/useMinerReward";
 import { getChartStore } from "@/lib/zustand/getChart";
 import { format, parseISO } from "date-fns";
+import { stylesHistory } from "@/app/css/styles/StylesHistory";
 
 const screenWidth = Dimensions.get("window").width;
 const chartHeight = 250;

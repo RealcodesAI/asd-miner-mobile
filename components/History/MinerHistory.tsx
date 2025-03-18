@@ -1,8 +1,8 @@
 import {View, Text} from "react-native";
 import React, {useEffect} from "react";
-import { stylesHistory } from "@/app/(tabs)/styles/StylesHistory";
 import {getUserStore} from "@/lib/zustand/getUser";
 import {useMinerReward} from "@/hooks/useMinerReward";
+import { stylesHistory } from "@/app/css/styles/StylesHistory";
 
 const MinerHistory = () => {
   const reward = useMinerReward();

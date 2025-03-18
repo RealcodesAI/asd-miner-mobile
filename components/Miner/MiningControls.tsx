@@ -1,8 +1,8 @@
 import React from "react";
 import {TouchableOpacity, Text, ToastAndroid, TextStyle} from "react-native";
-import { stylesMiner } from "@/app/(tabs)/styles/StylesMiner";
 import {useMinerLicense} from "@/hooks/useMinerLicense";
 import { router } from "expo-router";
+import { stylesMiner } from "@/app/css/styles/StylesMiner";
 
 const MiningControls = ({ isMining, toggleMining } : any) => {
   const minerLicense = useMinerLicense();

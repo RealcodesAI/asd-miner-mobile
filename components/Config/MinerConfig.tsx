@@ -1,4 +1,4 @@
-import { stylesConfig } from "@/app/(tabs)/styles/StylesConfig";
+
 import { getLicenseStore } from "@/lib/zustand/getLicense";
 import { useMinerStore } from "@/lib/zustand/miner";
 import { Link } from "expo-router";
@@ -15,6 +15,7 @@ import { AsdApi } from "@/lib/api/service/asdApi";
 import LicenseModal from "./LicenseModal";
 import { getUserStore } from "@/lib/zustand/getUser";
 import LoadingModal from "./LoadingModal";
+import { stylesConfig } from "@/app/css/styles/StylesConfig";
 
 const MinerConfig = () => {
   const {

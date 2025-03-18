@@ -2,8 +2,8 @@ import React from "react";
 import { View, Text, TextStyle } from "react-native";
 import MiningProgress from "@/components/Miner/MiningProgress";
 import MiningLog from "@/components/Miner/MiningLog";
-import { stylesMiner } from "@/app/(tabs)/styles/StylesMiner";
 import {useMinerHashRate} from "@/hooks/useMinerHashRate";
+import { stylesMiner } from "@/app/css/styles/StylesMiner";
 
 interface MiningStatsProps {
   miningPower: number;

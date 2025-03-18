@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, Image, TextStyle } from "react-native";
-import { stylesMiner } from "@/app/(tabs)/styles/StylesMiner";
 import {useMinerReward} from "@/hooks/useMinerReward";
+import { stylesMiner } from "@/app/css/styles/StylesMiner";
 
 const MinerBalance: React.FC = () => {
   const reward = useMinerReward();

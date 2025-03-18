@@ -1,10 +1,10 @@
 import { View, Text, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
-import { stylesSetting } from '@/app/(tabs)/styles/StylesSetting'
 import { ScrollView } from 'react-native';
 import MenuItem from './MenuItem';
 import Button from '../ButtonAuth/Button';
 import { useAuthStore } from '@/lib/zustand/auth';
+import { stylesSetting } from '@/app/css/styles/StylesSetting';
 
 const SettingOverlay = () => {
   const {fetchLogout} = useAuthStore()

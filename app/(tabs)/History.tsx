@@ -1,11 +1,11 @@
 import { ScrollView, RefreshControl } from "react-native";
 import React, { useState, useCallback } from "react";
-import { stylesHistory } from "./styles/StylesHistory";
 import MinerHistory from "@/components/History/MinerHistory";
 import ChartHistory from "@/components/History/ChartHistory";
 import MiningHistory from "@/components/History/MiningHistory";
 import Header from "@/components/Header/Header";
 import {useRefresh} from "@/hooks/useRefresh";
+import { stylesHistory } from "../css/styles/StylesHistory";
 
 export default function History() {
   const { refreshing, refreshKey, onRefresh } = useRefresh();

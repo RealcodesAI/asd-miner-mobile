@@ -1,7 +1,6 @@
 import React from "react";
 import { View, Text, ScrollView, Image, RefreshControl, TextStyle } from "react-native";
 import Header from "@/components/Header/Header";
-import { stylesMiner } from "@/app/(tabs)/styles/StylesMiner";
 import MiningControls from "@/components/Miner/MiningControls";
 import MiningProgress from "@/components/Miner/MiningProgress";
 import MiningLog from "@/components/Miner/MiningLog";
@@ -9,6 +8,7 @@ import { useMiner } from "@/hooks/useMiner";
 import { useRefresh } from "@/hooks/useRefresh";
 import MinerBalance from "@/components/Miner/MinerBalance";
 import MiningStats from "@/components/Miner/MiningStats";
+import { stylesMiner } from "../css/styles/StylesMiner";
 
 const Miner = () => {
   const { refreshing, refreshKey, onRefresh } = useRefresh();

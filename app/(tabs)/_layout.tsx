@@ -1,7 +1,7 @@
 import { Image, Keyboard, Text } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Tabs } from "expo-router";
-import { tabStyles } from "./styles/StylesTab";
+import { tabStyles } from "../css/styles/StylesTab";
 
 const tabs = [
   { name: "Miner", icon: require("../../assets/icon/desktop-computer.png") },

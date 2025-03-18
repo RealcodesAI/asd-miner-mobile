@@ -1,4 +1,4 @@
-import { stylesWithdraw } from "@/app/(tabs)/styles/StylesWithdraw";
+
 import React, { useEffect } from "react";
 import {
   View,
@@ -9,6 +9,7 @@ import {
 import { useMinerReward } from "@/hooks/useMinerReward";
 import { getUserStore } from "@/lib/zustand/getUser";
 import { useWithdrawHistories } from "@/lib/zustand/useWithdrawHistories";
+import { stylesWithdraw } from "@/app/css/styles/StylesWithdraw";
 
 const WithdrawScreen = () => {
   const reward = useMinerReward();

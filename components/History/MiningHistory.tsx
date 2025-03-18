@@ -1,11 +1,11 @@
 import {View, Text, Image, ActivityIndicator, TouchableOpacity, StyleSheet} from "react-native";
 import React, {useEffect, useState} from "react";
-import { stylesHistory } from "@/app/(tabs)/styles/StylesHistory";
 import {useRewards} from "@/lib/zustand/useRewards";
 // Import the refresh icon
 import { Ionicons } from '@expo/vector-icons';
 import {useMinerId} from "@/hooks/useMinerId";
 import {useMinerName} from "@/hooks/useMinerName";
+import { stylesHistory } from "@/app/css/styles/StylesHistory";
 
 const MiningHistory = () => {
   const { rewards, isLoading, fetchRewards } = useRewards();

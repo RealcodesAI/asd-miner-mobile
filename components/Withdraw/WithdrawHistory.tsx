@@ -1,10 +1,10 @@
 import {View, Text, Image, ActivityIndicator, TouchableOpacity} from "react-native";
 import React, {useEffect, useState} from "react";
-import { stylesWithdraw } from "@/app/(tabs)/styles/StylesWithdraw";
 import {useWithdrawHistories} from "@/lib/zustand/useWithdrawHistories";
 // Import the refresh icon
 import { Ionicons } from '@expo/vector-icons';
 import {useMinerName} from "@/hooks/useMinerName";
+import { stylesWithdraw } from "@/app/css/styles/StylesWithdraw";
 
 const WithdrawHistory = () => {
   const { histories, isLoading, fetchWithdrawHistories } = useWithdrawHistories();

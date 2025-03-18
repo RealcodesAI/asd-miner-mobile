@@ -1,8 +1,8 @@
 import { View, Text, StatusBar, Image } from "react-native";
 import React, { useEffect } from "react";
-import { stylesSetting } from "./styles/StylesSetting";
 import { getUserStore } from "@/lib/zustand/getUser";
 import SettingOverlay from "@/components/Setting/SettingOverlay";
+import { stylesSetting } from "../css/styles/StylesSetting";
 
 const Settings = () => {
   const {user,getMe } = getUserStore()

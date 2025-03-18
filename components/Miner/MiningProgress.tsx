@@ -1,6 +1,6 @@
+import { stylesMiner } from '@/app/css/styles/StylesMiner';
 import React from 'react';
 import { View, Text } from 'react-native';
-import { stylesMiner } from '@/app/(tabs)/styles/StylesMiner';
 
 const MiningProgress = ({ miningPower } : any) => (
   <View style={stylesMiner.progressBarContainer}>

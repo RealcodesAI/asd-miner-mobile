@@ -1,3 +1,4 @@
+import { stylesConfig } from "@/app/css/styles/StylesConfig";
 import React from "react";
 import {
   Modal,
@@ -8,7 +9,6 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
 } from "react-native";
-import { stylesConfig } from "@/app/(tabs)/styles/StylesConfig";
 
 interface LicenseModalProps {
   visible: boolean;
