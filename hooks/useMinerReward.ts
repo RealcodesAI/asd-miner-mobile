@@ -7,6 +7,8 @@ export const useMinerReward = () => {
   const {data: hashRate} = useQuery({
     queryKey: ["pAsdApi.getMiner", id],
     queryFn: async ({queryKey}) => await AsdApi.getMiner(Number(queryKey[1])),
+    enabled: !!id,
+    refetchInterval: 10000,
   });
   return hashRate?.reward;
 };

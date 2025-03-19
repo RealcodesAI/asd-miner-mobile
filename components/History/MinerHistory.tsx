@@ -17,7 +17,7 @@ const MinerHistory = () => {
       <View style={stylesHistory.rewardBox}>
         <View style={{ height: 40, paddingHorizontal: 10 }}>
           <Text style={stylesHistory.rewardText}>
-            Current Reward: {reward} ASD
+            Current Reward: {(reward)?.toFixed(4)} ASD
           </Text>
           <Text style={stylesHistory.nextReward}>
             {user?.rewardThreshold && user?.rewardThreshold - (reward || 0) > 0

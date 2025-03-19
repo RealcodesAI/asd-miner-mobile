@@ -1,14 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import AsdMiningRN from "asd-mining";
-import {useMinerStore} from "@/lib/zustand/miner";
+import { useMinerStore } from "@/lib/zustand/miner";
 
 export const useMiner = () => {
   const [miningPower, setMiningPower] = useState(0);
   const [isMining, setIsMining] = useState(false);
-  const [miningLog, setMiningLog] = useState("");
+  const [miningLog, setMiningLog] = useState<string[]>([]); // Mảng chứa chỉ 1 phần tử mới nhất
 
-  const {minerLicense} = useMinerStore();
-  console.log("Miner License: ", minerLicense);
+  const { minerLicense } = useMinerStore();
   const minerRef = useRef(AsdMiningRN.getInstance(String(minerLicense), "https://be.asdscan.ai"));
 
   const toggleMining = () => {
@@ -21,9 +20,11 @@ export const useMiner = () => {
     if (isMining) {
       minerRef.current.start((progress, message) => {
         setMiningPower(progress); // Cập nhật % mining theo progress log
-        if(progress !== null) {
-          setMiningLog(message);
+
+        if (message !== null) {
+          setMiningLog([message]); // Luôn ghi đè, chỉ chứa log mới nhất
         }
+
         console.log(`Mining Progress: ${progress}`);
         console.log(`Mining Log: ${message}`);
       });
