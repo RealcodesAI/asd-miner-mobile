@@ -51,7 +51,7 @@ const ChartHistory = () => {
     <Pressable onPress={() => setTooltip(null)} style={{ flex: 1 }}>
       <View>
         <Text style={stylesHistory.chartLabel}>Current Reward</Text>
-        <Text style={stylesHistory.chartValue}>{reward.toFixed(4)} ASD</Text>
+        <Text style={stylesHistory.chartValue}>{(reward || 0).toFixed(4)} ASD</Text>
       </View>
 
       <View style={{ position: "relative" }}>

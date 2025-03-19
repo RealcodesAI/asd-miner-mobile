@@ -20,8 +20,8 @@ const MinerHistory = () => {
             Current Reward: {reward} ASD
           </Text>
           <Text style={stylesHistory.nextReward}>
-            {user?.rewardThreshold && user?.rewardThreshold - reward > 0
-              ? `${(user?.rewardThreshold - reward).toFixed(4)} more to next withdraw`
+            {user?.rewardThreshold && user?.rewardThreshold - (reward || 0) > 0
+              ? `${(user?.rewardThreshold - (reward || 0)).toFixed(4)} more to next withdraw`
               : "You can withdraw now"}
             </Text>
         </View>
