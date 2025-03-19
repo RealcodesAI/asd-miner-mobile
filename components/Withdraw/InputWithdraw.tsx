@@ -16,11 +16,10 @@ const WithdrawScreen = () => {
   const { user, getMe } = getUserStore();
   const { threshold, setThreshold, updateRewardThreshold } =
     useWithdrawHistories();
-
     useEffect(() => {
       const fetchData = async () => {
         await getMe();
-        if (user?.rewardThreshold !== undefined) {
+        if (user?.rewardThreshold) {
           setThreshold(user.rewardThreshold);
         }
       };

@@ -19,16 +19,16 @@ const chartHeight = 250;
 const ChartHistory = () => {
   const reward = useMinerReward();
   const { getChart, chart } = getChartStore();
-  const {id} = useMinerStore()
-  console.log(id)
+  const {id} = useMinerStore();
   const [tooltip, setTooltip] = useState<{
     x: number;
     y: number;
     value: number;
   } | null>(null);
   useEffect(() => {
+    if(!id) return
     getChart();
-  }, []);
+  }, [id]);
 
   const hasData = chart && chart.data && chart.data.length > 0;
   // Chuyển đổi dữ liệu API thành format của LineChart

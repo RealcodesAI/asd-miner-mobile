@@ -12,11 +12,13 @@ interface User {
 
 interface AuthState {
   user: User | null;
+  setUser: (user: User | null) => void;
   getMe: () => Promise<void>;
 }
 
 export const getUserStore = create<AuthState>((set) => ({
   user: null,
+  setUser: (user) => set({ user }),
 
   getMe: async () => {
     try {

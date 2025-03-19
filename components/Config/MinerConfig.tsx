@@ -1,7 +1,7 @@
 
 import { getLicenseStore } from "@/lib/zustand/getLicense";
 import { useMinerStore } from "@/lib/zustand/miner";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -32,6 +32,7 @@ const MinerConfig = () => {
     loadMinerConfig,
   } = useMinerStore();
   const {user, getMe} =getUserStore()
+  const router = useRouter()
   const { getLicense, getMinerMine, licenses, minerMine } = getLicenseStore();
   const [isLoading, setIsLoading] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -74,10 +75,12 @@ const MinerConfig = () => {
         await AsyncStorage.setItem("minerConfig", JSON.stringify(minerData));
         console.log("Saved minerData locally:", minerData);
         showToast("Miner configuration saved successfully!", "success")
+        router.push("/(tabs)/Miner");
       }
     } else {
       // Nếu thiếu thông tin, gọi saveMinerConfig
       await saveMinerConfig();
+      router.push("/(tabs)/Miner");
     }
     setIsLoading(false);
   };

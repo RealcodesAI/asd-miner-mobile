@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { AsdApi } from "../api/service/asdApi";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import showToast from "../utils/toastService";
+import { getUserStore } from "./getUser";
 
 interface WithdrawState {
   histories: {
@@ -53,6 +54,8 @@ export const useWithdrawHistories = create<WithdrawState>((set,get) => ({
     try {
       await AsdApi.updateRewardThreshold(threshold);
       setThreshold(threshold)
+      const { getMe } = getUserStore.getState();
+      await getMe();
       showToast("Threshold updated successfully!", 'success');
     } catch (err: any) {
       console.error("Error saving miner config:", err);

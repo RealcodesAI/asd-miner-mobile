@@ -12,7 +12,7 @@ const Withdraw = () => {
 
   return (
     <SafeAreaView style={stylesWithdraw.container}>
-      <ScrollView
+      <ScrollView keyboardShouldPersistTaps="handled"
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
