@@ -1,8 +1,3 @@
-import {View, Text, Image, ActivityIndicator, TouchableOpacity, StyleSheet} from "react-native";
-import React, {useEffect, useState} from "react";
-import {useRewards} from "@/lib/zustand/useRewards";
-// Import the refresh icon
-import { Ionicons } from '@expo/vector-icons';
 import { View, Text, Image, ActivityIndicator, TouchableOpacity } from "react-native";
 import React, { useEffect, useState, useRef } from "react";
 import { useRewards } from "@/lib/zustand/useRewards";
