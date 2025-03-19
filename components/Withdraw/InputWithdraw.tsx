@@ -32,7 +32,7 @@ const WithdrawScreen = () => {
       <View style={{ justifyContent: "center", alignItems: "center" }}>
         <Text style={stylesWithdraw.withdrawLabel}>Current Reward</Text>
         <Text style={stylesWithdraw.withdrawValue}>
-          {reward.toFixed(4)} ASD
+          {(reward || 0).toFixed(4)} ASD
         </Text>
       </View>
 
@@ -54,8 +54,8 @@ const WithdrawScreen = () => {
         </View>
 
         <Text style={stylesWithdraw.infoText}>
-          {user?.rewardThreshold && user?.rewardThreshold - reward > 0
-            ? `${(user?.rewardThreshold - reward).toFixed(
+          {user?.rewardThreshold && user?.rewardThreshold - (reward || 0) > 0
+            ? `${(user?.rewardThreshold - (reward || 0)).toFixed(
                 4
               )} more to next withdraw`
             : "You can withdraw now"}
