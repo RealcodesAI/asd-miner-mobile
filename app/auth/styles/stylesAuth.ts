@@ -50,4 +50,42 @@ export const stylesAuth = StyleSheet.create({
     color: "#fff",
     textDecorationLine: "underline",
   },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Nền tối mờ
+  },
+  modalContent: {
+    width: "90%",
+    padding: 20,
+    backgroundColor: "#333",
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  inputModal: {
+    backgroundColor: "#3D3C3C",
+    height: 46,
+    width: '100%',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    color: "#fff",
+    marginBottom: 10
+  },
+  modalTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 15,
+    fontFamily: "Roboto",
+    color: "white",
+    textAlign: "center",
+    marginTop: 20
+  },
+  
+  closeButton: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    padding: 5,
+  },
 });

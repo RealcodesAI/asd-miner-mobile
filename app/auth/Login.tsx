@@ -8,15 +8,19 @@ import {
   Image,
   KeyboardAvoidingView,
   Platform,
+  Modal,
+  TouchableWithoutFeedback,
 } from "react-native";
-import Icon from "react-native-vector-icons/Feather";
 import Button from "@/components/ButtonAuth/Button";
 import { useRouter } from "expo-router";
 import { stylesAuth } from "./styles/stylesAuth";
 import { useAuthStore } from "@/lib/zustand/auth";
+import { Ionicons } from "@expo/vector-icons";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [otp, setOtp] = useState("");
   const router = useRouter();
   const {
     username,
@@ -26,16 +30,33 @@ const Login = () => {
     setUsername,
     setPassword,
     fetchLogin,
+    verify2FA,
   } = useAuthStore();
+
+  const handleLogin = async () => {
+    const requires2FA = await fetchLogin();
+    if (requires2FA) {
+      setModalVisible(true);
+    }
+  };
+
+  const handleVerify2FA = async () => {
+    const success = await verify2FA(username, otp, "2fa");
+    // console.log(otp)
+    if (success) {
+      setModalVisible(false);
+      router.push("/(tabs)/Miner");
+    }
+  };
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"} // Dịch input khi bàn phím mở
-      style={{ flex: 1 ,backgroundColor: "#000",}}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1, backgroundColor: "#000" }}
     >
       <ScrollView
         contentContainerStyle={stylesAuth.container}
-        keyboardShouldPersistTaps="handled" // Cho phép chạm bên ngoài để đóng bàn phím
+        keyboardShouldPersistTaps="handled"
       >
         <Image source={require("../../assets/images/logoAsd.png")} />
         <Text style={stylesAuth.title}>Welcome to ASD miner {"\n"}</Text>
@@ -53,9 +74,9 @@ const Login = () => {
                 value={username}
                 onChangeText={setUsername}
               />
-              <Icon
-                name="user"
-                size={15}
+              <Ionicons
+                name="person-outline"
+                size={18}
                 color="#AEA8B2"
                 style={stylesAuth.icon}
               />
@@ -78,9 +99,9 @@ const Login = () => {
                 onChangeText={setPassword}
               />
               <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-                <Icon
-                  name={showPassword ? "eye" : "eye-off"}
-                  size={15}
+                <Ionicons
+                  name={showPassword ? "eye-outline" : "eye-off-outline"}
+                  size={18}
                   color="#AEA8B2"
                   style={stylesAuth.icon}
                 />
@@ -91,15 +112,60 @@ const Login = () => {
             )}
           </View>
 
-          <Button title={"Login"} onPress={fetchLogin} />
+          {/* Nút Login sẽ mở modal */}
+          <Button title={"Login"} onPress={handleLogin} />
         </View>
 
-        <TouchableOpacity onPress={() => router.push("https://ct360.io/Members/Register?ref=undefined")}>
+        <TouchableOpacity
+          onPress={() =>
+            router.push("https://ct360.io/Members/Register?ref=undefined")
+          }
+        >
           <Text style={stylesAuth.registerText}>
             Register for a ct360 account
           </Text>
         </TouchableOpacity>
       </ScrollView>
+
+      {/* MODAL */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+          <View style={stylesAuth.modalContainer}>
+            <View style={stylesAuth.modalContent}>
+              {/* Nút đóng bằng Icon X ở góc phải */}
+              <TouchableOpacity
+                style={stylesAuth.closeButton}
+                onPress={() => setModalVisible(false)}
+              >
+                <Ionicons name="close" size={24} color="white" />
+              </TouchableOpacity>
+
+              <Text style={stylesAuth.modalTitle}>
+                Two-Factor Authentication
+              </Text>
+              <Text style={stylesAuth.textInput}>
+                Enter an authenticator app code
+              </Text>
+              <TextInput
+                style={stylesAuth.inputModal}
+                placeholder="2FA Code"
+                placeholderTextColor="#676767"
+                value={otp}
+                onChangeText={setOtp}
+              />
+              <Button
+                title="Confirm"
+                onPress={handleVerify2FA}
+              />
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
     </KeyboardAvoidingView>
   );
 };
