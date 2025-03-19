@@ -1,58 +1,48 @@
-import {View, Text, Image, ActivityIndicator, TouchableOpacity, StyleSheet} from "react-native";
-import React, {useEffect, useState} from "react";
-import {useRewards} from "@/lib/zustand/useRewards";
-// Import the refresh icon
-import { Ionicons } from '@expo/vector-icons';
-import {useMinerId} from "@/hooks/useMinerId";
-import {useMinerName} from "@/hooks/useMinerName";
+import { View, Text, Image, ActivityIndicator, TouchableOpacity } from "react-native";
+import React, { useEffect, useState, useRef } from "react";
+import { useRewards } from "@/lib/zustand/useRewards";
+import { Ionicons } from "@expo/vector-icons";
 import { stylesHistory } from "@/app/css/styles/StylesHistory";
-import {useMinerStore} from "@/lib/zustand/miner";
+import { useMinerStore } from "@/lib/zustand/miner";
 
-const MiningHistory = () => {
+const MiningHistory = ({ loadMore } : any) => {
   const { rewards, isLoading, fetchRewards } = useRewards();
-  const [currentPage, setCurrentPage] = useState(0);
-  const limit = 10;
-  const totalPages = Number(rewards?.total) / limit;
-  const {id,minerName} = useMinerStore();
+  const [limit, setLimit] = useState(10);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const { id, minerName } = useMinerStore();
+  const prevLoadMore = useRef(loadMore);
+
   useEffect(() => {
     loadRewards();
-    const interval = setInterval(loadRewards, 30000);
-    // Cleanup interval khi component unmount
-    return () => clearInterval(interval);
-  }, [currentPage, id]);
+  }, [limit, id]);
 
-  const loadRewards = () => {
-    if(id) {
-      const params = {
-        page: currentPage,
-        limit: limit,
-      };
-      fetchRewards(params, id);
+  // Phát hiện khi nào loadMore thay đổi từ false -> true
+  useEffect(() => {
+    if (loadMore && !prevLoadMore.current && !loadingMore && rewards?.contents && rewards?.contents?.length < rewards?.total) {
+      setLimit(prev => prev + 10);
+    }
+    prevLoadMore.current = loadMore;
+  }, [loadMore]);
+
+  const loadRewards = async () => {
+    if (id) {
+      const params = { limit };
+      setLoadingMore(true);
+      await fetchRewards(params, id);
+      setLoadingMore(false);
     }
   };
 
   const handleRefresh = () => {
-    // Reset to first page and reload data
-    setCurrentPage(0);
+    setLimit(10);
     loadRewards();
   };
 
-  const handleNextPage = () => {
-    if (totalPages && currentPage < totalPages - 1) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const handlePreviousPage = () => {
-    if (currentPage > 0) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  if (isLoading) return <ActivityIndicator size="large" color="#0000ff" />;
+  if (isLoading && limit === 10) return <ActivityIndicator size="large" color="#0000ff" />;
 
   return (
-    <>
+    <View style={{ flex: 1 }}>
+      {/* Header */}
       <View style={stylesHistory.headerContainer}>
         <Text style={stylesHistory.historyTitle}>Mining history</Text>
         <TouchableOpacity onPress={handleRefresh} style={stylesHistory.refreshButton}>
@@ -60,17 +50,14 @@ const MiningHistory = () => {
         </TouchableOpacity>
       </View>
 
-      {rewards?.contents.map((item, index) => (
+      {/* Danh sách lịch sử */}
+      {rewards?.contents?.map((item, index) => (
         <View key={index} style={stylesHistory.historyItem}>
           {/* Avatar */}
           <View style={stylesHistory.avatarContainer}>
-            <Image
-              source={require("../../assets/images/avatar/image 173.png")}
-              style={stylesHistory.avatar}
-            />
+            <Image source={require("../../assets/images/avatar/image 173.png")} style={stylesHistory.avatar} />
           </View>
-
-          {/* Nội dung */}
+          {/* Content */}
           <View style={{ flex: 1, marginLeft: 10 }}>
             <View style={stylesHistory.rowBetween}>
               <Text style={stylesHistory.amount}>{parseFloat(item.reward).toFixed(4)} ASD</Text>
@@ -82,29 +69,13 @@ const MiningHistory = () => {
         </View>
       ))}
 
-      {/* Pagination Controls */}
-      <View style={stylesHistory.paginationContainer}>
-        <TouchableOpacity
-          onPress={handlePreviousPage}
-          disabled={currentPage === 0}
-          style={[stylesHistory.paginationButton, currentPage === 0 && stylesHistory.disabledButton]}
-        >
-          <Text style={stylesHistory.paginationButtonText}>Previous</Text>
-        </TouchableOpacity>
-
-        <Text style={stylesHistory.pageIndicator}>
-          Page {currentPage + 1} of {totalPages || 1}
-        </Text>
-
-        <TouchableOpacity
-          onPress={handleNextPage}
-          disabled={!totalPages || currentPage >= totalPages - 1}
-          style={[stylesHistory.paginationButton, (!totalPages|| currentPage >= totalPages - 1) && stylesHistory.disabledButton]}
-        >
-          <Text style={stylesHistory.paginationButtonText}>Next</Text>
-        </TouchableOpacity>
-      </View>
-    </>
+      {/* Loading indicator */}
+      {loadingMore && (
+        <View style={{ alignItems: 'center', padding: 10 }}>
+          <ActivityIndicator size="small" color="#0000ff" />
+        </View>
+      )}
+    </View>
   );
 };
 
