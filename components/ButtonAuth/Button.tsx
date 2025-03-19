@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
+import { Text, TouchableOpacity, StyleSheet } from 'react-native'
 import React from 'react'
 
 interface Props {
@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
         width: '100%',
         borderRadius: 12,
         height: 55,
-        marginTop: 10
+        marginTop: 5
     },
      text: {
         color: '#1F1F1F',

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import showToast from "@/lib/utils/toastService";
 
 export const useMinerLicense = () => {
   const [minerLicense, setMinerLicense] = useState<string | null>(null);
@@ -12,8 +13,9 @@ export const useMinerLicense = () => {
           const parsedData = JSON.parse(storedData);
           setMinerLicense(parsedData.minerLicense || null);
         }
-      } catch (error) {
-        console.error("Lỗi khi lấy minerLicense:", error);
+      } catch (err: any) {
+        console.error("Lỗi khi lấy minerLicense:", err);
+        showToast(`Lỗi khi lấy minerLicense:${err.message}`, "danger")
       }
     };
 

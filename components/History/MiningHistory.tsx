@@ -3,8 +3,6 @@ import React, {useEffect, useState} from "react";
 import {useRewards} from "@/lib/zustand/useRewards";
 // Import the refresh icon
 import { Ionicons } from '@expo/vector-icons';
-import {useMinerId} from "@/hooks/useMinerId";
-import {useMinerName} from "@/hooks/useMinerName";
 import { stylesHistory } from "@/app/css/styles/StylesHistory";
 import {useMinerStore} from "@/lib/zustand/miner";
 
