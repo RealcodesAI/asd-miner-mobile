@@ -10,7 +10,7 @@ const MinerBalance: React.FC = () => {
   return (
     <View>
       <Text style={stylesMiner.balance as TextStyle}>
-        {reward.toFixed(4)} ASD
+        {reward?.toFixed(4)} ASD
       </Text>
       <Text style={stylesMiner.name as TextStyle}>
         {minerName}

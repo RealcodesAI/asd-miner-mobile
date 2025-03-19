@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import AsdMiningRN from "asd-mining";
-import { useMinerLicense } from "@/hooks/useMinerLicense";
 import {useMinerStore} from "@/lib/zustand/miner";
 
 export const useMiner = () => {
