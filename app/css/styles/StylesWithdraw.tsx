@@ -120,12 +120,11 @@ export const stylesWithdraw = StyleSheet.create({
     fontWeight: 600,
     fontFamily: "Roboto"
   },
-  detail: {
+  detail:  {
     color: "#8B8B8B",
     fontSize: 10.5,
     fontFamily: "Roboto",
     fontWeight: 400,
-    marginTop: 2
   },
 
   time: {

@@ -1,14 +1,12 @@
 import {View, Text, Image, ActivityIndicator, TouchableOpacity} from "react-native";
 import React, {useEffect, useState} from "react";
 import {useWithdrawHistories} from "@/lib/zustand/useWithdrawHistories";
-// Import the refresh icon
-import { Ionicons } from '@expo/vector-icons';
-import {useMinerName} from "@/hooks/useMinerName";
-import { stylesWithdraw } from "@/app/css/styles/StylesWithdraw";
+import {Ionicons} from '@expo/vector-icons';
+import {stylesWithdraw} from "@/app/css/styles/StylesWithdraw";
 import {useMinerStore} from "@/lib/zustand/miner";
 
 const WithdrawHistory = () => {
-  const { histories, isLoading, fetchWithdrawHistories } = useWithdrawHistories();
+  const {histories, isLoading, fetchWithdrawHistories} = useWithdrawHistories();
   const [page, setPage] = useState(0);
   const limit = 10;
   const {minerName} = useMinerStore()
@@ -30,14 +28,14 @@ const WithdrawHistory = () => {
     loadHistories();
   };
 
-  if (isLoading) return <ActivityIndicator size="large" color="#0000ff" />;
+  if (isLoading) return <ActivityIndicator size="large" color="#0000ff"/>;
 
   return (
     <>
       <View style={stylesWithdraw.headerContainer}>
         <Text style={stylesWithdraw.historyTitle}>Withdraw history</Text>
         <TouchableOpacity onPress={handleRefresh} style={stylesWithdraw.refreshButton}>
-          <Ionicons name="refresh" size={24} color="#333" />
+          <Ionicons name="refresh" size={24} color="#333"/>
         </TouchableOpacity>
       </View>
 
@@ -52,13 +50,21 @@ const WithdrawHistory = () => {
           </View>
 
           {/* Nội dung */}
-          <View style={{ flex: 1, marginLeft: 15 }}>
+          <View style={{flex: 1, marginLeft: 15}}>
             <View style={stylesWithdraw.rowBetween}>
               <Text style={stylesWithdraw.amount}>{item.amount} ASD</Text>
               <Text style={stylesWithdraw.time}>  {new Date(item.createdAt).toLocaleString("vi-VN")}  </Text>
             </View>
             <View style={{marginTop: 7}}>
-              <Text style={stylesWithdraw.detail}>Receipient: {item.recipient}</Text>
+              <Text style={stylesWithdraw.detail}>
+                recipient: {item.recipient?.slice(0, 6)}...{item.recipient?.slice(-4)}
+              </Text>
+              <Text style={stylesWithdraw.detail}>
+                txHash:{" "}
+                <Text style={{color: '#1E66D2', textDecorationLine: 'underline'}}>
+                  {item.txHash?.slice(0, 6)}...{item.txHash?.slice(-4)}
+                </Text>
+              </Text>
               <Text style={stylesWithdraw.detail}>Miner: {minerName}</Text>
             </View>
           </View>
