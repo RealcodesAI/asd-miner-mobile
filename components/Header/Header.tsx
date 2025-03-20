@@ -9,7 +9,7 @@ interface Props {
 }
 
 const Header = ({ title }: Props) => {
-  const { userCt } = getUserStore();
+  const { user } = getUserStore();
   return (
     <View style={{ flex: 1 }}>
       {/* Header */}
@@ -31,17 +31,14 @@ const Header = ({ title }: Props) => {
           </TouchableOpacity>
 
           <TouchableOpacity>
-            {userCt?.avatar ? (
-              <Image
-                source={{ uri: userCt?.avatar }}
-                style={[
-                  stylesHeader.icon,
-                  { borderWidth: 1, borderColor: "#fff", borderRadius: 50 },
-                ]}
-              />
-            ) : (
-              <Ionicons name="person-outline" size={24} color="#AEA8B2" />
-            )}
+            <Image
+              source={
+                user?.avatar
+                  ? { uri: user?.avatar }
+                  : require("../../assets/images/image-user-default.png")
+              }
+              style={[stylesHeader.icon,{borderRadius:100}]}
+            />
           </TouchableOpacity>
         </View>
       </View>
