@@ -39,7 +39,7 @@ export const stylesSetting = StyleSheet.create({
         position: "absolute",
         left: 0,
         right: 0,
-        top: 200,
+        top: '32%',
         paddingHorizontal: 20,
       },
       section: {
