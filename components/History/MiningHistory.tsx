@@ -7,7 +7,7 @@ import { useMinerStore } from "@/lib/zustand/miner";
 
 const MiningHistory = ({ loadMore } : any) => {
   const { rewards, isLoading, fetchRewards } = useRewards();
-  const [limit, setLimit] = useState(10);
+  const [limit, setLimit] = useState(5);
   const [loadingMore, setLoadingMore] = useState(false);
   const { id, minerName } = useMinerStore();
   const prevLoadMore = useRef(loadMore);
@@ -19,7 +19,7 @@ const MiningHistory = ({ loadMore } : any) => {
   // Phát hiện khi nào loadMore thay đổi từ false -> true
   useEffect(() => {
     if (loadMore && !prevLoadMore.current && !loadingMore && rewards?.contents && rewards?.contents?.length < rewards?.total) {
-      setLimit(prev => prev + 10);
+      setLimit(prev => prev + 5);
     }
     prevLoadMore.current = loadMore;
   }, [loadMore]);
@@ -34,11 +34,11 @@ const MiningHistory = ({ loadMore } : any) => {
   };
 
   const handleRefresh = () => {
-    setLimit(10);
+    setLimit(5);
     loadRewards();
   };
 
-  if (isLoading && limit === 10) return <ActivityIndicator size="large" color="#0000ff" />;
+  if (isLoading && limit === 5) return <ActivityIndicator size="large" color="#0000ff" />;
 
   return (
     <View style={{ flex: 1 }}>
