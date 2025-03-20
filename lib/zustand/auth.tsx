@@ -88,6 +88,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     try {
       await AsyncStorage.removeItem("jwt");
       await AsyncStorage.removeItem("minerConfig");
+      await AsyncStorage.removeItem("walletAddress");
       const jwt = await AsyncStorage.getItem("jwt");
 
       if (!jwt) {

@@ -4,6 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Device from 'expo-device';
 import AsdMiningRN from "asd-mining";
 import showToast from "../utils/toastService";
+import { router } from "expo-router";
 // console.log(Device)
 
 interface MinerState {
@@ -46,12 +47,12 @@ export const useMinerStore = create<MinerState>((set, get) => ({
       return;
     }
     try {
-      if (!minerLicense || !minerName) {
+      if (!minerLicense ) {
         await AsdApi.updateWallte(walletAddress);
         await AsyncStorage.setItem("walletAddress", JSON.stringify({ walletAddress }));
         set({ isConfigured: false });
         showToast("Wallet updated successfully!","success")
-        return;
+        // return;
       }
       set({ isCalculating: true });
       // Tính hashRate bằng AsdMiningRN
@@ -79,6 +80,7 @@ export const useMinerStore = create<MinerState>((set, get) => ({
       console.log(minerData, "minerData")
       set({ isConfigured: true ,id: minerId});
       showToast("Miner configuration saved successfully!","success")
+      router.push("/(tabs)/Miner")
     } catch (err: any) {
       console.log("Error saving miner config:", err);
       showToast(err.message,"danger")

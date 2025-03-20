@@ -8,6 +8,7 @@ export const stylesSetting = StyleSheet.create({
       header: {
         backgroundColor: "#FFD700",
         paddingBottom: 50,
+        height: "40%"
       },
       headerText: {
         fontSize: 18,

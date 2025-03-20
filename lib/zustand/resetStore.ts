@@ -6,7 +6,8 @@ export const resetAllStores = () => {
         id: "",
         minerName: "",
         minerLicense: "",
-        hashRate: ""
+        hashRate: "",
+        walletAddress: "",
     })
     useAuthStore.setState({
         username: "",

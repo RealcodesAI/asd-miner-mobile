@@ -36,6 +36,7 @@ const MinerConfig = () => {
   const router = useRouter()
   const { getLicense, getMinerMine, licenses, minerMine } = getLicenseStore();
   const [isLoading, setIsLoading] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const maskText = (text: string, startLength = 11, endLength = 11) => {
     if (!text || text.length <= startLength + endLength) return text;
@@ -52,6 +53,7 @@ const MinerConfig = () => {
     setMinerName(nameLicense ? nameLicense.name : "");
   };
   const handleSave = async () => {
+    setIsSaved(true);
     setIsLoading(true);
     const miner = minerMine.find(miner => miner.license === minerLicense);
     if (miner && miner.id) {
@@ -84,7 +86,6 @@ const MinerConfig = () => {
     } else {
       // Nếu thiếu thông tin, gọi saveMinerConfig
       await saveMinerConfig();
-      router.push("/(tabs)/Miner");
     }
     setIsLoading(false);
   };
@@ -92,6 +93,7 @@ const MinerConfig = () => {
     if(userWallet?.walletAddress) {
       console.log(userWallet?.walletAddress)
       setWalletAddress(userWallet?.walletAddress)
+      setIsSaved(true);
     }
   }, [userWallet])
 
@@ -111,10 +113,10 @@ const MinerConfig = () => {
 
       <Text style={stylesConfig.label}>Wallet Address</Text>
       <TextInput
-        style={[stylesConfig.input, walletAddress && stylesConfig.disabledInput]}
+        style={[stylesConfig.input, isSaved && stylesConfig.disabledInput]}
         value={maskText(walletAddress)}
         onChangeText={setWalletAddress}
-        editable={!walletAddress}
+        editable={!walletAddress} 
       />
       <Text style={stylesConfig.hintText}>
         Your reward wallet address. Accept EVM wallet address
