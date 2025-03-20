@@ -13,18 +13,18 @@ import { stylesWithdraw } from "@/app/css/styles/StylesWithdraw";
 
 const WithdrawScreen = () => {
   const reward = useMinerReward();
-  const { user, getMe } = getUserStore();
+  const { userWallet, getUserWallet } = getUserStore();
   const { threshold, setThreshold, updateRewardThreshold } =
     useWithdrawHistories();
     useEffect(() => {
       const fetchData = async () => {
-        await getMe();
-        if (user?.rewardThreshold) {
-          setThreshold(user.rewardThreshold);
+        await getUserWallet();
+        if (userWallet?.rewardThreshold) {
+          setThreshold(userWallet.rewardThreshold);
         }
       };
       fetchData();
-    }, [user?.rewardThreshold]);
+    }, [userWallet?.rewardThreshold]);
   return (
     <View style={{ marginHorizontal: 20 }}>
       <Text style={stylesWithdraw.withdrawText}>Withdraw your reward</Text>
@@ -54,8 +54,8 @@ const WithdrawScreen = () => {
         </View>
 
         <Text style={stylesWithdraw.infoText}>
-          {user?.rewardThreshold && user?.rewardThreshold - (reward || 0) > 0
-            ? `${(user?.rewardThreshold - (reward || 0)).toFixed(
+          {userWallet?.rewardThreshold && userWallet?.rewardThreshold - (reward || 0) > 0
+            ? `${(userWallet?.rewardThreshold - (reward || 0)).toFixed(
                 4
               )} more to next withdraw`
             : "You can withdraw now"}

@@ -54,8 +54,8 @@ export const useWithdrawHistories = create<WithdrawState>((set,get) => ({
     try {
       await AsdApi.updateRewardThreshold(threshold);
       setThreshold(threshold)
-      const { getMe } = getUserStore.getState();
-      await getMe();
+      const { getUserWallet } = getUserStore.getState();
+      await getUserWallet();
       showToast("Threshold updated successfully!", 'success');
     } catch (err: any) {
       console.log("Error saving miner config:", err);

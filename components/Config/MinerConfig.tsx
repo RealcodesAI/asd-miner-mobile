@@ -16,6 +16,7 @@ import { getUserStore } from "@/lib/zustand/getUser";
 import LoadingModal from "./LoadingModal";
 import { stylesConfig } from "@/app/css/styles/StylesConfig";
 import showToast from "@/lib/utils/toastService";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 const MinerConfig = () => {
   const {
@@ -31,7 +32,7 @@ const MinerConfig = () => {
     saveMinerConfig,
     loadMinerConfig,
   } = useMinerStore();
-  const {user, getMe} =getUserStore()
+  const {getUserWallet, userWallet} =getUserStore()
   const router = useRouter()
   const { getLicense, getMinerMine, licenses, minerMine } = getLicenseStore();
   const [isLoading, setIsLoading] = useState(false);
@@ -58,16 +59,19 @@ const MinerConfig = () => {
         // Nếu đổi tên, gọi API updateNameLicense
         try {
           await AsdApi.updateNameLicense(minerName, miner.id);
+          await getMinerMine()
           showToast("Miner name updated successfully!", "success")
           // Cập nhật lại dữ liệu vào AsyncStorage
           const minerData = { walletAddress, minerLicense, minerName, id: miner.id, isConfigured: true, hashRate: miner.hashRate };
           await AsyncStorage.setItem("minerConfig", JSON.stringify(minerData));
           console.log("Updated miner name locally:", minerData);
+          router.push("/(tabs)/Miner");
         } catch (err: any) {
           console.log("Error updating miner name:", err);
           showToast(err.message, "danger")
         }
       } else {
+        setIsLoading(true);
         // Nếu không đổi, chỉ lưu vào local storage
         setId(miner.id);
         setMinerName(miner.name)
@@ -85,16 +89,17 @@ const MinerConfig = () => {
     setIsLoading(false);
   };
   useEffect(() => {
-    if(user?.walletAddress) {
-      setWalletAddress(user?.walletAddress)
+    if(userWallet?.walletAddress) {
+      console.log(userWallet?.walletAddress)
+      setWalletAddress(userWallet?.walletAddress)
     }
-  }, [user])
+  }, [userWallet])
 
   useEffect(() => {
     loadMinerConfig();
     getLicense();
     getMinerMine();
-    getMe()
+    getUserWallet()
   }, []);
 
   return (

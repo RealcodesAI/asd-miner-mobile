@@ -18,6 +18,9 @@ export const AsdApi = {
     getMe: async (): Promise<any> => {
         return await axiosClientCT.get('user/me')
     },
+    getMeWallet: async (): Promise<any> => {
+        return await axiosClient.get('user/me')
+    },
     updateWallte: async (walletAddress: string): Promise<any> => {
         return await axiosClient.post('user/update-wallet', {
             walletAddress
