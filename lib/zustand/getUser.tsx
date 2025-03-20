@@ -4,10 +4,11 @@ import showToast from "../utils/toastService";
 
 interface User {
   id: number;
-  ct360UserName: string;
+  username: string;
   walletAddress: string;
   ct360UserId: number;
   rewardThreshold: number
+  avatar: string;
 }
 
 interface AuthState {
