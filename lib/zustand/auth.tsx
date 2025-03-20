@@ -3,25 +3,24 @@ import { AsdApi } from "../api/service/asdApi";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import showToast from "../utils/toastService";
+import { resetAllStores } from "./resetStore";
 
 interface AuthState {
   username: string;
   password: string;
-  captcha: string;
   isLoading: boolean;
   usernameError: string | null;
   passwordError: string | null;
   setUsername: (username: string) => void;
   setPassword: (password: string) => void;
   fetchLogin: () => Promise<boolean>;
-  verify2FA: (username: string, otp: string, type: string) => Promise<boolean>;
+  verify2FA: (username: string, otp: string) => Promise<boolean>;
   fetchLogout: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
   username: "",
   password: "",
-  captcha:"string",
   isLoading: false,
   usernameError: null,
   passwordError: null,
@@ -40,7 +39,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   fetchLogin: async () => {
-    const { username, password, captcha } = get();
+    const { username, password } = get();
     if (!username || !password) {
       set({
         usernameError: "Please enter username",
@@ -51,10 +50,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
     set({ isLoading: true });
     try {
-      const response = await AsdApi.login(username, password,captcha);
+      const response = await AsdApi.login(username, password);
       console.log(response);
-      if(response && response.nextStep && response.nextStep === "2fa"){
-        set({username})
+      if (response && response.nextStep && response.nextStep === "2fa") {
+        set({ username });
         return true;
       }
       await AsyncStorage.setItem("jwt", response.jwt);
@@ -65,34 +64,40 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       return false;
     } catch (err: any) {
       showToast(err.message, "danger");
+      console.log(err);
       return false;
     } finally {
       set({ isLoading: false });
     }
   },
 
-  verify2FA: async (username, otp, type) => {
+  verify2FA: async (username, otp) => {
     try {
-      const response = await AsdApi.verify2FA(username, otp, type);
+      const response = await AsdApi.verify2FA(username, otp);
       await AsyncStorage.setItem("jwt", response.jwt);
       showToast("2FA verified successfully", "success");
       return true;
     } catch (err: any) {
+      console.log(err);
       showToast(`2FA verification failed: ${err.message}`, "danger");
       return false;
     }
   },
 
   fetchLogout: async () => {
-    await AsyncStorage.removeItem("jwt");
-    // await AsyncStorage.removeItem("minerConfig");
-    set({
-      username: "",
-      password: "",
-      usernameError: null,
-      passwordError: null,
-    });
-    showToast("Logout successfully", "success");
-    router.push("/auth/Login");
+    try {
+      await AsyncStorage.removeItem("jwt");
+      await AsyncStorage.removeItem("minerConfig");
+      const jwt = await AsyncStorage.getItem("jwt");
+
+      if (!jwt) {
+        // Chỉ gọi resetAllStores() nếu jwt thực sự bị xóa
+        resetAllStores();
+      }
+      showToast("Logout successfully", "success");
+      router.push("/auth/Login");
+    } catch (error) {
+      console.log("Logout failed:", error);
+    }
   },
 }));

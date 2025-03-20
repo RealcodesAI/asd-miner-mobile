@@ -14,7 +14,7 @@ export const useMinerLicense = () => {
           setMinerLicense(parsedData.minerLicense || null);
         }
       } catch (err: any) {
-        console.error("Lỗi khi lấy minerLicense:", err);
+        console.log("Lỗi khi lấy minerLicense:", err);
         showToast(`Lỗi khi lấy minerLicense:${err.message}`, "danger")
       }
     };

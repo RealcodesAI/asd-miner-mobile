@@ -3,18 +3,16 @@ import {Miner} from "@/types";
 import { axiosClientCT } from "../config/axiosClientCT";
 
 export const AsdApi = {
-    login: async (username: string, password: string, captcha: string): Promise<any> => {
-        return await axiosClientCT.post('auth/login', {
+    login: async (username: string, password: string): Promise<any> => {
+        return await axiosClient.post('user/login', {
             username,
             password,
-            captcha
         })
     },
-    verify2FA: async (username: string, otp: string,type: string): Promise<any> => {
-        return await axiosClientCT.post('user-auth/verify-login', {
+    verify2FA: async (username: string, otp: string): Promise<any> => {
+        return await axiosClient.post('user/2fa', {
             username,
-            otp,
-            type
+            otp
     })
     },
     getMe: async (): Promise<any> => {

@@ -1,17 +1,15 @@
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 import React from "react";
 import { stylesHeader } from "@/app/css/styles/StylesHeader";
+import { getUserStore } from "@/lib/zustand/getUser";
+import { Ionicons } from "@expo/vector-icons";
 
 interface Props {
   title: string;
 }
 
 const Header = ({ title }: Props) => {
+  const { userCt } = getUserStore();
   return (
     <View style={{ flex: 1 }}>
       {/* Header */}
@@ -33,10 +31,17 @@ const Header = ({ title }: Props) => {
           </TouchableOpacity>
 
           <TouchableOpacity>
-            <Image
-              source={require("../../assets/images/avatar/unsplash_X6Uj51n5CE8.png")}
-              style={stylesHeader.icon}
-            />
+            {userCt?.avatar ? (
+              <Image
+                source={{ uri: userCt?.avatar }}
+                style={[
+                  stylesHeader.icon,
+                  { borderWidth: 1, borderColor: "#fff", borderRadius: 50 },
+                ]}
+              />
+            ) : (
+              <Ionicons name="person-outline" size={24} color="#AEA8B2" />
+            )}
           </TouchableOpacity>
         </View>
       </View>

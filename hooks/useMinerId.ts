@@ -14,7 +14,7 @@ export const useMinerId = () => {
           setMinerId(parsedData.id || null);
         }
       } catch (err: any) {
-        console.error("Lỗi khi lấy minerLicense:", err);
+        console.log("Lỗi khi lấy minerLicense:", err);
         showToast(`Lỗi khi lấy minerLicense:${err.message}`, "danger")
       }
     };

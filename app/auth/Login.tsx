@@ -41,7 +41,7 @@ const Login = () => {
   };
 
   const handleVerify2FA = async () => {
-    const success = await verify2FA(username, otp, "2fa");
+    const success = await verify2FA(username, otp);
     // console.log(otp)
     if (success) {
       setModalVisible(false);
