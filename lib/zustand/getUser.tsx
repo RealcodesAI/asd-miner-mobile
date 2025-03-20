@@ -35,7 +35,6 @@ export const getUserStore = create<AuthState>((set) => ({
   getMe: async () => {
     try {
       const response = await AsdApi.getMe();
-      console.log("User fetched successfully:", response);
       set({ user: response });
     } catch (err: any) {
       console.log("Error fetching user:", err);
@@ -46,7 +45,6 @@ export const getUserStore = create<AuthState>((set) => ({
   getUserWallet: async () => {
     try {
       const response = await AsdApi.getMeWallet()
-      console.log("User wallet fetched successfully:", response);
       set({ userWallet: response });
     } catch (err: any) {
       console.log(err.message);

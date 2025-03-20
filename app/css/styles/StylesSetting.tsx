@@ -7,7 +7,7 @@ export const stylesSetting = StyleSheet.create({
       },
       header: {
         backgroundColor: "#FFD700",
-        paddingBottom: 50, 
+        paddingBottom: 50,
       },
       headerText: {
         fontSize: 18,
@@ -37,9 +37,9 @@ export const stylesSetting = StyleSheet.create({
       },
       overlay: {
         position: "absolute",
-        top: "32%",
         left: 0,
         right: 0,
+        top: 200,
         paddingHorizontal: 20,
       },
       section: {
