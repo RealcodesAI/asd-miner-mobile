@@ -6,10 +6,10 @@ import { stylesHistory } from "@/app/css/styles/StylesHistory";
 
 const MinerHistory = () => {
   const reward = useMinerReward();
-  const { user, getMe } = getUserStore();
+  const { userWallet, getUserWallet } = getUserStore();
 
   useEffect(() => {
-    getMe();
+    getUserWallet();
   }, []);
   return (
     <View style={stylesHistory.minerHistory}>
@@ -20,8 +20,8 @@ const MinerHistory = () => {
             Current Reward: {(reward)?.toFixed(4)} ASD
           </Text>
           <Text style={stylesHistory.nextReward}>
-            {user?.rewardThreshold && user?.rewardThreshold - (reward || 0) > 0
-              ? `${(user?.rewardThreshold - (reward || 0)).toFixed(4)} more to next withdraw`
+            {userWallet?.rewardThreshold && userWallet?.rewardThreshold - (reward || 0) > 0
+              ? `${(userWallet?.rewardThreshold - (reward || 0)).toFixed(4)} more to next withdraw`
               : "You can withdraw now"}
             </Text>
         </View>
