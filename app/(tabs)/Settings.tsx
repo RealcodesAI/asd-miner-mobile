@@ -19,10 +19,14 @@ const Settings = () => {
           <Text style={stylesSetting.headerText}>About app</Text>
           <View style={stylesSetting.groupImage}>
             <Image
-              source={require("../../assets/images/avatar/image 173.png")}
+              source={
+                user?.avatar
+                  ? { uri: user?.avatar }
+                  : require("../../assets/images/image-user-default.png")
+              }
               style={stylesSetting.avatar}
             />
-            <Text style={stylesSetting.appTitle}>{user?.ct360UserName}</Text>
+            <Text style={stylesSetting.appTitle}>{user?.username}</Text>
           </View>
         </View>
 
