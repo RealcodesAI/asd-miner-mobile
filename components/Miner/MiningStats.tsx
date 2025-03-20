@@ -7,7 +7,7 @@ import { stylesMiner } from "@/app/css/styles/StylesMiner";
 
 interface MiningStatsProps {
   miningPower: number;
-  miningLog: string;
+  miningLog: string[];
 }
 
 const MiningStats: React.FC<MiningStatsProps> = ({ miningPower, miningLog }) => {

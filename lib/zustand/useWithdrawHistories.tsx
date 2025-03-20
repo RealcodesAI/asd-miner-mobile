@@ -37,7 +37,7 @@ export const useWithdrawHistories = create<WithdrawState>((set,get) => ({
       set({ histories: response, isLoading: false });
     } catch (error: any) {
       showToast(`Failed to fetch withdraw histories: ${error.message}`, 'danger');
-      console.error("Failed to fetch withdraw histories:", error);
+      console.log("Failed to fetch withdraw histories:", error);
       set({ isLoading: false });
     }
   },
@@ -58,7 +58,7 @@ export const useWithdrawHistories = create<WithdrawState>((set,get) => ({
       await getMe();
       showToast("Threshold updated successfully!", 'success');
     } catch (err: any) {
-      console.error("Error saving miner config:", err);
+      console.log("Error saving miner config:", err);
       showToast(err.message, 'danger');
     }
   }

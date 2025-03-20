@@ -24,7 +24,7 @@ export const useRewards = create<RewardsState>((set) => ({
       set({ rewards: response, isLoading: false });
     } catch (error: any) {
       showToast(error.message,"danger");
-      console.error("Failed to fetch rewards:", error);
+      console.log("Failed to fetch rewards:", error);
       set({ isLoading: false });
     }
   },

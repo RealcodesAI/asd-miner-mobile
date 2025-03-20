@@ -25,7 +25,7 @@ export const getUserStore = create<AuthState>((set) => ({
       const response = await AsdApi.getMe();
       set({ user: response });
     } catch (err: any) {
-      console.error("Error fetching user:", err);
+      console.log("Error fetching user:", err);
       showToast(err.message,"danger")
     }
   },

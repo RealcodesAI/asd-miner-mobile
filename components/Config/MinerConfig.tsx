@@ -64,7 +64,7 @@ const MinerConfig = () => {
           await AsyncStorage.setItem("minerConfig", JSON.stringify(minerData));
           console.log("Updated miner name locally:", minerData);
         } catch (err: any) {
-          console.error("Error updating miner name:", err);
+          console.log("Error updating miner name:", err);
           showToast(err.message, "danger")
         }
       } else {

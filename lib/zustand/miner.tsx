@@ -80,7 +80,7 @@ export const useMinerStore = create<MinerState>((set, get) => ({
       set({ isConfigured: true ,id: minerId});
       showToast("Miner configuration saved successfully!","success")
     } catch (err: any) {
-      console.error("Error saving miner config:", err);
+      console.log("Error saving miner config:", err);
       showToast(err.message,"danger")
     }
   },
@@ -94,7 +94,7 @@ export const useMinerStore = create<MinerState>((set, get) => ({
         set(parsedConfig);
       }
     } catch (err:any) {
-      console.error("Error loading miner config:", err);
+      console.log("Error loading miner config:", err);
       showToast(err.message,"danger")
     }
   },
