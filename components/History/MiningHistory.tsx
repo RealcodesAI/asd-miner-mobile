@@ -50,8 +50,7 @@ const MiningHistory = ({ loadMore } : any) => {
         </TouchableOpacity>
       </View>
 
-      {/* Danh sách lịch sử */}
-      {rewards?.contents?.map((item, index) => (
+      {id && rewards?.contents?.map((item, index) => (
         <View key={index} style={stylesHistory.historyItem}>
           {/* Avatar */}
           <View style={stylesHistory.avatarContainer}>

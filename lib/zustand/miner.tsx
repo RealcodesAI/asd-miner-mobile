@@ -77,7 +77,6 @@ export const useMinerStore = create<MinerState>((set, get) => ({
       // console.log(response?.id, "id")
       const minerData = { walletAddress, minerLicense, minerName, isConfigured: true, id: response?.id,hashRate };
       await AsyncStorage.setItem("minerConfig", JSON.stringify(minerData));
-      console.log(minerData, "minerData")
       set({ isConfigured: true ,id: minerId});
       showToast("Miner configuration saved successfully!","success")
       router.push("/(tabs)/Miner")
