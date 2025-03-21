@@ -4,6 +4,7 @@ import { useRewards } from "@/lib/zustand/useRewards";
 import { Ionicons } from "@expo/vector-icons";
 import { stylesHistory } from "@/app/css/styles/StylesHistory";
 import { useMinerStore } from "@/lib/zustand/miner";
+import showToast from "@/lib/utils/toastService";
 
 const MiningHistory = ({ loadMore } : any) => {
   const { rewards, isLoading, fetchRewards } = useRewards();
@@ -30,6 +31,8 @@ const MiningHistory = ({ loadMore } : any) => {
       setLoadingMore(true);
       await fetchRewards(params, id);
       setLoadingMore(false);
+    } else {
+      showToast("Please select Miner", "danger");
     }
   };
 

@@ -13,6 +13,7 @@ const WithdrawHistory = ({loadMore}: any) => {
   const [loadingMore, setLoadingMore] = useState(false);
 
   const loadHistories = () => {
+
     setLoadingMore(true);
     const params = {
       limit
