@@ -28,6 +28,11 @@ const ChartHistory = () => {
   useEffect(() => {
     if(!id) return
     getChart();
+    const interval = setInterval(() => {
+      getChart();
+    }, 10000);
+
+    return () => clearInterval(interval);
   }, [id]);
 
   const hasData = chart && chart.data && chart.data.length > 0;

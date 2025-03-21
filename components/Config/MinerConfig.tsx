@@ -1,4 +1,3 @@
-
 import { getLicenseStore } from "@/lib/zustand/getLicense";
 import { useMinerStore } from "@/lib/zustand/miner";
 import { Link, useRouter } from "expo-router";
@@ -16,7 +15,6 @@ import { getUserStore } from "@/lib/zustand/getUser";
 import LoadingModal from "./LoadingModal";
 import { stylesConfig } from "@/app/css/styles/StylesConfig";
 import showToast from "@/lib/utils/toastService";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 const MinerConfig = () => {
   const {
@@ -60,6 +58,7 @@ const MinerConfig = () => {
       if (miner.name !== minerName) {
         // Nếu đổi tên, gọi API updateNameLicense
         try {
+          setIsLoading(false);
           await AsdApi.updateNameLicense(minerName, miner.id);
           await getMinerMine()
           showToast("Miner name updated successfully!", "success")
@@ -73,7 +72,7 @@ const MinerConfig = () => {
           showToast(err.message, "danger")
         }
       } else {
-        setIsLoading(true);
+        setIsLoading(false);
         // Nếu không đổi, chỉ lưu vào local storage
         setId(miner.id);
         setMinerName(miner.name)
@@ -102,8 +101,7 @@ const MinerConfig = () => {
     getLicense();
     getMinerMine();
     getUserWallet()
-  }, []);
-
+  }, [])
   return (
     <View style={stylesConfig.containerConfig}>
       <Text style={stylesConfig.title}>Configure your miner</Text>
