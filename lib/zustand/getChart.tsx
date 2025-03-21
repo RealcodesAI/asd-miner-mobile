@@ -25,7 +25,6 @@ export const getChartStore = create<ChartState>((set) => ({
     try {
       const data = await AsyncStorage.getItem("minerConfig");
       const parsedData = data ? JSON.parse(data) : null;
-      console.log(parsedData, "data");
       const response = await AsdApi.getDataChart(parsedData?.id);
       set({ chart: response });
       //   console.log(response,'response')
