@@ -56,7 +56,7 @@ const ChartHistory = () => {
 
       <View style={{ position: "relative" }}>
         <LineChart
-          data={chartData}
+          data={id ? chartData : { labels: ["No Data"], datasets: [{ data: [0] }] }}
           width={screenWidth}
           height={250}
           fromZero={true}
