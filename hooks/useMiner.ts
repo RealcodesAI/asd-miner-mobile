@@ -19,6 +19,7 @@ export const useMiner = () => {
 
     if (isMining) {
       minerRef.current.start((progress, message) => {
+        if (!isMining) return;
         setMiningPower(progress); // Cập nhật % mining theo progress log
 
         if (message !== null) {

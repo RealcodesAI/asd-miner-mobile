@@ -10,7 +10,7 @@ import Svg, {
 } from "react-native-svg";
 import { useMinerReward } from "@/hooks/useMinerReward";
 import { getChartStore } from "@/lib/zustand/getChart";
-import { format, parseISO } from "date-fns";
+import { format, isAfter, parseISO, subDays } from "date-fns";
 import { stylesHistory } from "@/app/css/styles/StylesHistory";
 import { useMinerStore } from "@/lib/zustand/miner";
 
@@ -20,6 +20,7 @@ const ChartHistory = () => {
   const reward = useMinerReward();
   const { getChart, chart } = getChartStore();
   const {id} = useMinerStore();
+  const last7Days = subDays(new Date(), 7);
   const [tooltip, setTooltip] = useState<{
     x: number;
     y: number;
@@ -37,12 +38,15 @@ const ChartHistory = () => {
 
   const hasData = chart && chart.data && chart.data.length > 0;
   // Chuyển đổi dữ liệu API thành format của LineChart
-  const chartData = hasData
+  const filteredData = hasData
+  ? chart.data.filter((item) => isAfter(parseISO(item.timeInterval), last7Days))
+  : [];
+  const chartData = filteredData.length > 0
     ? {
-        labels: chart.data.map((item) => format(parseISO(item.timeInterval), "dd/MM")), // Mốc thời gian
+        labels: filteredData.map((item) => format(parseISO(item.timeInterval), "dd-MM")), // Mốc thời gian
         datasets: [
           {
-            data: chart.data.map((item) => parseFloat(Number(item.totalReward).toFixed(4))), // Giá trị totalReward
+            data: filteredData.map((item) => parseFloat(Number(item.totalReward).toFixed(3))), // Giá trị totalReward
             color: () => "#FFD700", // Màu vàng
             strokeWidth: 3,
           },
@@ -71,18 +75,18 @@ const ChartHistory = () => {
             color: () => "#FFF",
             labelColor: () => "#FFF",
             propsForLabels: {
-              fontSize: 15,
+              fontSize: 14,
               fontFamily: "Roboto",
             },
             propsForDots: {
-              r: "3", // Ẩn tất cả các chấm tròn mặc định
+              r: "4", // Ẩn tất cả các chấm tròn mặc định
               strokeWidth: "1",
             },
             propsForBackgroundLines: {
               display: "none",
             },
           }}
-          // bezier
+          bezier
           style={stylesHistory.chart}
           onDataPointClick={({ x, y, value }) => {
             setTooltip({ x, y, value });
@@ -127,7 +131,7 @@ const ChartHistory = () => {
               r="8"
               fill="#000"
               stroke="#fff"
-              strokeWidth="5"
+              strokeWidth="6"
             />
           </Svg>
         )}

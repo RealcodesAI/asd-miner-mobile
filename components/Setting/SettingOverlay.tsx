@@ -1,6 +1,5 @@
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import { View, Text, Image } from "react-native";
 import React from "react";
-import { ScrollView } from "react-native";
 import MenuItem from "./MenuItem";
 import Button from "../ButtonAuth/Button";
 import { useAuthStore } from "@/lib/zustand/auth";

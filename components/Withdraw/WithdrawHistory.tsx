@@ -40,7 +40,7 @@ const WithdrawHistory = ({loadMore}: any) => {
     loadHistories();
   };
 
-  if (isLoading && limit === 5) return <ActivityIndicator size="large" color="#0000ff"/>;
+  if (isLoading && limit === 5) return <ActivityIndicator size="large" color="#fff"/>;
 
   return (
     <>
@@ -86,7 +86,7 @@ const WithdrawHistory = ({loadMore}: any) => {
         {/* Loading indicator */}
         {loadMore && (
           <View style={{alignItems: 'center', padding: 10}}>
-            <ActivityIndicator size="small" color="#0000ff"/>
+            <ActivityIndicator size="small" color="#fff"/>
           </View>
 
         )}

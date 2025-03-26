@@ -134,4 +134,10 @@ export const stylesWithdraw = StyleSheet.create({
     fontWeight: 400
   },
 
+  icon: {
+    position: "absolute",
+    bottom: 10,
+    right: 10,
+    padding: 10,
+  },
 })

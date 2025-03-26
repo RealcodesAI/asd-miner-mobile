@@ -38,7 +38,7 @@ const MiningHistory = ({ loadMore } : any) => {
     loadRewards();
   };
 
-  if (isLoading && limit === 5) return <ActivityIndicator size="large" color="#0000ff" />;
+  if (isLoading && limit === 5) return <ActivityIndicator size="large" color="#fff" />;
 
   return (
     <View style={{ flex: 1 }}>
@@ -71,7 +71,7 @@ const MiningHistory = ({ loadMore } : any) => {
       {/* Loading indicator */}
       {loadingMore && (
         <View style={{ alignItems: 'center', padding: 10 }}>
-          <ActivityIndicator size="small" color="#0000ff" />
+          <ActivityIndicator size="small" color="#fff" />
         </View>
       )}
     </View>

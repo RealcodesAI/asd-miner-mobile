@@ -1,8 +1,7 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import React from "react";
 import { stylesHeader } from "@/app/css/styles/StylesHeader";
-import { getUserStore } from "@/lib/zustand/getUser";
-import { Ionicons } from "@expo/vector-icons";
+import { getUserStore } from "@/lib/zustand/getUser"
 
 interface Props {
   title: string;
