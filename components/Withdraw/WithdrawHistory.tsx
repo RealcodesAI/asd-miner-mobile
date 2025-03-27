@@ -65,7 +65,7 @@ const WithdrawHistory = ({loadMore}: any) => {
             {/* Nội dung */}
             <View style={{flex: 1, marginLeft: 15}}>
               <View style={stylesWithdraw.rowBetween}>
-                <Text style={stylesWithdraw.amount}>{item.amount} ASD</Text>
+                <Text style={stylesWithdraw.amount}>{(item.amount).toFixed(4)} ASD</Text>
                 <Text style={stylesWithdraw.time}>  {new Date(item.createdAt).toLocaleString("vi-VN")}  </Text>
               </View>
               <View style={{marginTop: 7}}>
