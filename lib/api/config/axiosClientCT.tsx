@@ -1,5 +1,6 @@
 import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from "expo-secure-store";
 
 export const axiosClientCT = axios.create({
   baseURL: "https://api.ct360.io/api/",
@@ -12,7 +13,7 @@ export const axiosClientCT = axios.create({
 axiosClientCT.interceptors.request.use(
   async (config) => {
     try {
-      const accessToken = await AsyncStorage.getItem("jwt"); 
+      const accessToken = await SecureStore.getItemAsync("jwt");
       // console.log(accessToken,'accessToken')
       if (accessToken) {
         config.headers = config.headers || {};

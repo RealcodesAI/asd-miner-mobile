@@ -4,6 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import showToast from "../utils/toastService";
 import { getUserStore } from "./getUser";
 import {Keyboard} from "react-native";
+import * as SecureStore from "expo-secure-store";
 
 interface WithdrawState {
   histories: {
@@ -29,7 +30,7 @@ export const useWithdrawHistories = create<WithdrawState>((set,get) => ({
     set({ isLoading: true });
 
     try {
-      const jwt = await AsyncStorage.getItem("jwt");
+      const jwt = await SecureStore.getItemAsync("jwt");
       if (!jwt) {
         throw new Error("Authentication required");
       }

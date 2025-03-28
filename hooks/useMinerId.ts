@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import showToast from "@/lib/utils/toastService";
+import * as SecureStore from "expo-secure-store";
 
 export const useMinerId = () => {
   const [minerId, setMinerId] = useState<string | null>(null);
@@ -8,7 +9,7 @@ export const useMinerId = () => {
   useEffect(() => {
     const fetchMinerLicense = async () => {
       try {
-        const storedData = await AsyncStorage.getItem("minerConfig");
+        const storedData = await SecureStore.getItemAsync("minerConfig");
         if (storedData) {
           const parsedData = JSON.parse(storedData);
           setMinerId(parsedData.id || null);

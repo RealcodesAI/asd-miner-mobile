@@ -15,6 +15,7 @@ import { getUserStore } from "@/lib/zustand/getUser";
 import LoadingModal from "./LoadingModal";
 import { stylesConfig } from "@/app/css/styles/StylesConfig";
 import showToast from "@/lib/utils/toastService";
+import * as SecureStore from "expo-secure-store";
 
 const MinerConfig = () => {
   const {
@@ -64,7 +65,7 @@ const MinerConfig = () => {
           showToast("Miner name updated successfully!", "success")
           // Cập nhật lại dữ liệu vào AsyncStorage
           const minerData = { walletAddress, minerLicense, minerName, id: miner.id, isConfigured: true, hashRate: miner.hashRate };
-          await AsyncStorage.setItem("minerConfig", JSON.stringify(minerData));
+          await SecureStore.setItemAsync("minerConfig", JSON.stringify(minerData));
           console.log("Updated miner name locally:", minerData);
           router.push("/(tabs)/Miner");
         } catch (err: any) {
@@ -77,7 +78,7 @@ const MinerConfig = () => {
         setId(miner.id);
         setMinerName(miner.name)
         const minerData = { walletAddress, minerLicense, minerName, id: miner.id, isConfigured: true, hashRate: miner.hashRate };
-        await AsyncStorage.setItem("minerConfig", JSON.stringify(minerData));
+        await SecureStore.setItemAsync("minerConfig", JSON.stringify(minerData));
         console.log("Saved minerData locally:", minerData);
         showToast("Miner configuration saved successfully!", "success")
         router.push("/(tabs)/Miner");

@@ -3,13 +3,14 @@ import {Stack, useRouter} from "expo-router";
 import {useEffect} from "react";
 import {ToastProvider} from "react-native-toast-notifications";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
+import * as SecureStore from "expo-secure-store";
 
 export default function RootLayout() {
   const router = useRouter()
   const queryClient = new QueryClient();
 
   const checkUser = async () => {
-    const token = await AsyncStorage.getItem("jwt")
+    const token = await SecureStore.getItemAsync("jwt")
     if (!token) {
       router.replace("/auth/Login")
     } else {

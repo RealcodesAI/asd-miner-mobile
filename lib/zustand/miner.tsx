@@ -6,6 +6,7 @@ import AsdMiningRN from "asd-mining";
 import showToast from "../utils/toastService";
 import { router } from "expo-router";
 // console.log(Device)
+import * as SecureStore from "expo-secure-store";
 
 interface MinerState {
   id: number | string
@@ -49,7 +50,7 @@ export const useMinerStore = create<MinerState>((set, get) => ({
     try {
       if (!minerLicense ) {
         await AsdApi.updateWallte(walletAddress);
-        await AsyncStorage.setItem("walletAddress", JSON.stringify({ walletAddress }));
+        await SecureStore.setItemAsync("walletAddress", JSON.stringify({ walletAddress }));
         set({ isConfigured: false });
         showToast("Wallet updated successfully!","success")
         // return;
@@ -76,7 +77,7 @@ export const useMinerStore = create<MinerState>((set, get) => ({
       const minerId = response?.id
       // console.log(response?.id, "id")
       const minerData = { walletAddress, minerLicense, minerName, isConfigured: true, id: response?.id,hashRate };
-      await AsyncStorage.setItem("minerConfig", JSON.stringify(minerData));
+      await SecureStore.setItemAsync("minerConfig", JSON.stringify(minerData));
       set({ isConfigured: true ,id: minerId});
       showToast("Miner configuration saved successfully!","success")
       router.push("/(tabs)/Miner")
@@ -88,7 +89,7 @@ export const useMinerStore = create<MinerState>((set, get) => ({
   
   loadMinerConfig: async () => {
     try {
-      const savedConfig = await AsyncStorage.getItem("minerConfig");
+      const savedConfig = await SecureStore.getItemAsync("minerConfig");
       if (savedConfig) {
         const parsedConfig = JSON.parse(savedConfig);
         // console.log("Loaded miner config:", parsedConfig);

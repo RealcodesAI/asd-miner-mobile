@@ -4,6 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import showToast from "../utils/toastService";
 import { resetAllStores } from "./resetStore";
+import * as SecureStore from "expo-secure-store";
 
 interface AuthState {
   username: string;
@@ -56,7 +57,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         set({ username });
         return true;
       }
-      await AsyncStorage.setItem("jwt", response.jwt);
+      await SecureStore.setItemAsync("jwt", response.jwt);
       // console.log(response.jwt)
       showToast("Login successfully", "success");
       set({ username: "", password: "" });
@@ -74,7 +75,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   verify2FA: async (username, otp) => {
     try {
       const response = await AsdApi.verify2FA(username, otp);
-      await AsyncStorage.setItem("jwt", response.jwt);
+      await SecureStore.setItemAsync("jwt", response.jwt);
       showToast("2FA verified successfully", "success");
       return true;
     } catch (err: any) {
@@ -86,10 +87,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   fetchLogout: async () => {
     try {
-      await AsyncStorage.removeItem("jwt");
-      await AsyncStorage.removeItem("minerConfig");
-      await AsyncStorage.removeItem("walletAddress");
-      const jwt = await AsyncStorage.getItem("jwt");
+      await SecureStore.deleteItemAsync("jwt");
+      await SecureStore.deleteItemAsync("minerConfig");
+      await SecureStore.deleteItemAsync("walletAddress");
+      const jwt = await SecureStore.getItemAsync("jwt");
 
       if (!jwt) {
         // Chỉ gọi resetAllStores() nếu jwt thực sự bị xóa

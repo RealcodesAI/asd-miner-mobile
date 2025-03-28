@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { AsdApi } from "../api/service/asdApi";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import showToast from "../utils/toastService";
+import * as SecureStore from "expo-secure-store";
 
 interface Chart {
   minerId: number;
@@ -23,7 +24,7 @@ export const getChartStore = create<ChartState>((set) => ({
 
   getChart: async () => {
     try {
-      const data = await AsyncStorage.getItem("minerConfig");
+      const data = await SecureStore.getItemAsync("minerConfig");
       const parsedData = data ? JSON.parse(data) : null;
       const response = await AsdApi.getDataChart(parsedData?.id);
       set({ chart: response });
