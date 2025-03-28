@@ -5,9 +5,9 @@ import { useMinerStore } from "@/lib/zustand/miner";
 export const useMiner = () => {
   const [miningPower, setMiningPower] = useState(0);
   const [isMining, setIsMining] = useState(false);
-  const [miningLog, setMiningLog] = useState<string[]>([]); // Mảng chứa chỉ 1 phần tử mới nhất
+  const [miningLog, setMiningLog] = useState<string[]>([]);
 
-  const { minerLicense } = useMinerStore();
+  const { minerLicense, id } = useMinerStore();
   const minerRef = useRef(AsdMiningRN.getInstance(String(minerLicense), "https://be.asdscan.ai"));
 
   const toggleMining = () => {
@@ -39,6 +39,13 @@ export const useMiner = () => {
       }
     };
   }, [isMining]);
+
+  useEffect(() => {
+    if(minerRef.current) {
+      minerRef.current.stop();
+      setIsMining(false)
+    }
+  }, [id]);
 
   return {
     miningPower,
