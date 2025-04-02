@@ -141,4 +141,22 @@ export const stylesHistory = StyleSheet.create({
     right: 10,
     padding: 10,
   },
+  containerTooltip: {
+    position: "absolute",
+    backgroundColor: "#FFF",
+    paddingVertical: 5,
+    paddingHorizontal: 8,
+    borderRadius: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  textTooltip: {
+    color: "#000",
+    fontWeight: "500",
+    fontSize: 12,
+    fontFamily: "Roboto"
+  },
 });
