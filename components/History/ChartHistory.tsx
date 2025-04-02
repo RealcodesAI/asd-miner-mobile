@@ -1,4 +1,9 @@
-import { View, Text, Dimensions, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  Dimensions,
+  Pressable,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { LineChart } from "react-native-chart-kit";
 import Svg, {
@@ -19,7 +24,7 @@ const chartHeight = 250;
 const ChartHistory = () => {
   const reward = useMinerReward();
   const { getChart, chart } = getChartStore();
-  const {id} = useMinerStore();
+  const { id } = useMinerStore();
   const last7Days = subDays(new Date(), 7);
   const [tooltip, setTooltip] = useState<{
     x: number;
@@ -27,7 +32,7 @@ const ChartHistory = () => {
     value: number;
   } | null>(null);
   useEffect(() => {
-    if(!id) return
+    if (!id) return;
     getChart();
     const interval = setInterval(() => {
       getChart();
@@ -39,60 +44,77 @@ const ChartHistory = () => {
   const hasData = chart && chart.data && chart.data.length > 0;
   // Chuyển đổi dữ liệu API thành format của LineChart
   const filteredData = hasData
-  ? chart.data.filter((item) => isAfter(parseISO(item.timeInterval), last7Days))
-  : [];
-  const chartData = filteredData.length > 0
-    ? {
-        labels: filteredData.map((item) => format(parseISO(item.timeInterval), "dd-MM")), // Mốc thời gian
-        datasets: [
-          {
-            data: filteredData.map((item) => parseFloat(Number(item.totalReward).toFixed(3))), // Giá trị totalReward
-            color: () => "#FFD700", // Màu vàng
-            strokeWidth: 3,
-          },
-        ],
-      }
-    : {
-        labels: ["No Data"],
-        datasets: [{ data: [0] }],
-      };
+    ? chart.data.filter((item) =>
+        isAfter(parseISO(item.timeInterval), last7Days)
+      )
+    : [];
+  const chartData =
+    filteredData.length > 0
+      ? {
+          labels: filteredData.map((item) =>
+            format(parseISO(item.timeInterval), "dd-MM")
+          ),
+          datasets: [
+            {
+              data: filteredData.map((item) =>
+                parseFloat(Number(item.totalReward).toFixed(3))
+              ),
+              color: () => "#FFD700",
+              strokeWidth: 3,
+              withDots: true,
+            },
+          ],
+        }
+      : {
+          labels: ["No Data"],
+          datasets: [{ data: [0] }],
+        };
+
+  const handleDataPointClick = ({ x, y, value }: any) => {
+    console.log(x, y, value);
+    setTooltip({ x, y, value });
+  };
   return (
-    <Pressable onPress={() => setTooltip(null)} style={{ flex: 1 }}>
+    <Pressable >
       <View>
         <Text style={stylesHistory.chartLabel}>Current Reward</Text>
-        <Text style={stylesHistory.chartValue}>{(reward || 0).toFixed(4)} ASD</Text>
+        <Text style={stylesHistory.chartValue}>
+          {(reward || 0).toFixed(4)} ASD
+        </Text>
       </View>
 
-      <View style={{ position: "relative" }}>
-        <LineChart
-          data={id ? chartData : { labels: ["No Data"], datasets: [{ data: [0] }] }}
-          width={screenWidth}
-          height={250}
-          fromZero={true}
-          chartConfig={{
-            backgroundGradientFrom: "#000",
-            backgroundGradientTo: "#000",
-            color: () => "#FFF",
-            labelColor: () => "#FFF",
-            propsForLabels: {
-              fontSize: 14,
-              fontFamily: "Roboto",
-            },
-            propsForDots: {
-              r: "4", // Ẩn tất cả các chấm tròn mặc định
-              strokeWidth: "1",
-            },
-            propsForBackgroundLines: {
-              display: "none",
-            },
-          }}
-          bezier
-          style={stylesHistory.chart}
-          onDataPointClick={({ x, y, value }) => {
-            setTooltip({ x, y, value });
-          }}
-          yAxisInterval={1}
-        />
+      <View style={{ position: "relative" }} pointerEvents="auto">
+          <LineChart
+            data={
+              id
+                ? chartData
+                : { labels: ["No Data"], datasets: [{ data: [0] }] }
+            }
+            width={screenWidth}
+            height={250}
+            fromZero={true}
+            chartConfig={{
+              backgroundGradientFrom: "#000",
+              backgroundGradientTo: "#000",
+              color: () => "#FFF",
+              labelColor: () => "#FFF",
+              propsForLabels: {
+                fontSize: 14,
+                fontFamily: "Roboto",
+              },
+              propsForDots: {
+                r: "4", // Ẩn tất cả các chấm tròn mặc định
+                strokeWidth: "2",
+              },
+              propsForBackgroundLines: {
+                display: "none",
+              },
+            }}
+            bezier
+            style={stylesHistory.chart}
+            onDataPointClick={handleDataPointClick}
+            // yAxisInterval={1}
+          />
 
         {tooltip && (
           <Svg
@@ -106,7 +128,7 @@ const ChartHistory = () => {
             viewBox={`0 0 80 ${chartHeight - tooltip.y}`}
           >
             <Defs>
-              <LinearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
+              <LinearGradient id="grad-shadow" x1="0" y1="0" x2="0" y2="1">
                 <Stop offset="10%" stopColor="#121212" stopOpacity="2" />
                 <Stop offset="100%" stopColor="#FFD335" stopOpacity="1" />
               </LinearGradient>
@@ -120,7 +142,7 @@ const ChartHistory = () => {
                 L 25,${chartHeight - tooltip.y - 26} 
                 Z
               `}
-              fill="url(#grad)"
+              fill="url(#grad-shadow)"
               opacity="0.75"
             />
 
