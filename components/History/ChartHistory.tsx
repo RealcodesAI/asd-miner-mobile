@@ -1,4 +1,9 @@
-import { View, Text, Dimensions } from "react-native";
+import {
+  View,
+  Text,
+  Dimensions,
+  Pressable,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { LineChart } from "react-native-chart-kit";
 import Svg, {
@@ -16,7 +21,6 @@ import { useMinerStore } from "@/lib/zustand/miner";
 
 const screenWidth = Dimensions.get("window").width;
 const chartHeight = 250;
-
 const ChartHistory = () => {
   const reward = useMinerReward();
   const { getChart, chart } = getChartStore();
@@ -27,10 +31,9 @@ const ChartHistory = () => {
     y: number;
     value: number;
   } | null>(null);
-
   useEffect(() => {
     if (!id) return;
-    setTooltip(null);
+    setTooltip(null)
     getChart();
     const interval = setInterval(() => {
       getChart();
@@ -40,6 +43,7 @@ const ChartHistory = () => {
   }, [id]);
 
   const hasData = chart && chart.data && chart.data.length > 0;
+  // Chuyển đổi dữ liệu API thành format của LineChart
   const filteredData = hasData
     ? chart.data.filter((item) =>
         isAfter(parseISO(item.timeInterval), last7Days)
@@ -58,6 +62,7 @@ const ChartHistory = () => {
               ),
               color: () => "#FFD700",
               strokeWidth: 3,
+              withDots: true,
             },
           ],
         }
@@ -66,13 +71,12 @@ const ChartHistory = () => {
           datasets: [{ data: [0] }],
         };
 
-  const handleDataPointClick = ({ x, y, value, index }: any) => {
-    console.log("Clicked:", { x, y, value, index });
+  const handleDataPointClick = ({ x, y, value }: any) => {
+    console.log(x, y, value);
     setTooltip({ x, y, value });
   };
-
   return (
-    <View style={{ position: "relative" }}>
+    <Pressable onPress={() => setTooltip(null)}>
       <View>
         <Text style={stylesHistory.chartLabel}>Current Reward</Text>
         <Text style={stylesHistory.chartValue}>
@@ -80,106 +84,96 @@ const ChartHistory = () => {
         </Text>
       </View>
 
-      {/* Chart */}
       <View style={{ position: "relative" }} pointerEvents="box-none">
-        <LineChart
-          data={
-            id ? chartData : { labels: ["No Data"], datasets: [{ data: [0] }] }
-          }
-          width={screenWidth}
-          height={chartHeight}
-          fromZero
-          chartConfig={{
-            backgroundGradientFrom: "#000",
-            backgroundGradientTo: "#000",
-            color: () => "#FFF",
-            labelColor: () => "#FFF",
-            propsForLabels: {
-              fontSize: 14,
-              fontFamily: "Roboto",
-            },
-            propsForDots: {
-              r: "4", 
-              strokeWidth: "2",
-            },
-            propsForBackgroundLines: {
-              display: "none",
-            },
-          }}
-          bezier
-          style={stylesHistory.chart}
-          onDataPointClick={handleDataPointClick}
-          getDotProps={(dataPoint, index) => ({
-            r: 4,
-            strokeWidth: 2,
-            onPress: () =>
-              handleDataPointClick({
-                x: index * (screenWidth / chartData.labels.length),
-                y:
-                  chartHeight -
-                  dataPoint *
-                    (chartHeight / Math.max(...chartData.datasets[0].data)),
-                value: dataPoint,
-                index,
-              }),
-          })}
-        />
+          <LineChart
+            data={
+              id
+                ? chartData
+                : { labels: ["No Data"], datasets: [{ data: [0] }] }
+            }
+            width={screenWidth}
+            height={250}
+            fromZero={true}
+            chartConfig={{
+              backgroundGradientFrom: "#000",
+              backgroundGradientTo: "#000",
+              color: () => "#FFF",
+              labelColor: () => "#FFF",
+              propsForLabels: {
+                fontSize: 14,
+                fontFamily: "Roboto",
+              },
+              propsForDots: {
+                r: "4", 
+                strokeWidth: "2",
+              },
+              propsForBackgroundLines: {
+                display: "none",
+              },
+            }}
+            bezier
+            style={stylesHistory.chart}
+            onDataPointClick={handleDataPointClick}
+          />
 
-        {/* Custom Tooltip */}
         {tooltip && (
-          <>
-            <Svg
-              style={{
-                position: "absolute",
-                left: Math.max(tooltip.x - 45, 10),
-                top: tooltip.y - 10,
-                width: 80,
-                height: chartHeight - tooltip.y,
-              }}
-              viewBox={`0 0 80 ${chartHeight - tooltip.y}`}
-            >
-              <Defs>
-                <LinearGradient id="grad-shadow" x1="0" y1="0" x2="0" y2="1">
-                  <Stop offset="10%" stopColor="#121212" stopOpacity="2" />
-                  <Stop offset="100%" stopColor="#FFD335" stopOpacity="1" />
-                </LinearGradient>
-              </Defs>
-              <Path
-                d={`
-                  M 25,20 
-                  A 15,15 0 0 1 65,20
-                  L 65,${chartHeight - tooltip.y - 26} 
-                  L 25,${chartHeight - tooltip.y - 26} 
-                  Z
-                `}
-                fill="url(#grad-shadow)"
-                opacity="0.75"
-              />
-              <Circle
-                cx="45"
-                cy="20"
-                r="8"
-                fill="#000"
-                stroke="#fff"
-                strokeWidth="6"
-              />
-            </Svg>
+          <Svg
+            style={{
+              position: "absolute",
+              left: Math.max(tooltip.x - 45), // Giữ trong giới hạn
+              top: tooltip.y - 10, // Đưa bóng lên đúng vị trí
+              width: 80,
+              height: chartHeight - tooltip.y,
+            }}
+            viewBox={`0 0 80 ${chartHeight - tooltip.y}`}
+          >
+            <Defs>
+              <LinearGradient id="grad-shadow" x1="0" y1="0" x2="0" y2="1">
+                <Stop offset="10%" stopColor="#121212" stopOpacity="2" />
+                <Stop offset="100%" stopColor="#FFD335" stopOpacity="1" />
+              </LinearGradient>
+            </Defs>
+            {/* Bóng vàng mờ */}
+            <Path
+              d={`
+                M 25,20 
+                A 15,15 0 0 1 65,20
+                L 65,${chartHeight - tooltip.y - 26} 
+                L 25,${chartHeight - tooltip.y - 26} 
+                Z
+              `}
+              fill="url(#grad-shadow)"
+              opacity="0.75"
+            />
 
-            <View
-              style={[
-                {
-                  left: tooltip.x - 38,
-                  top: tooltip.y - 40,
-                },
-                stylesHistory.containerTooltip,
-              ]}
+            {/* Chấm tròn trắng */}
+            <Circle
+              cx="45"
+              cy="20"
+              r="8"
+              fill="#000"
+              stroke="#fff"
+              strokeWidth="6"
+            />
+          </Svg>
+        )}
+        {/* Tooltip hiển thị ngay trên chấm tròn */}
+        {tooltip && (
+          <View
+            style={[{
+              left: tooltip.x - 43,
+              top: tooltip.y - 43,
+            }, stylesHistory.containerTooltip]}
+          >
+            <Text
+              style={stylesHistory.textTooltip}
             >
-              <Text style={stylesHistory.textTooltip}>{tooltip.value} ASD</Text>
-            </View>
-          </>
+              {tooltip.value} ASD
+            </Text>
+          </View>
         )}
       </View>
-    </View>
+    </Pressable>
   );
 };
 
