@@ -1,23 +1,40 @@
-import { stylesSetting } from '@/app/css/styles/StylesSetting';
-import { View, Text, TouchableOpacity, Image } from 'react-native'
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  Switch,
+  TouchableOpacity,
+} from "react-native";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { stylesSetting } from "@/app/css/styles/StylesSetting";
+import AppPreferences from "./AppPreferences";
+import Security from "./Security";
+import DataManagement from "./DataManagement";
+import MiningPerformance from "./MiningPerformance";
+import { useAuthStore } from "@/lib/zustand/auth";
 
-interface MenuItemProps {
-    title: string;
-    description?: string;
-    image: any
-}
+export default function MenuItem() {
+  const { fetchLogout } = useAuthStore();
+  return (
+    <View  style={stylesSetting.container}>
+      <View style={stylesSetting.content}>
+        {/* App Preferences */}
+        <AppPreferences/>
+        {/* Security */}
+        <Security/>
+        {/* Data Management */}
+        <DataManagement/>
+        {/* Mining Performance */}
+        <MiningPerformance/>
 
-const MenuItem = ({ title, description,image }: MenuItemProps) => {
-    return (
-        <TouchableOpacity style={stylesSetting.menuItem} activeOpacity={0.7}>
-          <Image source={image} style={stylesSetting.icon} />
-          <View style={stylesSetting.menuTextContainer}>
-            <Text style={stylesSetting.menuTitle}>{title}</Text>
-            {description && <Text style={stylesSetting.menuDescription}>{description}</Text>}
-          </View>
-          <Image source={require('../../assets/icon/Group 48.png')}/>
+        {/* Logout Button */}
+        <TouchableOpacity style={stylesSetting.logoutButton} onPress={fetchLogout}>
+          <Ionicons name="log-out-outline" size={20} color="#000" />
+          <Text style={stylesSetting.logoutText}>Logout</Text>
         </TouchableOpacity>
-      );
-}
 
-export default MenuItem
+        <Text style={stylesSetting.versionText}>ASD Miner v1.0.0</Text>
+      </View>
+    </View>
+  );
+}
