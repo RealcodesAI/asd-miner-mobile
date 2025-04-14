@@ -104,8 +104,8 @@ const ChartHistory = () => {
                 fontFamily: "Roboto",
               },
               propsForDots: {
-                r: "4", 
-                strokeWidth: "2",
+                r: "5", 
+                strokeWidth: "1",
               },
               propsForBackgroundLines: {
                 display: "none",

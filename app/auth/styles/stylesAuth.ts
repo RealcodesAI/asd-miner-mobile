@@ -3,52 +3,70 @@ import { StyleSheet } from "react-native";
 export const stylesAuth = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: "#000",
     alignItems: "center",
     paddingHorizontal: 25,
     justifyContent: 'center',
   },
   title: {
-    color: "#fff",
-    fontSize: 20,
-    fontWeight: "500",
-    fontFamily: "Roboto",
-    textAlign: "center",
-    marginTop: 15,
+    marginTop: 30,
+    color: 'white',
+    fontSize: 18,
+    fontFamily: "Lexend",
+    fontWeight: '700',
+    marginBottom: 5,
+  },
+  subtitle: {
+    color: '#ccc',
+    fontSize: 12,
+    fontFamily: "Lexend",
+    textAlign: 'center',
+    fontWeight: 400,
+    marginBottom: 20,
+    lineHeight: 18,
+    paddingHorizontal: 15
+  },
+
+  containerTitle: {
+    paddingHorizontal: 13
   },
 
   form: {
-    marginTop: 25,
     width: "100%",
-    gap: 10
+    gap: 8
   },
   textInput: {
     color: "#AEA8B2",
-    fontWeight: "400",
+    fontWeight: "500",
+    fontSize: 14,
+    lineHeight: 20,
+    fontFamily: "Lexend",
     marginBottom: 5,
   },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#3D3C3C",
-    height: 56,
-    borderRadius: 14,
+    height: 50,
+    borderRadius: 8,
+    borderWidth: 1,
     paddingHorizontal: 15,
   },
   input: {
     flex: 1,
     color: "#fff",
-    fontSize: 16,
-    borderWidth: 0
+    fontSize: 14,
+    fontWeight: 400,
+    fontFamily: 'Lexend'
   },
   icon: {
     marginLeft: 10,
   },
   registerText: {
-    marginTop: 15,
     fontSize: 14,
-    color: "#fff",
-    textDecorationLine: "underline",
+    color: "rgba(254, 191, 50, 1)",
+    fontWeight: 400,
+    fontFamily: 'Lexend',
+    lineHeight: 20
   },
   modalContainer: {
     flex: 1,

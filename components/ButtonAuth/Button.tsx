@@ -15,19 +15,20 @@ const Button = ({title, onPress}: Props) => {
 
 const styles = StyleSheet.create({
     button: {
-        backgroundColor: '#FFD335',
-        alignItems: "center",
-        paddingVertical: 15,
-        width: '100%',
-        borderRadius: 12,
-        height: 55,
-        marginTop: 5
+      backgroundColor: 'rgba(254, 191, 50, 1)',
+      paddingVertical: 14,
+      borderRadius: 20,
+      alignItems: 'center',
+      marginTop: 15,
+      marginBottom: 20,
+      width: "100%",
     },
      text: {
-        color: '#1F1F1F',
-        fontSize: 18,
-        fontWeight: 700,
-        fontFamily: 'Roboto'
+      fontWeight: '700',
+      color: '#000',
+      fontSize: 16,
+      fontFamily:'Lexend',
+      lineHeight: 22
      }
 })
 
