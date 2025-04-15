@@ -1,9 +1,4 @@
-import {
-  View,
-  Text,
-  Dimensions,
-  Pressable,
-} from "react-native";
+import { View, Text, Dimensions, Pressable } from "react-native";
 import React, { useEffect, useState } from "react";
 import { LineChart } from "react-native-chart-kit";
 import Svg, {
@@ -33,7 +28,7 @@ const ChartHistory = () => {
   } | null>(null);
   useEffect(() => {
     if (!id) return;
-    setTooltip(null)
+    setTooltip(null);
     getChart();
     const interval = setInterval(() => {
       getChart();
@@ -76,104 +71,95 @@ const ChartHistory = () => {
     setTooltip({ x, y, value });
   };
   return (
-    <Pressable onPress={() => setTooltip(null)}>
-      <View>
-        <Text style={stylesHistory.chartLabel}>Current Reward</Text>
-        <Text style={stylesHistory.chartValue}>
-          {(reward || 0).toFixed(4)} ASD
-        </Text>
-      </View>
-
+    <View style={[stylesHistory.card, {position: "relative"}]}>
+      <Text style={stylesHistory.sectionLabel}>Mining Performance</Text>
+      <Text style={stylesHistory.subLabel}>Hashrate and rewards over time</Text>
       <View style={{ position: "relative" }} pointerEvents="box-none">
-          <LineChart
-            data={
-              id
-                ? chartData
-                : { labels: ["No Data"], datasets: [{ data: [0] }] }
-            }
-            width={screenWidth}
-            height={250}
-            fromZero={true}
-            chartConfig={{
-              backgroundGradientFrom: "#000",
-              backgroundGradientTo: "#000",
-              color: () => "#FFF",
-              labelColor: () => "#FFF",
-              propsForLabels: {
-                fontSize: 14,
-                fontFamily: "Roboto",
-              },
-              propsForDots: {
-                r: "5", 
-                strokeWidth: "1",
-              },
-              propsForBackgroundLines: {
-                display: "none",
-              },
-            }}
-            bezier
-            style={stylesHistory.chart}
-            onDataPointClick={handleDataPointClick}
-          />
+        <LineChart
+          data={
+            id ? chartData : { labels: ["No Data"], datasets: [{ data: [0] }] }
+          }
+          width={screenWidth -50}
+          height={chartHeight}
+          fromZero
+          chartConfig={{
+            backgroundColor: "transparent",
+            backgroundGradientFrom: "transparent",
+            backgroundGradientTo: "transparent",
+            color: () => "#FFF",
+            labelColor: () => "#FFF",
+            propsForLabels: {
+              fontSize: 10,
+              fontFamily: "Roboto",
+            },
+            propsForDots: {
+              r: "4",
+              strokeWidth: "2",
+            },
+            propsForBackgroundLines: {
+              display: "none",
+            },
+          }}
+          bezier
+          style={stylesHistory.chart}
+          onDataPointClick={handleDataPointClick}
+        />
 
+        {/* Custom Tooltip */}
         {tooltip && (
-          <Svg
-            style={{
-              position: "absolute",
-              left: Math.max(tooltip.x - 45), // Giữ trong giới hạn
-              top: tooltip.y - 10, // Đưa bóng lên đúng vị trí
-              width: 80,
-              height: chartHeight - tooltip.y,
-            }}
-            viewBox={`0 0 80 ${chartHeight - tooltip.y}`}
-          >
-            <Defs>
-              <LinearGradient id="grad-shadow" x1="0" y1="0" x2="0" y2="1">
-                <Stop offset="10%" stopColor="#121212" stopOpacity="2" />
-                <Stop offset="100%" stopColor="#FFD335" stopOpacity="1" />
-              </LinearGradient>
-            </Defs>
-            {/* Bóng vàng mờ */}
-            <Path
-              d={`
-                M 25,20 
-                A 15,15 0 0 1 65,20
-                L 65,${chartHeight - tooltip.y - 26} 
-                L 25,${chartHeight - tooltip.y - 26} 
-                Z
-              `}
-              fill="url(#grad-shadow)"
-              opacity="0.75"
-            />
-
-            {/* Chấm tròn trắng */}
-            <Circle
-              cx="45"
-              cy="20"
-              r="8"
-              fill="#000"
-              stroke="#fff"
-              strokeWidth="6"
-            />
-          </Svg>
-        )}
-        {/* Tooltip hiển thị ngay trên chấm tròn */}
-        {tooltip && (
-          <View
-            style={[{
-              left: tooltip.x - 43,
-              top: tooltip.y - 43,
-            }, stylesHistory.containerTooltip]}
-          >
-            <Text
-              style={stylesHistory.textTooltip}
+          <>
+            <Svg
+              style={{
+                position: "absolute",
+                left: Math.max(tooltip.x - 45, 10),
+                top: tooltip.y - 10,
+                width: 80,
+                height: chartHeight - tooltip.y,
+              }}
+              viewBox={`0 0 80 ${chartHeight - tooltip.y}`}
             >
-              {tooltip.value} ASD
-            </Text>
-          </View>
+              <Defs>
+                <LinearGradient id="grad-shadow" x1="0" y1="0" x2="0" y2="1">
+                  <Stop offset="10%" stopColor="#121212" stopOpacity="2" />
+                  <Stop offset="100%" stopColor="#FFD335" stopOpacity="1" />
+                </LinearGradient>
+              </Defs>
+              <Path
+                d={`
+                  M 25,20 
+                  A 15,15 0 0 1 65,20
+                  L 65,${chartHeight - tooltip.y - 26} 
+                  L 25,${chartHeight - tooltip.y - 26} 
+                  Z
+                `}
+                fill="url(#grad-shadow)"
+                opacity="0.75"
+              />
+              <Circle
+                cx="45"
+                cy="20"
+                r="8"
+                fill="#000"
+                stroke="#fff"
+                strokeWidth="6"
+              />
+            </Svg>
+
+            <View
+              style={[
+                {
+                  left: tooltip.x - 38,
+                  top: tooltip.y - 40,
+                },
+                stylesHistory.containerTooltip,
+              ]}
+            >
+              <Text style={stylesHistory.textTooltip}>{tooltip.value} ASD</Text>
+            </View>
+          </>
         )}
       </View>
-    </Pressable>
+    </View>
   );
 };
 

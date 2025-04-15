@@ -1,32 +1,43 @@
-import {View, Text, Image, ActivityIndicator, TouchableOpacity} from "react-native";
-import React, {useEffect, useRef, useState} from "react";
-import {useWithdrawHistories} from "@/lib/zustand/useWithdrawHistories";
-import {Ionicons} from '@expo/vector-icons';
-import {stylesWithdraw} from "@/app/css/styles/StylesWithdraw";
-import {useMinerStore} from "@/lib/zustand/miner";
+import {
+  View,
+  Text,
+  Image,
+  ActivityIndicator,
+  TouchableOpacity,
+} from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { useWithdrawHistories } from "@/lib/zustand/useWithdrawHistories";
+import { Ionicons } from "@expo/vector-icons";
+import { stylesWithdraw } from "@/app/css/styles/StylesWithdraw";
+import { useMinerStore } from "@/lib/zustand/miner";
 
-const WithdrawHistory = ({loadMore}: any) => {
-  const {histories, isLoading, fetchWithdrawHistories} = useWithdrawHistories();
+const WithdrawHistory = ({ loadMore }: any) => {
+  const { histories, isLoading, fetchWithdrawHistories } =
+    useWithdrawHistories();
   const [limit, setLimit] = useState(5);
-  const {minerName} = useMinerStore()
+  const { minerName } = useMinerStore();
   const prevLoadMore = useRef(loadMore);
   const [loadingMore, setLoadingMore] = useState(false);
 
   const loadHistories = () => {
-
     setLoadingMore(true);
     const params = {
-      limit
+      limit,
     };
     setLoadingMore(true);
     fetchWithdrawHistories(params);
     setLoadingMore(false);
-
   };
   // Phát hiện khi nào loadMore thay đổi từ false -> true
   useEffect(() => {
-    if (loadMore && !prevLoadMore.current && !loadingMore && histories?.contents && histories?.contents?.length < histories?.total) {
-      setLimit(prev => prev + 5);
+    if (
+      loadMore &&
+      !prevLoadMore.current &&
+      !loadingMore &&
+      histories?.contents &&
+      histories?.contents?.length < histories?.total
+    ) {
+      setLimit((prev) => prev + 5);
     }
     prevLoadMore.current = loadMore;
   }, [loadMore]);
@@ -40,15 +51,19 @@ const WithdrawHistory = ({loadMore}: any) => {
     loadHistories();
   };
 
-  if (isLoading && limit === 5) return <ActivityIndicator size="large" color="#fff"/>;
+  if (isLoading && limit === 5)
+    return <ActivityIndicator size="large" color="#fff" />;
 
   return (
     <>
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <View style={stylesWithdraw.headerContainer}>
           <Text style={stylesWithdraw.historyTitle}>Withdraw history</Text>
-          <TouchableOpacity onPress={handleRefresh} style={stylesWithdraw.refreshButton}>
-            <Ionicons name="refresh" size={24} color="#333"/>
+          <TouchableOpacity
+            onPress={handleRefresh}
+            style={stylesWithdraw.refreshButton}
+          >
+            <Ionicons name="refresh" size={24} color="#333" />
           </TouchableOpacity>
         </View>
 
@@ -63,18 +78,29 @@ const WithdrawHistory = ({loadMore}: any) => {
             </View>
 
             {/* Nội dung */}
-            <View style={{flex: 1, marginLeft: 15}}>
+            <View style={{ flex: 1, marginLeft: 15 }}>
               <View style={stylesWithdraw.rowBetween}>
-                <Text style={stylesWithdraw.amount}>{(item.amount).toFixed(4)} ASD</Text>
-                <Text style={stylesWithdraw.time}>  {new Date(item.createdAt).toLocaleString("vi-VN")}  </Text>
+                <Text style={stylesWithdraw.amount}>
+                  {item.amount.toFixed(4)} ASD
+                </Text>
+                <Text style={stylesWithdraw.time}>
+                  {" "}
+                  {new Date(item.createdAt).toLocaleString("vi-VN")}{" "}
+                </Text>
               </View>
-              <View style={{marginTop: 7}}>
+              <View style={{ marginTop: 7 }}>
                 <Text style={stylesWithdraw.detail}>
-                  recipient: {item.recipient?.slice(0, 6)}...{item.recipient?.slice(-4)}
+                  recipient: {item.recipient?.slice(0, 6)}...
+                  {item.recipient?.slice(-4)}
                 </Text>
                 <Text style={stylesWithdraw.detail}>
                   txHash:{" "}
-                  <Text style={{color: '#1E66D2', textDecorationLine: 'underline'}}>
+                  <Text
+                    style={{
+                      color: "#1E66D2",
+                      textDecorationLine: "underline",
+                    }}
+                  >
                     {item.txHash?.slice(0, 6)}...{item.txHash?.slice(-4)}
                   </Text>
                 </Text>
@@ -85,10 +111,9 @@ const WithdrawHistory = ({loadMore}: any) => {
         ))}
         {/* Loading indicator */}
         {loadMore && (
-          <View style={{alignItems: 'center', padding: 10}}>
-            <ActivityIndicator size="small" color="#fff"/>
+          <View style={{ alignItems: "center", padding: 10 }}>
+            <ActivityIndicator size="small" color="#fff" />
           </View>
-
         )}
       </View>
     </>

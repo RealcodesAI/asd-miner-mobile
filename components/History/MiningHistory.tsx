@@ -1,76 +1,163 @@
-import { View, Text, Image, ActivityIndicator, TouchableOpacity } from "react-native";
+import { View, Text, ActivityIndicator, TouchableOpacity } from "react-native";
 import React, { useEffect, useState, useRef } from "react";
 import { useRewards } from "@/lib/zustand/useRewards";
-import { Ionicons } from "@expo/vector-icons";
 import { stylesHistory } from "@/app/css/styles/StylesHistory";
 import { useMinerStore } from "@/lib/zustand/miner";
+import { Ionicons } from "@expo/vector-icons";
+import { useWithdrawHistories } from "@/lib/zustand/useWithdrawHistories";
 
-const MiningHistory = ({ loadMore } : any) => {
+const MiningHistory = ({ loadMore }: any) => {
   const { rewards, isLoading, fetchRewards } = useRewards();
+  const { histories, fetchWithdrawHistories } = useWithdrawHistories();
+  const [activeTab, setActiveTab] = useState("Rewards");
   const [limit, setLimit] = useState(5);
   const [loadingMore, setLoadingMore] = useState(false);
-  const { id, minerName } = useMinerStore();
+  const { id } = useMinerStore();
   const prevLoadMore = useRef(loadMore);
 
   useEffect(() => {
-    loadRewards();
+    loadData();
   }, [limit, id]);
 
-  // Phát hiện khi nào loadMore thay đổi từ false -> true
+  // Khi loadMore = true (trigger từ scroll hoặc thao tác nào đó)
   useEffect(() => {
-    if (loadMore && !prevLoadMore.current && !loadingMore && rewards?.contents && rewards?.contents?.length < rewards?.total) {
-      setLimit(prev => prev + 5);
+    if (
+      loadMore &&
+      !prevLoadMore.current &&
+      !loadingMore &&
+      ((activeTab === "Rewards" &&
+        rewards?.contents ) ||
+        (activeTab === "Withdrawals" &&
+          histories?.contents))
+    ) {
+      setLimit((prev) => prev + 5);
     }
     prevLoadMore.current = loadMore;
-  }, [loadMore]);
+  }, [loadMore, activeTab]);
 
-  const loadRewards = async () => {
+  const loadData = async () => {
     if (id) {
       const params = { limit };
       setLoadingMore(true);
-      await fetchRewards(params, id);
+      if (activeTab === "Rewards") {
+        await fetchRewards(params, id);
+      } else {
+        await fetchWithdrawHistories(params);
+      }
       setLoadingMore(false);
     }
   };
 
   const handleRefresh = () => {
     setLimit(5);
-    loadRewards();
+    loadData();
   };
 
-  if (isLoading && limit === 5) return <ActivityIndicator size="large" color="#fff" />;
+  if (isLoading && limit === 5) {
+    return <ActivityIndicator size="large" color="#fff" />;
+  }
 
   return (
-    <View style={{ flex: 1 }}>
-      {/* Header */}
+    <View style={stylesHistory.card}>
       <View style={stylesHistory.headerContainer}>
-        <Text style={stylesHistory.historyTitle}>Mining history</Text>
-        <TouchableOpacity onPress={handleRefresh} style={stylesHistory.refreshButton}>
+        <Text style={stylesHistory.sectionLabel}>History</Text>
+        <TouchableOpacity
+          onPress={handleRefresh}
+          style={stylesHistory.refreshButton}
+        >
           <Ionicons name="refresh" size={24} color="#333" />
         </TouchableOpacity>
       </View>
+      <Text style={stylesHistory.subLabel}>
+        Set the minimum amount required before automatic withdrawal
+      </Text>
 
-      {id && rewards?.contents?.map((item, index) => (
-        <View key={index} style={stylesHistory.historyItem}>
-          {/* Avatar */}
-          <View style={stylesHistory.avatarContainer}>
-            <Image source={require("../../assets/images/avatar/image 173.png")} style={stylesHistory.avatar} />
-          </View>
-          {/* Content */}
-          <View style={{ flex: 1, marginLeft: 10 }}>
-            <View style={stylesHistory.rowBetween}>
-              <Text style={stylesHistory.amount}>{parseFloat(item.reward).toFixed(4)} ASD</Text>
-              <Text style={stylesHistory.time}>{new Date(item.createdAt).toLocaleString("vi-VN")}</Text>
+      {/* Tabs */}
+      <View style={stylesHistory.tabs}>
+        <TouchableOpacity
+          style={[
+            stylesHistory.tabButton,
+            activeTab === "Rewards" && stylesHistory.tabButtonActive,
+          ]}
+          onPress={() => {
+            setLimit(5);
+            setActiveTab("Rewards");
+          }}
+        >
+          <Text
+            style={[
+              stylesHistory.tabButtonText,
+              activeTab === "Rewards" && stylesHistory.tabButtonTextActive,
+            ]}
+          >
+            Rewards
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            stylesHistory.tabButton,
+            activeTab === "Withdrawals" && stylesHistory.tabButtonActive,
+          ]}
+          onPress={() => {
+            setLimit(5);
+            setActiveTab("Withdrawals");
+          }}
+        >
+          <Text
+            style={[
+              stylesHistory.tabButtonText,
+              activeTab === "Withdrawals" &&
+                stylesHistory.tabButtonTextActive,
+            ]}
+          >
+            Withdrawals
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Rewards List */}
+      {activeTab === "Rewards" &&
+        id &&
+        rewards?.contents?.map((item, index) => (
+          <View style={stylesHistory.historyItem} key={index}>
+            <View>
+              <Text style={stylesHistory.historyAmount}>
+                {parseFloat(item.reward).toFixed(4)} ASD
+              </Text>
+              <Text style={stylesHistory.historyDate}>
+                {new Date(item.createdAt).toLocaleString("vi-VN")}
+              </Text>
             </View>
-            <Text style={stylesHistory.detail}>Hashrate: {item.hashRate} H/S</Text>
-            <Text style={stylesHistory.detail}>Miner: {minerName}</Text>
+            <View style={stylesHistory.completedBadge}>
+              <Text style={stylesHistory.completedText}>Completed</Text>
+            </View>
           </View>
-        </View>
-      ))}
+        ))}
+
+      {/* Withdrawals List */}
+      {activeTab === "Withdrawals" &&
+        id &&
+        histories?.contents?.map((item, index) => (
+          <View style={stylesHistory.historyItem} key={index}>
+            <View>
+              <Text style={stylesHistory.historyAmount}>
+                {parseFloat(item.amount).toFixed(4)} ASD
+              </Text>
+              <Text style={stylesHistory.historyDate}>
+                {new Date(item.createdAt).toLocaleString("vi-VN")}
+              </Text>
+            </View>
+            <View style={stylesHistory.completedBadge}>
+              <Text style={stylesHistory.completedText}>
+                {item.status === "pending" ? "Pending" : "Completed"}
+              </Text>
+            </View>
+          </View>
+        ))}
 
       {/* Loading indicator */}
       {loadingMore && (
-        <View style={{ alignItems: 'center', padding: 10 }}>
+        <View style={{ alignItems: "center", padding: 10 }}>
           <ActivityIndicator size="small" color="#fff" />
         </View>
       )}

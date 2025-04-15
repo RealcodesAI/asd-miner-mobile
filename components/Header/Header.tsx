@@ -7,13 +7,14 @@ interface Props {
   title: string;
 }
 export default function Header({ title }: Props) {
+  
   return (
     <>
       <View style={stylesHeader.container}>
         {/* Avatar + Text */}
         <View style={stylesHeader.leftSection}>
           <Image
-            source={{ uri: "https://i.imgur.com/xxu1Jqg.jpg" }} // Thay ảnh avatar của bạn
+            source={{ uri: "https://i.imgur.com/xxu1Jqg.jpg" }}
             style={stylesHeader.avatar}
           />
           <View style={stylesHeader.textContainer}>

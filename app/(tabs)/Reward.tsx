@@ -3,6 +3,8 @@ import {
   RefreshControl,
   TouchableOpacity,
   Animated,
+  ImageBackground,
+  View,
 } from "react-native";
 import React, { useState, useRef } from "react";
 import MinerHistory from "@/components/History/MinerHistory";
@@ -28,7 +30,7 @@ export default function History() {
   );
 
   scrollY.addListener(({ value }) => {
-    setShowScrollToTop(value > 300);
+    setShowScrollToTop(value > 600);
   });
 
   const handleScrollEnd = ({ nativeEvent }: any) => {
@@ -50,30 +52,36 @@ export default function History() {
   };
 
   return (
-    <SafeAreaView style={stylesHistory.container}>
-      <ScrollView
-        ref={scrollViewRef}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-        onScroll={handleScroll}
-        onMomentumScrollEnd={handleScrollEnd}
-        scrollEventThrottle={16}
-      >
-        <Header title="History" />
-        <MinerHistory key={`miner-${refreshKey}`} />
-        <ChartHistory key={`chart-${refreshKey}`} />
-        <MiningHistory key={`mining-${refreshKey}`} loadMore={loadMore} />
-      </ScrollView>
+    <ImageBackground
+      source={require("../../assets/images/BG.png")}
+      style={{ flex: 1 }}
+      resizeMode="cover"
+    >
+      <SafeAreaView style={stylesHistory.container}>
+        <ScrollView
+          ref={scrollViewRef}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          onScroll={handleScroll}
+          onMomentumScrollEnd={handleScrollEnd}
+          scrollEventThrottle={16}
+        >
+          <Header title="Mining Rewards" />
+          <View style={{padding: 20}}>
+            <MinerHistory key={`miner-${refreshKey}`} />
+            <ChartHistory key={`chart-${refreshKey}`} />
+            <MiningHistory key={`mining-${refreshKey}`} loadMore={loadMore} />
+          </View>
+        </ScrollView>
 
-      {/* Nút quay lại đầu trang */}
-      {showScrollToTop && (
-        <TouchableOpacity
-          onPress={scrollToTop}
-          style={stylesHistory.icon}>
-          <Ionicons name="chevron-up-outline" size={25} color="#fff" />
-        </TouchableOpacity>
-      )}
-    </SafeAreaView>
+        {/* Nút quay lại đầu trang */}
+        {showScrollToTop && (
+          <TouchableOpacity onPress={scrollToTop} style={stylesHistory.icon}>
+            <Ionicons name="chevron-up-outline" size={25} color="#fff" />
+          </TouchableOpacity>
+        )}
+      </SafeAreaView>
+    </ImageBackground>
   );
 }

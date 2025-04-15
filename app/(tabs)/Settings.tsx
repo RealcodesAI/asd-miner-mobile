@@ -11,14 +11,16 @@ const Settings = () => {
   }, []);
 
   return (
-        <ImageBackground     source={require("../../assets/images/BG.png")}
-        style={{ flex: 1 }}
-        resizeMode="cover">
-          <ScrollView>
-            <Header title="Settings"/>
-            <MenuItem/>
-          </ScrollView>
-        </ImageBackground>
+    <ImageBackground
+      source={require("../../assets/images/BG.png")}
+      style={{ flex: 1 }}
+      resizeMode="cover"
+    >
+      <ScrollView>
+        <Header title="Settings" />
+        <MenuItem />
+      </ScrollView>
+    </ImageBackground>
   );
 };
 

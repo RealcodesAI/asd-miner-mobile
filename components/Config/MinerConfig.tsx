@@ -2,12 +2,7 @@ import { getLicenseStore } from "@/lib/zustand/getLicense";
 import { useMinerStore } from "@/lib/zustand/miner";
 import { Link, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Image } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AsdApi } from "@/lib/api/service/asdApi";
 import LicenseModal from "./LicenseModal";
@@ -16,6 +11,12 @@ import LoadingModal from "./LoadingModal";
 import { stylesConfig } from "@/app/css/styles/StylesConfig";
 import showToast from "@/lib/utils/toastService";
 import * as SecureStore from "expo-secure-store";
+import { Ionicons } from "@expo/vector-icons";
+import MiningPool from "./MinerItem/MiningPool";
+import RewardThreshold from "./MinerItem/RewardThreshold";
+import RewardWallet from "./MinerItem/RewardWallet";
+import MinerLicense from "./MinerItem/MinerLicense";
+import MinerName from "./MinerItem/MinerName";
 
 const MinerConfig = () => {
   const {
@@ -31,8 +32,8 @@ const MinerConfig = () => {
     saveMinerConfig,
     loadMinerConfig,
   } = useMinerStore();
-  const {getUserWallet, userWallet} =getUserStore()
-  const router = useRouter()
+  const { getUserWallet, userWallet } = getUserStore();
+  const router = useRouter();
   const { getLicense, getMinerMine, licenses, minerMine } = getLicenseStore();
   const [isLoading, setIsLoading] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
@@ -54,33 +55,53 @@ const MinerConfig = () => {
   const handleSave = async () => {
     setIsSaved(true);
     setIsLoading(true);
-    const miner = minerMine.find(miner => miner.license === minerLicense);
+    const miner = minerMine.find((miner) => miner.license === minerLicense);
     if (miner && miner.id) {
       if (miner.name !== minerName) {
         // Nếu đổi tên, gọi API updateNameLicense
         try {
           setIsLoading(false);
           await AsdApi.updateNameLicense(minerName, miner.id);
-          await getMinerMine()
-          showToast("Miner name updated successfully!", "success")
+          await getMinerMine();
+          showToast("Miner name updated successfully!", "success");
           // Cập nhật lại dữ liệu vào AsyncStorage
-          const minerData = { walletAddress, minerLicense, minerName, id: miner.id, isConfigured: true, hashRate: miner.hashRate };
-          await SecureStore.setItemAsync("minerConfig", JSON.stringify(minerData));
+          const minerData = {
+            walletAddress,
+            minerLicense,
+            minerName,
+            id: miner.id,
+            isConfigured: true,
+            hashRate: miner.hashRate,
+          };
+          await SecureStore.setItemAsync(
+            "minerConfig",
+            JSON.stringify(minerData)
+          );
           console.log("Updated miner name locally:", minerData);
           router.push("/(tabs)/Miner");
         } catch (err: any) {
           console.log("Error updating miner name:", err);
-          showToast(err.message, "danger")
+          showToast(err.message, "danger");
         }
       } else {
         setIsLoading(false);
         // Nếu không đổi, chỉ lưu vào local storage
         setId(miner.id);
-        setMinerName(miner.name)
-        const minerData = { walletAddress, minerLicense, minerName, id: miner.id, isConfigured: true, hashRate: miner.hashRate };
-        await SecureStore.setItemAsync("minerConfig", JSON.stringify(minerData));
+        setMinerName(miner.name);
+        const minerData = {
+          walletAddress,
+          minerLicense,
+          minerName,
+          id: miner.id,
+          isConfigured: true,
+          hashRate: miner.hashRate,
+        };
+        await SecureStore.setItemAsync(
+          "minerConfig",
+          JSON.stringify(minerData)
+        );
         console.log("Saved minerData locally:", minerData);
-        showToast("Miner configuration saved successfully!", "success")
+        showToast("Miner configuration saved successfully!", "success");
         router.push("/(tabs)/Miner");
       }
     } else {
@@ -90,81 +111,49 @@ const MinerConfig = () => {
     setIsLoading(false);
   };
   useEffect(() => {
-    if(userWallet?.walletAddress) {
-      console.log(userWallet?.walletAddress)
-      setWalletAddress(userWallet?.walletAddress)
+    if (userWallet?.walletAddress) {
+      console.log(userWallet?.walletAddress);
+      setWalletAddress(userWallet?.walletAddress);
       setIsSaved(true);
     }
-  }, [userWallet])
+  }, [userWallet]);
 
   useEffect(() => {
     loadMinerConfig();
     getLicense();
     getMinerMine();
-    getUserWallet()
-  }, [])
+    getUserWallet();
+  }, []);
   return (
-    <View style={stylesConfig.containerConfig}>
-      <Text style={stylesConfig.title}>Configure your miner</Text>
-      <Text style={stylesConfig.note}>
-        Note: you can only configure your miner once!
-      </Text>
+    <View style={stylesConfig.container}>
+      <View style={stylesConfig.content}>
+        {/* Miner License */}
+        <MinerLicense
+          minerLicense={minerLicense}
+          setMinerLicense={setMinerLicense}
+          maskText={maskText}
+        />
 
-      <Text style={stylesConfig.label}>Wallet Address</Text>
-      <TextInput
-        style={[stylesConfig.input, isSaved && stylesConfig.disabledInput]}
-        value={maskText(walletAddress)}
-        onChangeText={setWalletAddress}
-        editable={!walletAddress} 
-      />
-      <Text style={stylesConfig.hintText}>
-        Your reward wallet address. Accept EVM wallet address
-      </Text>
+        {/*Miner name*/}
+        <MinerName minerName={minerName} setMinerName={setMinerName} />
+        {/* Reward Wallet */}
+        <RewardWallet
+          walletAddress={walletAddress}
+          setWalletAddress={setWalletAddress}
+          maskText={maskText}
+        />
 
-      <Text style={stylesConfig.label}>Miner name</Text>
-      <TextInput
-        style={stylesConfig.input}
-        value={minerName}
-        onChangeText={setMinerName}
-      />
+        {/* Reward Threshold */}
+        <RewardThreshold />
 
-      <Text style={stylesConfig.label}>Miner license</Text>
-      <TouchableOpacity
-        style={[stylesConfig.input, { justifyContent: "center" }]}
-        onPress={() => setShowDropdown(!showDropdown)}
-      >
-        <Text style={{ color: "#FFF" }}>
-          {maskText(minerLicense) || "Select a license"}
-        </Text>
-      </TouchableOpacity>
+        {/*Mining Pool  */}
+        <MiningPool />
 
-      {showDropdown && (
-        <LicenseModal
-        visible={showDropdown}
-        onClose={() => setShowDropdown(false)}
-        searchText={searchText}
-        setSearchText={setSearchText}
-        filteredLicenses={filteredLicenses}
-        handleLicense={handleLicense}
-        maskText={maskText}
-      />
-      )}
-
-      <Text style={stylesConfig.hintText}>
-        Do not have a license yet?{" "}
-        <Link
-          href="https://asd-landing-page.pages.dev/#"
-          style={stylesConfig.linkText}
-        >
-          Get you one here.
-        </Link>
-      </Text>
-      <TouchableOpacity style={stylesConfig.button} onPress={handleSave}>
-        <Text style={stylesConfig.buttonText}>Save</Text>
-      </TouchableOpacity>
-      {isLoading && <LoadingModal visible={isLoading} hashRate={hashRate} setVisible={setIsLoading}/>}
-
-   </View>
+        <TouchableOpacity style={stylesConfig.button} onPress={handleSave}>
+          <Text style={stylesConfig.buttonText}>Save Configuration</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 };
 
