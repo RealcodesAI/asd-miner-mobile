@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Image, TextStyle } from "react-native";
+import { View, Text, Image } from "react-native";
 import { useMinerReward } from "@/hooks/useMinerReward";
 import { stylesMiner } from "@/app/css/styles/StylesMiner";
 import { useMinerStore } from "@/lib/zustand/miner";

@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { AsdApi } from "../api/service/asdApi";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Device from 'expo-device';
 import AsdMiningRN from "asd-mining";
 import showToast from "../utils/toastService";
@@ -71,7 +70,8 @@ export const useMinerStore = create<MinerState>((set, get) => ({
         cpu: 4,
         memory,
         device: "mobile",
-        hashRate
+        hashRate,
+        poolId: 0
       };
       const response = await AsdApi.minerConfig(data);
       const minerId = response?.id

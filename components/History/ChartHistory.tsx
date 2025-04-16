@@ -34,11 +34,12 @@ const ChartHistory = () => {
   useEffect(() => {
     if (!id) return;
     setTooltipData(null);
+    setTooltipVisible(false);
+    setTooltipPosition({ x: 0, y: 0 });
     getChart();
     const interval = setInterval(() => {
       getChart();
     }, 10000);
-
     return () => clearInterval(interval);
   }, [id, getChart]);
 

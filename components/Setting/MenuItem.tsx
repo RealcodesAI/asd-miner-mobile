@@ -1,11 +1,6 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  Switch,
-  TouchableOpacity,
-} from "react-native";
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import React from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { stylesSetting } from "@/app/css/styles/StylesSetting";
 import AppPreferences from "./AppPreferences";
 import Security from "./Security";
@@ -16,19 +11,21 @@ import { useAuthStore } from "@/lib/zustand/auth";
 export default function MenuItem() {
   const { fetchLogout } = useAuthStore();
   return (
-    <View  style={stylesSetting.container}>
+    <View style={stylesSetting.container}>
       <View style={stylesSetting.content}>
         {/* App Preferences */}
-        <AppPreferences/>
+        <AppPreferences />
         {/* Security */}
-        <Security/>
+        <Security />
         {/* Data Management */}
-        <DataManagement/>
+        <DataManagement />
         {/* Mining Performance */}
-        <MiningPerformance/>
-
+        <MiningPerformance />
         {/* Logout Button */}
-        <TouchableOpacity style={stylesSetting.logoutButton} onPress={fetchLogout}>
+        <TouchableOpacity
+          style={stylesSetting.logoutButton}
+          onPress={fetchLogout}
+        >
           <Ionicons name="log-out-outline" size={20} color="#000" />
           <Text style={stylesSetting.logoutText}>Logout</Text>
         </TouchableOpacity>
