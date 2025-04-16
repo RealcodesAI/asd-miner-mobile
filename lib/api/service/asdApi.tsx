@@ -81,5 +81,13 @@ export const AsdApi = {
     },
     getPools: async (): Promise<any> => {
         return await axiosClient.get(`pools`);
+    },
+    getQrCode2FA: async (): Promise<any> => {
+        return await axiosClientCT.get(`user-auth/setup-two-fa`)
+    },
+    vertfyQrCode2FA: async (token: string): Promise<any> => {
+        return await axiosClientCT.post(`user-auth/verify-setup-two-fa`, {
+            token
+        })
     }
 };
