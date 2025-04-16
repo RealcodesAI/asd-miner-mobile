@@ -166,4 +166,13 @@ export const stylesConfig = StyleSheet.create({
     textAlign: "center",
     color: "#333",
   },
+
+  // Dropdown hiển thị pool
+  dropdownContainer: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    marginTop: 5,
+    marginBottom: 10,
+  },
 });

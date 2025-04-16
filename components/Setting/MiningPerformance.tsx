@@ -5,7 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useMinerStore } from "@/lib/zustand/miner";
 import { deleteMinerStore } from "@/lib/zustand/deleteMiner";
 import * as SecureStore from "expo-secure-store";
-import { router, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 
 
 const MiningPerformance = () => {

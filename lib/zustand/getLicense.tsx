@@ -10,6 +10,7 @@ interface License {
 }
 interface MinerMine {
     id: number
+    poolId: number
     name: string
     license: string
     hashRate: number | string

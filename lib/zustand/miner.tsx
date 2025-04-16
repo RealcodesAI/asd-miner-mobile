@@ -4,21 +4,20 @@ import * as Device from 'expo-device';
 import AsdMiningRN from "asd-mining";
 import showToast from "../utils/toastService";
 import { router } from "expo-router";
-// console.log(Device)
 import * as SecureStore from "expo-secure-store";
 
 interface MinerState {
   id: number | string
-  walletAddress: string;
   minerName: string;
   minerLicense: string;
   hashRate:number | string ,
+  selectedPoolId: number | string
   isConfigured: boolean;
   isCalculating: boolean;
-  setId: (id: number | string) => void;
-  setWalletAddress: (address: string) => void;
+  setId: (id: number | string | undefined) => void;
   setMinerName: (name: string) => void;
   setMinerLicense: (license: string) => void;
+  setSelectedPoolId: (poolId: number | string) => void;
   saveMinerConfig: () => Promise<void>;
   loadMinerConfig: () => Promise<void>;
   setIsCalculating: (status: boolean) => void;
@@ -26,34 +25,23 @@ interface MinerState {
 
 export const useMinerStore = create<MinerState>((set, get) => ({
   id: '',
-  walletAddress: "",
   minerName: "",
   minerLicense: "",
   nameLicense: "",
   hashRate: "",
   isCalculating: false,
   isConfigured: false,
+  selectedPoolId: "",
 
   setId: (id) => set({ id }),
-  setWalletAddress: (address) => set({ walletAddress: address }),
   setMinerName: (name) => set({ minerName: name }),
   setMinerLicense: (license) => set({ minerLicense: license }),
   setIsCalculating: (status) => set({ isCalculating: status }),
+  setSelectedPoolId: (poolId) => set({ selectedPoolId: poolId }),
 
   saveMinerConfig: async () => {
-    const { walletAddress, minerLicense, minerName } = get();
-    if (!walletAddress) {
-      showToast("Please enter your wallet address!","danger")
-      return;
-    }
+    const { minerLicense, minerName, selectedPoolId } = get();
     try {
-      if (!minerLicense ) {
-        await AsdApi.updateWallte(walletAddress);
-        await SecureStore.setItemAsync("walletAddress", JSON.stringify({ walletAddress }));
-        set({ isConfigured: false });
-        showToast("Wallet updated successfully!","success")
-        // return;
-      }
       set({ isCalculating: true });
       // Tính hashRate bằng AsdMiningRN
       const minerInstance = AsdMiningRN.getInstance(minerLicense, "https://be.asdscan.ai");
@@ -71,12 +59,12 @@ export const useMinerStore = create<MinerState>((set, get) => ({
         memory,
         device: "mobile",
         hashRate,
-        poolId: 0
+        poolId: selectedPoolId
       };
       const response = await AsdApi.minerConfig(data);
       const minerId = response?.id
       // console.log(response?.id, "id")
-      const minerData = { walletAddress, minerLicense, minerName, isConfigured: true, id: response?.id,hashRate };
+      const minerData = { minerLicense, minerName, isConfigured: true, id: response?.id,hashRate,poolId: selectedPoolId };
       await SecureStore.setItemAsync("minerConfig", JSON.stringify(minerData));
       set({ isConfigured: true ,id: minerId});
       showToast("Miner configuration saved successfully!","success")

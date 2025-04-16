@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { AsdApi } from "../api/service/asdApi";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import showToast from "../utils/toastService";
 import { getUserStore } from "./getUser";
 import {Keyboard} from "react-native";

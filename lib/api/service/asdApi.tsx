@@ -36,6 +36,7 @@ export const AsdApi = {
         memory: number;
         device: string;
         hashRate: number;
+        poolId: number | string;
       }): Promise<any>  => {
         return await axiosClient.post("miners", minerData);
       },
@@ -78,4 +79,7 @@ export const AsdApi = {
     deleteLicense: async (id: string | number): Promise<any> => {
         return await axiosClient.delete(`miners/${id}`)
     },
+    getPools: async (): Promise<any> => {
+        return await axiosClient.get(`pools`);
+    }
 };

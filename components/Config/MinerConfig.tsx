@@ -17,22 +17,28 @@ import RewardThreshold from "./MinerItem/RewardThreshold";
 import RewardWallet from "./MinerItem/RewardWallet";
 import MinerLicense from "./MinerItem/MinerLicense";
 import MinerName from "./MinerItem/MinerName";
+import { getPoolStore } from "@/lib/zustand/getPool";
+import { useWithdrawHistories } from "@/lib/zustand/useWithdrawHistories";
+import { updateWallteStore } from "@/lib/zustand/updateWallet";
 
 const MinerConfig = () => {
   const {
-    walletAddress,
     minerLicense,
     minerName,
     hashRate,
     isConfigured,
     setId,
-    setWalletAddress,
     setMinerLicense,
     setMinerName,
     saveMinerConfig,
     loadMinerConfig,
   } = useMinerStore();
   const { getUserWallet, userWallet } = getUserStore();
+  const { walletAddress, setWalletAddress, updateWallteAddress } =
+    updateWallteStore();
+  const { threshold, setThreshold, updateRewardThreshold } =
+    useWithdrawHistories();
+  const { getPool, pools } = getPoolStore();
   const router = useRouter();
   const { getLicense, getMinerMine, licenses, minerMine } = getLicenseStore();
   const [isLoading, setIsLoading] = useState(false);
@@ -52,68 +58,98 @@ const MinerConfig = () => {
     const nameLicense = minerMine.find((miner) => miner.license === itemValue);
     setMinerName(nameLicense ? nameLicense.name : "");
   };
+  const poolId = minerMine.find(
+    (miner) => miner.license === minerLicense
+  )?.poolId;
+  const getSelectedPool = () => {
+    const poolId = minerMine.find(
+      (miner) => miner.license === minerLicense
+    )?.poolId;
+    return pools?.find((pool) => pool.id === poolId);
+  };
+
   const handleSave = async () => {
-    setIsSaved(true);
-    setIsLoading(true);
+    let isConfiguredLocal = isConfigured;
+    let minerIdLocal: string | number | undefined;
     const miner = minerMine.find((miner) => miner.license === minerLicense);
-    if (miner && miner.id) {
-      if (miner.name !== minerName) {
-        // Nếu đổi tên, gọi API updateNameLicense
+    minerIdLocal = miner?.id;
+    setId(minerIdLocal);
+
+    // Update Wallet Address if it's new and no license is configured yet
+    if (
+      !isConfigured &&
+      userWallet?.walletAddress &&
+      walletAddress !== userWallet?.walletAddress
+    ) {
+      try {
+        await updateWallteAddress();
+        showToast("Wallet address updated successfully!", "success");
+      } catch (error: any) {
+        console.error("Error updating wallet address:", error);
+        showToast(error.message, "danger");
+        setIsLoading(false);
+        return;
+      }
+    }
+    // Update Reward Threshold
+    if (threshold !== userWallet?.rewardThreshold) {
+      try {
+        await updateRewardThreshold();
+        showToast("Reward threshold updated successfully!", "success");
+      } catch (error: any) {
+        console.error("Error updating reward threshold:", error);
+        showToast(error.message, "danger");
+        setIsLoading(false);
+        return;
+      }
+    }
+    // Handle Miner Configuration (Name update or initial save)
+    if (minerIdLocal) {
+      if (miner?.name !== minerName) {
+        // Update Miner Name
         try {
-          setIsLoading(false);
-          await AsdApi.updateNameLicense(minerName, miner.id);
+          await AsdApi.updateNameLicense(minerName, minerIdLocal);
           await getMinerMine();
           showToast("Miner name updated successfully!", "success");
-          // Cập nhật lại dữ liệu vào AsyncStorage
-          const minerData = {
-            walletAddress,
-            minerLicense,
-            minerName,
-            id: miner.id,
-            isConfigured: true,
-            hashRate: miner.hashRate,
-          };
-          await SecureStore.setItemAsync(
-            "minerConfig",
-            JSON.stringify(minerData)
-          );
-          console.log("Updated miner name locally:", minerData);
-          router.push("/(tabs)/Miner");
         } catch (err: any) {
           console.log("Error updating miner name:", err);
           showToast(err.message, "danger");
+          setIsLoading(false);
+          return;
         }
-      } else {
-        setIsLoading(false);
-        // Nếu không đổi, chỉ lưu vào local storage
-        setId(miner.id);
-        setMinerName(miner.name);
-        const minerData = {
-          walletAddress,
-          minerLicense,
-          minerName,
-          id: miner.id,
-          isConfigured: true,
-          hashRate: miner.hashRate,
-        };
-        await SecureStore.setItemAsync(
-          "minerConfig",
-          JSON.stringify(minerData)
-        );
-        console.log("Saved minerData locally:", minerData);
-        showToast("Miner configuration saved successfully!", "success");
-        router.push("/(tabs)/Miner");
       }
-    } else {
-      // Nếu thiếu thông tin, gọi saveMinerConfig
-      await saveMinerConfig();
+      // Update local storage after successful updates
+      const minerData = {
+        walletAddress,
+        minerLicense,
+        minerName,
+        id: minerIdLocal,
+        isConfigured: true,
+        hashRate: miner?.hashRate,
+      };
+      await SecureStore.setItemAsync("minerConfig", JSON.stringify(minerData));
+      console.log("Updated miner config locally:", minerData);
+      isConfiguredLocal = true;
+    } else if (minerLicense) {
+      setIsLoading(true);
+      // Save new miner configuration
+      try {
+        await saveMinerConfig();
+        isConfiguredLocal = true;
+        showToast("Miner configuration saved successfully!", "success");
+      } catch (error: any) {
+        console.error("Error saving miner config:", error);
+        showToast(error.message, "danger");
+        setIsLoading(false);
+        return;
+      }
     }
-    setIsLoading(false);
   };
   useEffect(() => {
     if (userWallet?.walletAddress) {
       console.log(userWallet?.walletAddress);
       setWalletAddress(userWallet?.walletAddress);
+      setThreshold(userWallet?.rewardThreshold);
       setIsSaved(true);
     }
   }, [userWallet]);
@@ -123,6 +159,7 @@ const MinerConfig = () => {
     getLicense();
     getMinerMine();
     getUserWallet();
+    getPool();
   }, []);
   return (
     <View style={stylesConfig.container}>
@@ -144,15 +181,26 @@ const MinerConfig = () => {
         />
 
         {/* Reward Threshold */}
-        <RewardThreshold />
+        <RewardThreshold threshold={threshold} setThreshold={setThreshold} />
 
         {/*Mining Pool  */}
-        <MiningPool />
+        {minerLicense && (
+          <MiningPool initialPoolName={getSelectedPool()?.name} />
+        )}
+
+        {!minerLicense && <MiningPool />}
 
         <TouchableOpacity style={stylesConfig.button} onPress={handleSave}>
           <Text style={stylesConfig.buttonText}>Save Configuration</Text>
         </TouchableOpacity>
       </View>
+      {isLoading && (
+        <LoadingModal
+          visible={isLoading}
+          hashRate={hashRate}
+          setVisible={setIsLoading}
+        />
+      )}
     </View>
   );
 };
