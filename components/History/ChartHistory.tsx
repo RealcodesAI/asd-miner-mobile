@@ -1,163 +1,148 @@
-import { View, Text, Dimensions, Pressable } from "react-native";
-import React, { useEffect, useState } from "react";
-import { LineChart } from "react-native-chart-kit";
-import Svg, {
-  Circle,
-  Path,
-  Defs,
-  LinearGradient,
-  Stop,
-} from "react-native-svg";
-import { useMinerReward } from "@/hooks/useMinerReward";
-import { getChartStore } from "@/lib/zustand/getChart";
-import { format, isAfter, parseISO, subDays } from "date-fns";
-import { stylesHistory } from "@/app/css/styles/StylesHistory";
-import { useMinerStore } from "@/lib/zustand/miner";
+import React, { useEffect, useState } from 'react';
+import { View, Text, Dimensions } from 'react-native';
+import { getChartStore } from '@/lib/zustand/getChart';
+import { format, isAfter, parseISO, subDays } from 'date-fns';
+import { stylesHistory } from '@/app/css/styles/StylesHistory';
+import { useMinerStore } from '@/lib/zustand/miner';
+import * as d3Shape from 'd3-shape';
+import * as d3Scale from 'd3-scale';
+import { Chart } from './Chart/Chart';
+import { Legend } from './Chart/Legend';
 
-const screenWidth = Dimensions.get("window").width;
-const chartHeight = 250;
+const { width } = Dimensions.get('window');
+const chartWidth = width * 0.83;
+const chartHeight = 230;
+const verticalPadding = 30;
+const horizontalPadding = 40;
+const tooltipWidth = 130;
+const tooltipHeight = 60;
+const tooltipRadius = 5;
+interface ChartDataItem {
+  timeInterval: string;
+  totalHashRate: string;
+  totalReward: string;
+}
+
 const ChartHistory = () => {
-  const reward = useMinerReward();
+  const [tooltipVisible, setTooltipVisible] = useState(false);
+  const [tooltipData, setTooltipData] = useState<{ hashrate: number | string, rewards: number | string, date: string } | null>(null);
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   const { getChart, chart } = getChartStore();
   const { id } = useMinerStore();
   const last7Days = subDays(new Date(), 7);
-  const [tooltip, setTooltip] = useState<{
-    x: number;
-    y: number;
-    value: number;
-  } | null>(null);
+
   useEffect(() => {
     if (!id) return;
-    setTooltip(null);
+    setTooltipData(null);
     getChart();
     const interval = setInterval(() => {
       getChart();
     }, 10000);
 
     return () => clearInterval(interval);
-  }, [id]);
+  }, [id, getChart]);
 
-  const hasData = chart && chart.data && chart.data.length > 0;
-  // Chuyển đổi dữ liệu API thành format của LineChart
-  const filteredData = hasData
-    ? chart.data.filter((item) =>
-        isAfter(parseISO(item.timeInterval), last7Days)
-      )
-    : [];
-  const chartData =
-    filteredData.length > 0
-      ? {
-          labels: filteredData.map((item) =>
-            format(parseISO(item.timeInterval), "dd-MM")
-          ),
-          datasets: [
-            {
-              data: filteredData.map((item) =>
-                parseFloat(Number(item.totalReward).toFixed(3))
-              ),
-              color: () => "#FFD700",
-              strokeWidth: 3,
-              withDots: true,
-            },
-          ],
-        }
-      : {
-          labels: ["No Data"],
-          datasets: [{ data: [0] }],
-        };
+  const filteredChartData: ChartDataItem[] = (chart?.data as ChartDataItem[])?.filter(item =>
+    isAfter(parseISO(item.timeInterval), last7Days)
+  ) || [];
 
-  const handleDataPointClick = ({ x, y, value }: any) => {
-    console.log(x, y, value);
-    setTooltip({ x, y, value });
+  const yHashrateMax = filteredChartData.length > 0 ? Math.max(...filteredChartData.map(item => parseFloat(item.totalHashRate))) : 0;
+  const yRewardsMax = filteredChartData.length > 0 ? Math.max(...filteredChartData.map(item => parseFloat(item.totalReward))) : 0;
+
+  const xScale = d3Scale.scalePoint()
+    .domain(filteredChartData.map(item => format(parseISO(item.timeInterval), 'dd/MM')))
+    .range([horizontalPadding, chartWidth - horizontalPadding]);
+
+  const yScaleHashrate = d3Scale.scaleLinear()
+    .domain([0, yHashrateMax * 1.2])
+    .range([chartHeight - verticalPadding, verticalPadding]);
+
+  const yScaleRewards = d3Scale.scaleLinear()
+    .domain([0, yRewardsMax * 1.5])
+    .range([chartHeight - verticalPadding, verticalPadding]);
+
+  const lineHashrate = d3Shape.line()
+    .x((d: any) => xScale(format(parseISO(d.timeInterval), 'dd/MM')))
+    .y((d: any) => yScaleHashrate(parseFloat(d.totalHashRate)))
+    .curve(d3Shape.curveBasis);
+
+  const lineRewards = d3Shape.line()
+    .x((d: any) => xScale(format(parseISO(d.timeInterval), 'dd/MM')))
+    .y((d: any) => yScaleRewards(parseFloat(d.totalReward)))
+    .curve(d3Shape.curveBasis);
+
+  const handleTouch = (event: any) => {
+    const { locationX, locationY } = event.nativeEvent;
+    let closestIndex = -1;
+    let minDistance = Infinity;
+
+    filteredChartData.forEach((item, index) => {
+      const dateFormatted = format(parseISO(item.timeInterval), 'dd/MM');
+      const x = xScale(dateFormatted);
+      const yHash = yScaleHashrate(parseFloat(item.totalHashRate));
+      const yRew = yScaleRewards(parseFloat(item.totalReward));
+
+      const distHash = Math.sqrt((locationX - x) ** 2 + (locationY - yHash) ** 2);
+      const distRew = Math.sqrt((locationX - x) ** 2 + (locationY - yRew) ** 2);
+
+      if (distHash < minDistance) {
+        minDistance = distHash;
+        closestIndex = index;
+        setTooltipPosition({ x, y: yHash });
+      }
+      if (distRew < minDistance && distRew < distHash) {
+        minDistance = distRew;
+        closestIndex = index;
+        setTooltipPosition({ x, y: yRew });
+      }
+    });
+
+    if (closestIndex !== -1 && minDistance < 30) {
+      const selectedData = filteredChartData[closestIndex];
+      if (selectedData) {
+        setTooltipData({
+          hashrate: parseFloat(selectedData.totalHashRate),
+          rewards: parseFloat(selectedData.totalReward).toFixed(3),
+          date: format(parseISO(selectedData.timeInterval), 'dd/MM'),
+        });
+        setTooltipVisible(true);
+      } else {
+        setTooltipVisible(false);
+      }
+    } else {
+      setTooltipVisible(false);
+    }
   };
+
   return (
-    <View style={[stylesHistory.card, {position: "relative"}]}>
+    <View style={[stylesHistory.card, { position: "relative" }]}>
       <Text style={stylesHistory.sectionLabel}>Mining Performance</Text>
       <Text style={stylesHistory.subLabel}>Hashrate and rewards over time</Text>
-      <View style={{ position: "relative" }} pointerEvents="box-none">
-        <LineChart
-          data={
-            id ? chartData : { labels: ["No Data"], datasets: [{ data: [0] }] }
-          }
-          width={screenWidth -50}
-          height={chartHeight}
-          fromZero
-          chartConfig={{
-            backgroundColor: "transparent",
-            backgroundGradientFrom: "transparent",
-            backgroundGradientTo: "transparent",
-            color: () => "#FFF",
-            labelColor: () => "#FFF",
-            propsForLabels: {
-              fontSize: 10,
-              fontFamily: "Roboto",
-            },
-            propsForDots: {
-              r: "4",
-              strokeWidth: "2",
-            },
-            propsForBackgroundLines: {
-              display: "none",
-            },
-          }}
-          bezier
-          style={stylesHistory.chart}
-          onDataPointClick={handleDataPointClick}
+
+      <View>
+        <Chart
+          chartWidth={chartWidth}
+          chartHeight={chartHeight}
+          verticalPadding={verticalPadding}
+          horizontalPadding={horizontalPadding}
+          filteredChartData={filteredChartData}
+          yHashrateMax={yHashrateMax}
+          yRewardsMax={yRewardsMax}
+          xScale={xScale}
+          yScaleHashrate={yScaleHashrate}
+          yScaleRewards={yScaleRewards}
+          lineHashrate={lineHashrate}
+          lineRewards={lineRewards}
+          tooltipVisible={tooltipVisible}
+          tooltipData={tooltipData}
+          tooltipPosition={tooltipPosition}
+          tooltipWidth={tooltipWidth}
+          tooltipHeight={tooltipHeight}
+          tooltipRadius={tooltipRadius}
+          handleTouch={handleTouch}
+          setTooltipVisible={setTooltipVisible}
         />
-
-        {/* Custom Tooltip */}
-        {tooltip && (
-          <>
-            <Svg
-              style={{
-                position: "absolute",
-                left: Math.max(tooltip.x - 45, 10),
-                top: tooltip.y - 10,
-                width: 80,
-                height: chartHeight - tooltip.y,
-              }}
-              viewBox={`0 0 80 ${chartHeight - tooltip.y}`}
-            >
-              <Defs>
-                <LinearGradient id="grad-shadow" x1="0" y1="0" x2="0" y2="1">
-                  <Stop offset="10%" stopColor="#121212" stopOpacity="2" />
-                  <Stop offset="100%" stopColor="#FFD335" stopOpacity="1" />
-                </LinearGradient>
-              </Defs>
-              <Path
-                d={`
-                  M 25,20 
-                  A 15,15 0 0 1 65,20
-                  L 65,${chartHeight - tooltip.y - 26} 
-                  L 25,${chartHeight - tooltip.y - 26} 
-                  Z
-                `}
-                fill="url(#grad-shadow)"
-                opacity="0.75"
-              />
-              <Circle
-                cx="45"
-                cy="20"
-                r="8"
-                fill="#000"
-                stroke="#fff"
-                strokeWidth="6"
-              />
-            </Svg>
-
-            <View
-              style={[
-                {
-                  left: tooltip.x - 38,
-                  top: tooltip.y - 40,
-                },
-                stylesHistory.containerTooltip,
-              ]}
-            >
-              <Text style={stylesHistory.textTooltip}>{tooltip.value} ASD</Text>
-            </View>
-          </>
-        )}
+        <Legend />
       </View>
     </View>
   );

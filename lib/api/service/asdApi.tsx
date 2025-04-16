@@ -74,5 +74,8 @@ export const AsdApi = {
         return await axiosClient.post( `user/update-reward-threshold`, {
             threshold
         })
-    }
+    },
+    deleteLicense: async (id: string | number): Promise<any> => {
+        return await axiosClient.delete(`miners/${id}`)
+    },
 };
