@@ -142,7 +142,7 @@ export const stylesHistory = StyleSheet.create({
     padding: 10,
   },
 
-  legend: {
+  legendContainer: {
     flexDirection: 'row',
     marginTop: 15,
     justifyContent: 'center',
@@ -151,7 +151,7 @@ export const stylesHistory = StyleSheet.create({
   legendItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginLeft: 15,
+    marginHorizontal: 15,
   },
   legendColor: {
     width: 10,
@@ -165,6 +165,17 @@ export const stylesHistory = StyleSheet.create({
   },
   tooltipContainer: {
     position: 'absolute',
-    pointerEvents: 'none',
+    backgroundColor: 'rgba(31, 31, 48, 1)',
+    padding: 5,
+    borderRadius: 5,
+  },
+  tooltipLabel: {
+    color: '#fff',
+    fontSize: 12,
+  },
+  chart: {
+    // marginVertical: 10,
+    marginTop: 20,
+    borderRadius: 8,
   },
 });

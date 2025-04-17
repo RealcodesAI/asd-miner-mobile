@@ -36,6 +36,7 @@ const MiningHistory = ({ loadMore }: any) => {
   }, [loadMore, activeTab]);
 
   const loadData = async () => {
+    const params = { limit };
     if (id) {
       const params = { limit };
       setLoadingMore(true);
@@ -46,6 +47,8 @@ const MiningHistory = ({ loadMore }: any) => {
       }
       setLoadingMore(false);
     }
+    await fetchWithdrawHistories(params);
+    setLoadingMore(false);
   };
 
   const handleRefresh = () => {

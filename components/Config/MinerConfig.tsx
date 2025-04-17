@@ -58,9 +58,7 @@ const MinerConfig = () => {
     const nameLicense = minerMine.find((miner) => miner.license === itemValue);
     setMinerName(nameLicense ? nameLicense.name : "");
   };
-  const poolId = minerMine.find(
-    (miner) => miner.license === minerLicense
-  )?.poolId;
+
   const getSelectedPool = () => {
     const poolId = minerMine.find(
       (miner) => miner.license === minerLicense
@@ -194,6 +192,17 @@ const MinerConfig = () => {
           <Text style={stylesConfig.buttonText}>Save Configuration</Text>
         </TouchableOpacity>
       </View>
+      {showDropdown && (
+        <LicenseModal
+        visible={showDropdown}
+        onClose={() => setShowDropdown(false)}
+        searchText={searchText}
+        setSearchText={setSearchText}
+        filteredLicenses={filteredLicenses}
+        handleLicense={handleLicense}
+        maskText={maskText}
+      />
+      )}
       {isLoading && (
         <LoadingModal
           visible={isLoading}
